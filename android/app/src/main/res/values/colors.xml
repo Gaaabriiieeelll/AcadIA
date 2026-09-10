@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="acadia_green">#16833F</color>
+    <color name="acadia_green_dark">#0B3B2E</color>
+    <color name="acadia_green_soft">#EAF8EF</color>
+    <color name="acadia_surface">#FFFFFF</color>
+    <color name="acadia_text">#12352B</color>
+    <color name="acadia_muted">#62746E</color>
+</resources>

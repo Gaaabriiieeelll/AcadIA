@@ -1,0 +1,59 @@
+name: Qualidade
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      AUTH_SECRET: ci-auth-secret-with-at-least-32-characters
+      AUTH_GOOGLE_ID: ci-client.apps.googleusercontent.com
+      AUTH_GOOGLE_SECRET: ci-google-secret
+      NEXTAUTH_URL: http://localhost:3199
+      ALLOWED_EMAILS: ci@example.com
+      ALLOW_ACADEMIC_EMAIL: "false"
+      DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/acadia
+      DIRECT_URL: postgresql://ci:ci@127.0.0.1:5432/acadia
+      HEALTHCHECK_SECRET: ci-health-secret-with-at-least-32-characters
+      APP_VERSION: ${{ github.sha }}
+
+    steps:
+      - name: Obter código
+        uses: actions/checkout@v4
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Auditar dependências
+        run: npm run audit:dependencies
+
+      - name: Executar testes
+        run: npm test
+
+      - name: Verificar lint
+        run: npm run lint
+
+      - name: Verificar tipos
+        run: npm run typecheck
+
+      - name: Gerar build
+        run: npm run build
+
+      - name: Executar smoke test
+        run: npm run smoke

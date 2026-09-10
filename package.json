@@ -1,0 +1,58 @@
+{
+  "name": "acadia",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "postinstall": "prisma generate",
+    "start": "next start",
+    "test": "tsx --test src/lib/android-widget-secrets.test.ts src/lib/auth.test.ts src/lib/browser-push-utils.test.ts src/lib/google-calendar-event-colors.test.ts src/lib/privacy.test.ts src/proxy.test.ts",
+    "smoke": "node scripts/smoke-test.mjs",
+    "jobs:browser-push": "node scripts/run-browser-push-job.mjs",
+    "audit:dependencies": "npm audit --omit=dev --audit-level=high",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@next/env": "^16.3.4",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "cheerio": "^1.2.0",
+    "next": "16.3.4",
+    "next-auth": "4.24.15",
+    "pg": "^8.23.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "server-only": "^0.0.1",
+    "web-push": "^3.6.7",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "26.5.0",
+    "@types/pg": "^8.23.1",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "@types/web-push": "^3.6.4",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.3.4",
+    "prisma": "^7.10.0",
+    "tsx": "^4.23.13",
+    "typescript": "6.0.3"
+  },
+  "allowScripts": {
+    "prisma@7.10.0": true,
+    "@prisma/engines@7.10.0": true,
+    "esbuild@0.28.2": true,
+    "unrs-resolver@1.12.2": true
+  },
+  "overrides": {
+    "deepmerge-ts": "^8.0.2",
+    "mysql2": "^3.22.0"
+  }
+}

@@ -1,0 +1,1405 @@
+.page {
+  width: min(100%, 1320px);
+}
+
+.backLink {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  min-height: 42px;
+  margin-bottom: 18px;
+  color: var(--brand-700);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.backLink svg {
+  width: 17px;
+  height: 17px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(330px, 0.75fr);
+  gap: clamp(24px, 5vw, 64px);
+  align-items: end;
+  padding: clamp(26px, 4vw, 46px);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--brand-500) 38%, var(--border));
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 92% 18%, rgb(49 184 90 / 20%), transparent 34%),
+    linear-gradient(135deg, var(--brand-50) 0%, var(--surface) 58%, var(--brand-50) 100%);
+  box-shadow: var(--shadow-md);
+}
+
+.heroCopy {
+  min-width: 0;
+}
+
+.heroCopy h1 {
+  max-width: 720px;
+  margin: 3px 0 12px;
+  color: var(--teal-900);
+  font-size: clamp(38px, 5vw, 62px);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+}
+
+.heroCopy p {
+  max-width: 720px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: clamp(13px, 1.3vw, 16px);
+}
+
+.heroMetrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.heroMetrics div {
+  min-width: 0;
+  padding: 16px 12px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: var(--surface-glass);
+}
+
+.heroMetrics strong,
+.heroMetrics span {
+  display: block;
+}
+
+.heroMetrics strong {
+  color: var(--teal-900);
+  font-size: clamp(19px, 2vw, 26px);
+  line-height: 1.05;
+}
+
+.heroMetrics span {
+  margin-top: 5px;
+  color: var(--text-muted);
+  font-size: 8px;
+  font-weight: 750;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.classroomNotice {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 17px 19px;
+  margin-top: 16px;
+  border: 1px solid var(--info-border);
+  border-radius: 16px;
+  background: var(--info-soft);
+}
+
+.classroomIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--info-soft) 68%, var(--surface));
+  color: var(--info-text);
+}
+
+.classroomIcon svg {
+  width: 23px;
+  height: 23px;
+}
+
+.classroomNotice strong,
+.classroomNotice p,
+.classroomNotice small {
+  display: block;
+}
+
+.classroomNotice strong {
+  color: var(--info-text);
+  font-size: 13px;
+}
+
+.classroomNotice p {
+  margin: 3px 0 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.classroomNotice small {
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.classroomNotice :global(.secondary-action) {
+  white-space: nowrap;
+}
+
+.googleCalendarNotice {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 17px 19px;
+  margin-top: 12px;
+  border: 1px solid color-mix(in srgb, #4285f4 32%, var(--border));
+  border-radius: 16px;
+  background: color-mix(in srgb, #4285f4 8%, var(--surface));
+}
+
+.googleCalendarIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 5px 16px rgb(15 23 42 / 10%);
+}
+
+.googleCalendarIcon svg {
+  width: 42px;
+  height: 42px;
+}
+
+.googleCalendarCopy strong,
+.googleCalendarCopy p,
+.googleCalendarCopy small {
+  display: block;
+}
+
+.googleCalendarCopy strong {
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.googleCalendarCopy p {
+  margin: 3px 0 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.googleCalendarCopy small {
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.googleCalendarActions {
+  display: grid;
+  gap: 7px;
+  justify-items: stretch;
+}
+
+.googleCalendarButton,
+.googleCalendarReconnect {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.googleCalendarButton {
+  border: 1px solid #3778df;
+  background: #4285f4;
+  color: #fff;
+  cursor: pointer;
+}
+
+.googleCalendarButton:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
+.googleCalendarReconnect {
+  min-height: auto;
+  padding: 2px 6px;
+  color: #2563c7;
+}
+
+.googleCalendarFeedback {
+  color: var(--brand-700) !important;
+  font-weight: 750;
+}
+
+.googleCalendarFeedbackError {
+  color: var(--danger-text) !important;
+}
+
+.androidWidgetCard {
+  display: grid;
+  gap: 16px;
+  padding: 18px 19px;
+  margin-top: 12px;
+  border: 1px solid color-mix(in srgb, var(--brand-500) 42%, var(--border));
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--brand-50), var(--surface));
+}
+
+.androidWidgetHeading {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.androidWidgetIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--brand-600);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.androidWidgetHeading span,
+.androidWidgetHeading h2,
+.androidWidgetHeading p {
+  display: block;
+  margin: 0;
+}
+
+.androidWidgetHeading div > span {
+  color: var(--brand-700);
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.androidWidgetHeading h2 {
+  margin-top: 2px;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.androidWidgetHeading p {
+  margin-top: 3px;
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.androidPairingForm {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.androidPairingForm label {
+  display: grid;
+  gap: 5px;
+  color: var(--text-secondary);
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.androidPairingForm input {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+.androidPairingForm button,
+.pairingCodePanel button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--brand-600);
+  border-radius: 9px;
+  background: var(--brand-600);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.androidPairingForm button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.androidWidgetFeedback,
+.androidWidgetError {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.androidWidgetFeedback {
+  color: var(--brand-700);
+}
+
+.androidWidgetError {
+  color: var(--danger-text);
+}
+
+.pairingCodePanel {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 14px;
+  border: 1px dashed var(--brand-500);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.pairingCodePanel div {
+  display: grid;
+  gap: 2px;
+}
+
+.pairingCodePanel span,
+.pairingCodePanel small {
+  color: var(--text-muted);
+  font-size: 8px;
+}
+
+.pairingCodePanel strong {
+  color: var(--teal-900);
+  font-size: 20px;
+  letter-spacing: 0.12em;
+}
+
+.androidDeviceList {
+  display: grid;
+  gap: 7px;
+}
+
+.androidDeviceList > div {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 9px;
+  border-top: 1px solid var(--border);
+}
+
+.androidDeviceList span {
+  display: grid;
+  gap: 1px;
+}
+
+.androidDeviceList strong {
+  color: var(--text-primary);
+  font-size: 10px;
+}
+
+.androidDeviceList small {
+  color: var(--text-muted);
+  font-size: 8px;
+}
+
+.androidDeviceList button {
+  min-height: 32px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--danger);
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.proposalNotice {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 13px;
+  align-items: start;
+  padding: 17px 19px;
+  margin-top: 16px;
+  border: 1px solid var(--warning-border);
+  border-radius: 16px;
+  background: var(--warning-soft);
+}
+
+.noticeIcon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--warning-soft) 68%, var(--surface));
+  color: var(--warning-text);
+}
+
+.noticeIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.proposalNotice strong {
+  color: var(--warning-text);
+  font-size: 13px;
+}
+
+.proposalNotice p {
+  margin: 3px 0 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.periodNavigation {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 24px 0;
+}
+
+.periodNavigation a {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  min-height: 64px;
+  padding: 13px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.periodNavigation a:hover {
+  border-color: var(--brand-500);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.periodNavigation span {
+  color: var(--teal-900);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.periodNavigation small {
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.createDisclosure {
+  margin-bottom: 28px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--brand-500) 38%, var(--border));
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.createDisclosure summary {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  gap: 13px;
+  align-items: center;
+  padding: 16px 18px;
+  cursor: pointer;
+  list-style: none;
+  background: linear-gradient(135deg, var(--brand-50), var(--surface));
+}
+
+.createDisclosure summary::-webkit-details-marker {
+  display: none;
+}
+
+.createIcon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--brand-100);
+  color: var(--brand-700);
+}
+
+.createIcon svg {
+  width: 23px;
+  height: 23px;
+}
+
+.createDisclosure summary small,
+.createDisclosure summary strong {
+  display: block;
+}
+
+.createDisclosure summary small {
+  color: var(--brand-700);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.createDisclosure summary strong {
+  margin-top: 2px;
+  color: var(--teal-900);
+  font-size: 18px;
+}
+
+.disclosureAction {
+  min-height: 38px;
+  padding: 10px 13px;
+  border: 1px solid var(--brand-600);
+  border-radius: 9px;
+  color: var(--brand-700);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.eventForm {
+  display: grid;
+  gap: 18px;
+  padding: clamp(20px, 3vw, 30px);
+  border-top: 1px solid var(--border);
+}
+
+.eventFormGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.titleField {
+  grid-column: span 2;
+}
+
+.descriptionField {
+  grid-column: 1 / -1;
+}
+
+.formFooter {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.formFooter p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.calendarPanel {
+  margin-top: 32px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+}
+
+.calendarToolbar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  min-height: 88px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--surface-muted), var(--brand-50));
+}
+
+.calendarToolbar > div:nth-child(2) {
+  min-width: 0;
+  text-align: center;
+}
+
+.calendarToolbar > div:nth-child(2) > span {
+  display: block;
+  color: var(--brand-700);
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.calendarToolbar h2 {
+  margin: 2px 0 0;
+  color: var(--teal-900);
+  font-size: clamp(23px, 3vw, 32px);
+  letter-spacing: -0.04em;
+}
+
+.monthArrow,
+.todayLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--teal-900);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.monthArrow {
+  width: 42px;
+}
+
+.monthArrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+.todayLink {
+  padding-inline: 13px;
+}
+
+.toolbarActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.calendarViewport {
+  min-width: 0;
+}
+
+.weekdayRow,
+.weekRow {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.weekdayRow {
+  border-bottom: 1px solid var(--border);
+  background: var(--teal-solid);
+}
+
+.weekdayRow span {
+  padding: 9px 5px;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.weekdayRow span:first-child,
+.weekdayRow span:last-child {
+  color: #bff4ce;
+}
+
+.weeks {
+  min-width: 0;
+}
+
+.weekRow + .weekRow {
+  border-top: 1px solid var(--border);
+}
+
+.dayCell {
+  min-width: 0;
+  min-height: 126px;
+  padding: 7px;
+  background: var(--surface);
+}
+
+.dayCell + .dayCell {
+  border-left: 1px solid var(--border);
+}
+
+.weekend {
+  background: var(--surface-raised);
+}
+
+.outsideMonth {
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+
+.today {
+  position: relative;
+  z-index: 1;
+  box-shadow: inset 0 0 0 2px var(--brand-500);
+  background: var(--brand-50);
+}
+
+.dayHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 24px;
+  margin-bottom: 4px;
+}
+
+.dayHeading time {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  color: var(--teal-900);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.today .dayHeading time {
+  background: var(--brand-600);
+  color: #fff;
+}
+
+.outsideMonth .dayHeading time {
+  color: var(--text-muted);
+}
+
+.dayHeading small {
+  color: var(--text-muted);
+  font-size: 7px;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.dayEvents {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.eventPill {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  min-width: 0;
+  min-height: 21px;
+  padding: 3px 6px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--calendar-event-color) 24%, var(--surface));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--calendar-event-color) 10%, var(--surface));
+  color: var(--text-primary);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.eventPill i {
+  width: 5px;
+  min-width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--calendar-event-color);
+}
+
+.eventPill > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.personalPill {
+  border-left: 3px solid var(--calendar-event-color);
+}
+
+.officialPill {
+  opacity: 0.9;
+}
+
+.classroomPill {
+  border-style: solid;
+  border-left: 3px solid var(--calendar-event-color);
+  background: color-mix(in srgb, var(--calendar-event-color) 14%, var(--surface));
+}
+
+.completedPill {
+  opacity: 0.58;
+}
+
+.completedPill > span {
+  text-decoration: line-through;
+}
+
+.moreEvents {
+  padding-left: 5px;
+  color: var(--text-muted);
+  font-size: 7px;
+  font-weight: 750;
+}
+
+.legend {
+  display: flex;
+  gap: 10px 18px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 14px 16px;
+  margin: 14px 0 42px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface-glass-medium);
+}
+
+.legend span {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.legend i {
+  width: 8px;
+  min-width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.personalLegend {
+  border: 2px solid var(--brand-700);
+  background: var(--brand-100);
+}
+
+.classroomLegend {
+  border: 2px solid var(--info-text);
+  background: var(--info-soft);
+}
+
+.completedLegend {
+  background: #94a3b8;
+  opacity: 0.58;
+}
+
+.monthEventsSection {
+  scroll-margin-top: 90px;
+}
+
+.sectionHeading {
+  display: flex;
+  gap: 20px;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sectionHeading > div > span {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--brand-700);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sectionHeading h2 {
+  margin: 0;
+  color: var(--teal-900);
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.04em;
+}
+
+.sectionHeading > p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.monthEventList {
+  display: grid;
+  gap: 10px;
+}
+
+.monthEventCard {
+  display: grid;
+  grid-template-columns: 7px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  min-width: 0;
+  padding: 16px 18px 16px 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.eventCardMarker {
+  align-self: stretch;
+  border-radius: 0 999px 999px 0;
+  background: var(--calendar-event-color);
+}
+
+.eventCardContent {
+  min-width: 0;
+}
+
+.eventCardTopline {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.eventCardTopline span {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.eventCardTopline .personalBadge {
+  background: var(--brand-100);
+  color: var(--brand-700);
+}
+
+.eventCardTopline .officialBadge {
+  background: var(--official-soft);
+  color: var(--official-text);
+}
+
+.eventCardTopline .classroomBadge {
+  background: var(--info-soft);
+  color: var(--info-text);
+}
+
+.eventCardContent h3 {
+  margin: 7px 0 2px;
+  color: var(--teal-900);
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.eventCardContent p {
+  max-width: 840px;
+  margin: 0 0 7px;
+  color: var(--text-secondary);
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+
+.eventCardContent time {
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.completedEventCard {
+  background: var(--surface-muted);
+  opacity: 0.72;
+}
+
+.completedEventCard .eventCardContent h3 {
+  text-decoration: line-through;
+}
+
+.classroomEventLink {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 11px;
+  border: 1px solid var(--info-border);
+  border-radius: 8px;
+  background: var(--info-soft);
+  color: var(--info-text);
+  font-size: 9px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.classroomEventLink:hover {
+  border-color: var(--info-text);
+  background: color-mix(in srgb, var(--info-soft) 72%, var(--surface));
+}
+
+.classroomEventLink svg {
+  width: 14px;
+  height: 14px;
+}
+
+.eventCardActions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.toggleOpenEventButton {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--brand-500);
+  border-radius: 8px;
+  background: var(--brand-50);
+  color: var(--brand-700);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.toggleOpenEventButton:hover {
+  border-color: var(--brand-600);
+  background: var(--brand-100);
+}
+
+.deleteEventButton {
+  min-height: 38px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--danger);
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.deleteEventButton:hover:not(:disabled) {
+  background: var(--danger-soft);
+}
+
+.deleteEventButton:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.emptyEvents {
+  padding: 40px 22px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 18px;
+  background: var(--surface-glass-faint);
+  text-align: center;
+}
+
+.emptyEvents strong {
+  color: var(--teal-900);
+}
+
+.emptyEvents p {
+  margin: 5px 0 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.sourceNote {
+  padding: 20px;
+  margin-top: 48px;
+  border: 1px solid color-mix(in srgb, var(--brand-500) 38%, var(--border));
+  border-radius: 16px;
+  background: var(--brand-50);
+}
+
+.sourceNote strong {
+  color: var(--brand-700);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.sourceNote p {
+  margin: 5px 0 0;
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+@media (max-width: 1120px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .heroMetrics {
+    max-width: 680px;
+  }
+
+  .eventFormGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .hero {
+    gap: 22px;
+    padding: 24px 20px;
+    border-radius: 22px;
+  }
+
+  .heroCopy h1 {
+    font-size: clamp(34px, 11vw, 48px);
+  }
+
+  .classroomNotice {
+    grid-template-columns: 42px minmax(0, 1fr);
+    padding: 14px;
+  }
+
+  .classroomNotice > form {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .googleCalendarNotice {
+    grid-template-columns: 42px minmax(0, 1fr);
+    padding: 14px;
+  }
+
+  .googleCalendarActions {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .androidPairingForm {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pairingCodePanel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .periodNavigation {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .createDisclosure summary {
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    padding: 14px;
+  }
+
+  .createIcon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .createDisclosure summary strong {
+    font-size: 15px;
+  }
+
+  .eventFormGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .titleField,
+  .descriptionField {
+    grid-column: auto;
+  }
+
+  .formFooter {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .formFooter :global(.primary-action) {
+    width: 100%;
+  }
+
+  .calendarPanel {
+    border-radius: 17px;
+  }
+
+  .calendarToolbar {
+    gap: 8px;
+    min-height: 76px;
+    padding: 12px;
+  }
+
+  .calendarToolbar h2 {
+    font-size: clamp(18px, 6vw, 25px);
+  }
+
+  .monthArrow {
+    width: 38px;
+    min-height: 38px;
+  }
+
+  .todayLink {
+    min-height: 38px;
+    padding-inline: 10px;
+  }
+
+  .weekdayRow span {
+    padding: 7px 2px;
+    font-size: 8px;
+  }
+
+  .dayCell {
+    min-height: 86px;
+    padding: 4px;
+  }
+
+  .dayHeading {
+    min-height: 22px;
+    margin-bottom: 2px;
+  }
+
+  .dayHeading time {
+    width: 22px;
+    height: 22px;
+    font-size: 9px;
+  }
+
+  .dayHeading small {
+    display: none;
+  }
+
+  .dayEvents {
+    display: flex;
+    gap: 3px;
+    align-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .eventPill {
+    display: grid;
+    place-items: center;
+    width: 15px;
+    min-height: 15px;
+    padding: 2px;
+    border: 0;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--calendar-event-color) 18%, var(--surface));
+  }
+
+  .eventPill i {
+    width: 7px;
+    min-width: 7px;
+    height: 7px;
+  }
+
+  .eventPill > span {
+    display: none;
+  }
+
+  .personalPill {
+    border: 1px solid var(--calendar-event-color);
+  }
+
+  .classroomPill {
+    border: 1px solid var(--calendar-event-color);
+  }
+
+  .moreEvents {
+    width: 100%;
+    padding: 0;
+    font-size: 6px;
+  }
+
+  .legend {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sectionHeading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .monthEventCard {
+    grid-template-columns: 7px minmax(0, 1fr);
+  }
+
+  .monthEventCard > form,
+  .monthEventCard > .classroomEventLink {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 420px) {
+  .heroMetrics {
+    gap: 5px;
+  }
+
+  .heroMetrics div {
+    padding: 11px 7px;
+  }
+
+  .heroMetrics strong {
+    font-size: 18px;
+  }
+
+  .heroMetrics span {
+    font-size: 7px;
+  }
+
+  .proposalNotice {
+    grid-template-columns: 32px minmax(0, 1fr);
+    padding: 14px;
+  }
+
+  .noticeIcon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .disclosureAction {
+    display: none;
+  }
+
+  .createDisclosure summary {
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .calendarToolbar > div:nth-child(2) > span {
+    display: none;
+  }
+
+  .toolbarActions {
+    gap: 4px;
+  }
+
+  .todayLink {
+    padding-inline: 7px;
+  }
+
+  .dayCell {
+    min-height: 74px;
+    padding: 3px;
+  }
+
+  .eventPill {
+    width: 13px;
+    min-height: 13px;
+  }
+
+  .eventPill i {
+    width: 6px;
+    min-width: 6px;
+    height: 6px;
+  }
+}
+
+@media (pointer: coarse) {
+  .classroomEventLink,
+  .deleteEventButton,
+  .toggleOpenEventButton,
+  .googleCalendarButton,
+  .monthArrow,
+  .todayLink {
+    min-height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .periodNavigation a {
+    transition: none;
+  }
+}

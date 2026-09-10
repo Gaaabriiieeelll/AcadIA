@@ -1,0 +1,42 @@
+# Dependências
+/node_modules
+
+# Next.js
+/.next
+/out
+
+# Produção
+/build
+
+# Arquivos temporarios locais
+/tmp
+
+# Arquivos locais
+.DS_Store
+*.pem
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Variáveis de ambiente e credenciais
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# TypeScript
+*.tsbuildinfo
+
+# Prisma Client gerado
+/src/generated/prisma
+
+# Android
+/android/.gradle
+/android/local.properties
+/android/**/build
+*.jks
+*.keystore

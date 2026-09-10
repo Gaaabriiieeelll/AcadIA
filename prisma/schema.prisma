@@ -1,0 +1,467 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                        String                     @id @default(uuid()) @db.Uuid
+  googleSubject             String                     @unique @map("google_subject") @db.VarChar(255)
+  classroomCredential       GoogleClassroomCredential?
+  googleCalendarCredential  GoogleCalendarCredential?
+  googleCalendarIntegration GoogleCalendarIntegration?
+  privacyConsents           PrivacyConsent[]
+  profile                   AcademicProfile?
+  alertPreference           AcademicAlertPreference?
+  alertRecords              AcademicAlertRecord[]
+  browserPushSubscriptions  BrowserPushSubscription[]
+  androidWidgetCredentials  AndroidWidgetCredential[]
+  studyPlanPreference       StudyPlanPreference?
+  studyAvailabilities       StudyAvailability[]
+  studySessions             StudySession[]
+  videoRecommendations      StudyVideoRecommendation[]
+  noticeChecklistItems      NoticeChecklistItem[]
+  subjects                  Subject[]
+  calendarEvents            CalendarEvent[]
+  createdAt                 DateTime                   @default(now()) @map("created_at")
+  updatedAt                 DateTime                   @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model PrivacyConsent {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  purpose   String    @db.VarChar(50)
+  version   String    @db.VarChar(30)
+  grantedAt DateTime  @default(now()) @map("granted_at")
+  revokedAt DateTime? @map("revoked_at")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@unique([userId, purpose, version])
+  @@index([userId, purpose, revokedAt])
+  @@map("privacy_consents")
+}
+
+model NoticeChecklistItem {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  noticeKey   String   @map("notice_key") @db.VarChar(80)
+  itemKey     String   @map("item_key") @db.VarChar(80)
+  completedAt DateTime @default(now()) @map("completed_at")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, noticeKey, itemKey])
+  @@index([userId, noticeKey])
+  @@map("notice_checklist_items")
+}
+
+model GoogleClassroomCredential {
+  id                    String    @id @default(uuid()) @db.Uuid
+  userId                String    @unique @map("user_id") @db.Uuid
+  encryptedAccessToken  String    @map("encrypted_access_token") @db.Text
+  encryptedRefreshToken String?   @map("encrypted_refresh_token") @db.Text
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  grantedScopes         String    @default("") @map("granted_scopes") @db.Text
+  lastTaskSyncAt        DateTime? @map("last_task_sync_at")
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  @@map("google_classroom_credentials")
+}
+
+model GoogleCalendarIntegration {
+  id                   String    @id @default(uuid()) @db.Uuid
+  userId               String    @unique @map("user_id") @db.Uuid
+  calendarId           String    @unique @map("calendar_id") @db.VarChar(1024)
+  calendarName         String    @default("AcadIA · Calendário acadêmico") @map("calendar_name") @db.VarChar(160)
+  lastSyncedAt         DateTime? @map("last_synced_at")
+  lastSyncedEventCount Int       @default(0) @map("last_synced_event_count")
+  lastSyncError        String?   @map("last_sync_error") @db.VarChar(500)
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  @@map("google_calendar_integrations")
+}
+
+model GoogleCalendarCredential {
+  id                    String    @id @default(uuid()) @db.Uuid
+  userId                String    @unique @map("user_id") @db.Uuid
+  accountGoogleSubject  String    @map("account_google_subject") @db.VarChar(255)
+  accountEmail          String    @map("account_email") @db.VarChar(320)
+  encryptedAccessToken  String    @map("encrypted_access_token") @db.Text
+  encryptedRefreshToken String?   @map("encrypted_refresh_token") @db.Text
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  grantedScopes         String    @default("") @map("granted_scopes") @db.Text
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  @@index([accountEmail])
+  @@map("google_calendar_credentials")
+}
+
+model AcademicAlertPreference {
+  id                     String    @id @default(uuid()) @db.Uuid
+  userId                 String    @unique @map("user_id") @db.Uuid
+  targetAverage          Int       @default(70) @map("target_average") @db.SmallInt
+  minimumAttendance      Int       @default(75) @map("minimum_attendance") @db.SmallInt
+  gradesEnabled          Boolean   @default(true) @map("grades_enabled")
+  attendanceEnabled      Boolean   @default(true) @map("attendance_enabled")
+  tasksEnabled           Boolean   @default(true) @map("tasks_enabled")
+  calendarEnabled        Boolean   @default(true) @map("calendar_enabled")
+  browserNotifications   Boolean   @default(false) @map("browser_notifications")
+  whatsappEnabled        Boolean   @default(false) @map("whatsapp_enabled")
+  encryptedWhatsappPhone String?   @map("encrypted_whatsapp_phone") @db.Text
+  whatsappPhoneLastFour  String?   @map("whatsapp_phone_last_four") @db.VarChar(4)
+  whatsappConsentAt      DateTime? @map("whatsapp_consent_at")
+  whatsappVerifiedAt     DateTime? @map("whatsapp_verified_at")
+  whatsappLastTestAt     DateTime? @map("whatsapp_last_test_at")
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  @@map("academic_alert_preferences")
+}
+
+model AcademicAlertRecord {
+  id                    String                @id @default(uuid()) @db.Uuid
+  userId                String                @map("user_id") @db.Uuid
+  alertKey              String                @map("alert_key") @db.VarChar(255)
+  category              String                @db.VarChar(20)
+  severity              String                @db.VarChar(20)
+  title                 String                @db.VarChar(200)
+  description           String                @db.VarChar(800)
+  actionLabel           String                @map("action_label") @db.VarChar(80)
+  href                  String                @db.VarChar(300)
+  dateKey               DateTime?             @map("date_key") @db.Date
+  accentColor           String?               @map("accent_color") @db.VarChar(7)
+  firstDetectedAt       DateTime              @default(now()) @map("first_detected_at")
+  lastDetectedAt        DateTime              @default(now()) @map("last_detected_at")
+  readAt                DateTime?             @map("read_at")
+  dismissedAt           DateTime?             @map("dismissed_at")
+  snoozedUntil          DateTime?             @map("snoozed_until") @db.Date
+  resolvedAt            DateTime?             @map("resolved_at")
+  whatsappSentAt        DateTime?             @map("whatsapp_sent_at")
+  whatsappMessageId     String?               @map("whatsapp_message_id") @db.VarChar(255)
+  whatsappLastAttemptAt DateTime?             @map("whatsapp_last_attempt_at")
+  whatsappAttemptCount  Int                   @default(0) @map("whatsapp_attempt_count") @db.SmallInt
+  whatsappLastError     String?               @map("whatsapp_last_error") @db.VarChar(500)
+  browserPushGeneration Int                   @default(1) @map("browser_push_generation") @db.SmallInt
+  browserPushDeliveries BrowserPushDelivery[]
+  user                  User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt             DateTime              @default(now()) @map("created_at")
+  updatedAt             DateTime              @updatedAt @map("updated_at")
+
+  @@unique([userId, alertKey])
+  @@index([userId, lastDetectedAt])
+  @@index([userId, whatsappSentAt, whatsappAttemptCount], map: "academic_alert_records_whatsapp_dispatch_idx")
+  @@map("academic_alert_records")
+}
+
+model BrowserPushSubscription {
+  id                String                @id @default(uuid()) @db.Uuid
+  userId            String                @map("user_id") @db.Uuid
+  endpointHash      String                @unique @map("endpoint_hash") @db.Char(64)
+  encryptedEndpoint String                @map("encrypted_endpoint") @db.Text
+  encryptedP256dh   String                @map("encrypted_p256dh") @db.Text
+  encryptedAuth     String                @map("encrypted_auth") @db.Text
+  expirationAt      DateTime?             @map("expiration_at")
+  disabledAt        DateTime?             @map("disabled_at")
+  lastSuccessAt     DateTime?             @map("last_success_at")
+  failureCount      Int                   @default(0) @map("failure_count") @db.SmallInt
+  lastError         String?               @map("last_error") @db.VarChar(500)
+  user              User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deliveries        BrowserPushDelivery[]
+  createdAt         DateTime              @default(now()) @map("created_at")
+  updatedAt         DateTime              @updatedAt @map("updated_at")
+
+  @@index([userId, disabledAt])
+  @@map("browser_push_subscriptions")
+}
+
+model BrowserPushDelivery {
+  id             String                  @id @default(uuid()) @db.Uuid
+  alertRecordId  String                  @map("alert_record_id") @db.Uuid
+  subscriptionId String                  @map("subscription_id") @db.Uuid
+  generation     Int                     @default(1) @db.SmallInt
+  attemptCount   Int                     @default(0) @map("attempt_count") @db.SmallInt
+  lastAttemptAt  DateTime?               @map("last_attempt_at")
+  deliveredAt    DateTime?               @map("delivered_at")
+  suppressedAt   DateTime?               @map("suppressed_at")
+  lastError      String?                 @map("last_error") @db.VarChar(500)
+  alertRecord    AcademicAlertRecord     @relation(fields: [alertRecordId], references: [id], onDelete: Cascade)
+  subscription   BrowserPushSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  createdAt      DateTime                @default(now()) @map("created_at")
+  updatedAt      DateTime                @updatedAt @map("updated_at")
+
+  @@unique([alertRecordId, subscriptionId, generation])
+  @@index([subscriptionId, deliveredAt, attemptCount], map: "browser_push_deliveries_dispatch_idx")
+  @@map("browser_push_deliveries")
+}
+
+model AndroidWidgetCredential {
+  id                  String    @id @default(uuid()) @db.Uuid
+  userId              String    @map("user_id") @db.Uuid
+  deviceName          String    @map("device_name") @db.VarChar(80)
+  pairingCodeHash     String    @unique @map("pairing_code_hash") @db.Char(64)
+  tokenHash           String?   @unique @map("token_hash") @db.Char(64)
+  pairingExpiresAt    DateTime  @map("pairing_expires_at")
+  activatedAt         DateTime? @map("activated_at")
+  lastUsedAt          DateTime? @map("last_used_at")
+  revokedAt           DateTime? @map("revoked_at")
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId, revokedAt])
+  @@index([pairingExpiresAt, activatedAt])
+  @@map("android_widget_credentials")
+}
+
+model AcademicProfile {
+  id                 String   @id @default(uuid()) @db.Uuid
+  userId             String   @unique @map("user_id") @db.Uuid
+  registrationNumber String   @unique @map("registration_number") @db.VarChar(30)
+  campus             String   @db.VarChar(100)
+  course             String   @db.VarChar(160)
+  classGroup         String?  @map("class_group") @db.VarChar(50)
+  academicStage      String   @map("academic_stage") @db.VarChar(50)
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("academic_profiles")
+}
+
+model StudyPlanPreference {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @unique @map("user_id") @db.Uuid
+  weeklyGoalMinutes Int      @default(300) @map("weekly_goal_minutes") @db.SmallInt
+  sessionDuration   Int      @default(50) @map("session_duration") @db.SmallInt
+  breakDuration     Int      @default(10) @map("break_duration") @db.SmallInt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("study_plan_preferences")
+}
+
+model StudyAvailability {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  weekday   Int      @db.SmallInt
+  startTime String   @map("start_time") @db.VarChar(5)
+  endTime   String   @map("end_time") @db.VarChar(5)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, weekday])
+  @@index([userId])
+  @@map("study_availabilities")
+}
+
+enum StudySessionStatus {
+  PLANNED
+  COMPLETED
+}
+
+enum StudySessionSource {
+  AUTOMATIC
+  MANUAL
+}
+
+model StudySession {
+  id              String             @id @default(uuid()) @db.Uuid
+  userId          String             @map("user_id") @db.Uuid
+  subjectId       String             @map("subject_id") @db.Uuid
+  scheduledDate   DateTime           @map("scheduled_date") @db.Date
+  startTime       String             @map("start_time") @db.VarChar(5)
+  durationMinutes Int                @map("duration_minutes") @db.SmallInt
+  focus           String?            @db.VarChar(160)
+  rationale       String             @db.VarChar(700)
+  priorityScore   Int                @default(0) @map("priority_score") @db.SmallInt
+  status          StudySessionStatus @default(PLANNED)
+  source          StudySessionSource @default(MANUAL)
+  completedAt     DateTime?          @map("completed_at")
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject         Subject            @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @updatedAt @map("updated_at")
+
+  @@unique([userId, scheduledDate, startTime])
+  @@index([userId, scheduledDate])
+  @@index([subjectId])
+  @@map("study_sessions")
+}
+
+model Subject {
+  id                   String                     @id @default(uuid()) @db.Uuid
+  userId               String                     @map("user_id") @db.Uuid
+  name                 String                     @db.VarChar(120)
+  teacher              String?                    @db.VarChar(120)
+  color                String                     @default("#16833f") @db.VarChar(7)
+  classesHeld          Int                        @default(0) @map("classes_held")
+  absences             Int                        @default(0)
+  academicCode         String?                    @map("academic_code") @db.VarChar(30)
+  diaryCode            String?                    @map("diary_code") @db.VarChar(30)
+  academicPeriod       String?                    @map("academic_period") @db.VarChar(20)
+  workloadClasses      Int?                       @map("workload_classes")
+  academicStatus       String?                    @map("academic_status") @db.VarChar(30)
+  officialAverage      Decimal?                   @map("official_average") @db.Decimal(5, 2)
+  finalAssessmentScore Decimal?                   @map("final_assessment_score") @db.Decimal(5, 2)
+  finalAverage         Decimal?                   @map("final_average") @db.Decimal(5, 2)
+  bimesterCount        Int                        @default(4) @map("bimester_count") @db.SmallInt
+  dataSource           AcademicDataSource         @default(MANUAL) @map("data_source")
+  sourceUpdatedAt      DateTime?                  @map("source_updated_at")
+  assessments          Assessment[]
+  bimesterGrades       BimesterGrade[]
+  tasks                AcademicTask[]
+  calendarEvents       CalendarEvent[]
+  studySessions        StudySession[]
+  videoRecommendations StudyVideoRecommendation[]
+  user                 User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt            DateTime                   @default(now()) @map("created_at")
+  updatedAt            DateTime                   @updatedAt @map("updated_at")
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("subjects")
+}
+
+model StudyVideoRecommendation {
+  id                  String    @id @default(uuid()) @db.Uuid
+  userId              String    @map("user_id") @db.Uuid
+  subjectId           String    @map("subject_id") @db.Uuid
+  topic               String    @db.VarChar(180)
+  rationale           String    @db.VarChar(600)
+  searchQuery         String    @map("search_query") @db.VarChar(250)
+  sourceMaterialTitle String    @map("source_material_title") @db.VarChar(200)
+  averageScore        Decimal?  @map("average_score") @db.Decimal(5, 2)
+  youtubeVideoId      String    @map("youtube_video_id") @db.VarChar(32)
+  videoTitle          String    @map("video_title") @db.VarChar(240)
+  channelTitle        String    @map("channel_title") @db.VarChar(180)
+  thumbnailUrl        String    @map("thumbnail_url") @db.Text
+  videoPublishedAt    DateTime? @map("video_published_at")
+  model               String    @db.VarChar(80)
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject             Subject   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+
+  @@unique([userId, youtubeVideoId])
+  @@index([userId, createdAt])
+  @@index([subjectId])
+  @@map("study_video_recommendations")
+}
+
+enum AcademicDataSource {
+  MANUAL
+  SUAP_REPORT
+  SUAP_API
+}
+
+model BimesterGrade {
+  id         String             @id @default(uuid()) @db.Uuid
+  subjectId  String             @map("subject_id") @db.Uuid
+  bimester   Int                @db.SmallInt
+  score      Decimal?           @db.Decimal(5, 2)
+  dataSource AcademicDataSource @default(MANUAL) @map("data_source")
+  subject    Subject            @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  createdAt  DateTime           @default(now()) @map("created_at")
+  updatedAt  DateTime           @updatedAt @map("updated_at")
+
+  @@unique([subjectId, bimester])
+  @@index([subjectId])
+  @@map("bimester_grades")
+}
+
+model Assessment {
+  id        String   @id @default(uuid()) @db.Uuid
+  subjectId String   @map("subject_id") @db.Uuid
+  name      String   @db.VarChar(100)
+  score     Decimal  @db.Decimal(5, 2)
+  weight    Decimal  @default(1) @db.Decimal(5, 2)
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([subjectId])
+  @@map("assessments")
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum AcademicTaskSource {
+  MANUAL
+  GOOGLE_CLASSROOM
+}
+
+enum CalendarEventType {
+  EXAM
+  FIELD_CLASS
+  ASSIGNMENT
+  PRESENTATION
+  MEETING
+  OTHER
+}
+
+model AcademicTask {
+  id                    String             @id @default(uuid()) @db.Uuid
+  subjectId             String             @map("subject_id") @db.Uuid
+  title                 String             @db.VarChar(140)
+  description           String?            @db.VarChar(500)
+  dueDate               DateTime           @map("due_date") @db.Date
+  dueTime               String?            @map("due_time") @db.VarChar(5)
+  priority              TaskPriority       @default(MEDIUM)
+  completedAt           DateTime?          @map("completed_at")
+  source                AcademicTaskSource @default(MANUAL)
+  classroomCourseId     String?            @map("classroom_course_id") @db.VarChar(255)
+  classroomCourseWorkId String?            @map("classroom_course_work_id") @db.VarChar(255)
+  sourceUrl             String?            @map("source_url") @db.Text
+  sourceUpdatedAt       DateTime?          @map("source_updated_at")
+  subject               Subject            @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  createdAt             DateTime           @default(now()) @map("created_at")
+  updatedAt             DateTime           @updatedAt @map("updated_at")
+
+  @@unique([subjectId, classroomCourseId, classroomCourseWorkId])
+  @@index([subjectId])
+  @@index([dueDate])
+  @@map("academic_tasks")
+}
+
+model CalendarEvent {
+  id          String            @id @default(uuid()) @db.Uuid
+  userId      String            @map("user_id") @db.Uuid
+  subjectId   String?           @map("subject_id") @db.Uuid
+  title       String            @db.VarChar(140)
+  description String?           @db.VarChar(500)
+  eventType   CalendarEventType @default(OTHER) @map("event_type")
+  startDate   DateTime          @map("start_date") @db.Date
+  endDate     DateTime?         @map("end_date") @db.Date
+  startTime   String?           @map("start_time") @db.VarChar(5)
+  endTime     String?           @map("end_time") @db.VarChar(5)
+  completedAt DateTime?         @map("completed_at")
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject     Subject?          @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+
+  @@index([userId, startDate])
+  @@index([subjectId])
+  @@map("calendar_events")
+}
