@@ -6,6 +6,7 @@ import {
   hashAndroidWidgetSecret,
   normalizeAndroidPairingCode,
 } from "@/lib/android-widget-auth";
+import { requireAndroidWidgetEnabled } from "@/lib/android-widget-feature";
 import { CALENDAR_EVENT_TYPE_DETAILS } from "@/types/calendar-events";
 import type {
   AndroidWidgetCommitmentDTO,
@@ -27,6 +28,7 @@ async function requireWidgetUser() {
 }
 
 export async function getCurrentAndroidWidgetCredentials(): Promise<AndroidWidgetCredentialDTO[]> {
+  requireAndroidWidgetEnabled();
   const user = await requireWidgetUser();
   const now = new Date();
   const credentials = await db.androidWidgetCredential.findMany({
@@ -57,6 +59,7 @@ export async function getCurrentAndroidWidgetCredentials(): Promise<AndroidWidge
 }
 
 export async function createCurrentAndroidWidgetPairing(deviceName: string) {
+  requireAndroidWidgetEnabled();
   const user = await requireWidgetUser();
   const now = new Date();
   await db.androidWidgetCredential.deleteMany({
@@ -84,6 +87,7 @@ export async function createCurrentAndroidWidgetPairing(deviceName: string) {
 }
 
 export async function revokeCurrentAndroidWidgetCredential(credentialId: string) {
+  requireAndroidWidgetEnabled();
   const user = await requireWidgetUser();
   await db.androidWidgetCredential.updateMany({
     where: { id: credentialId, userId: user.id, revokedAt: null },
@@ -96,6 +100,7 @@ export async function activateAndroidWidgetCredential(input: {
   deviceName: string;
   token: string;
 }) {
+  requireAndroidWidgetEnabled();
   const now = new Date();
   const pairingCodeHash = hashAndroidWidgetSecret(
     "pairing",
@@ -135,6 +140,7 @@ export async function activateAndroidWidgetCredential(input: {
 }
 
 export async function authenticateAndroidWidgetToken(token: string) {
+  requireAndroidWidgetEnabled();
   const credential = await db.androidWidgetCredential.findUnique({
     where: { tokenHash: hashAndroidWidgetSecret("token", token) },
     select: {
@@ -160,6 +166,7 @@ export async function authenticateAndroidWidgetToken(token: string) {
 export async function getOpenCommitmentsForAndroidWidget(
   userId: string,
 ): Promise<AndroidWidgetCommitmentDTO[]> {
+  requireAndroidWidgetEnabled();
   const commitments = await db.calendarEvent.findMany({
     where: {
       userId,

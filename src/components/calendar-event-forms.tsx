@@ -171,7 +171,7 @@ export function CalendarEventCreateForm({
         </div>
 
         <div className={styles.formFooter}>
-          <p>Sem data final, o compromisso permanece no AcadIA e no widget Android até ser concluído.</p>
+          <p>Sem data final, o compromisso permanece no AcadIA até ser concluído.</p>
           <button className="primary-action" disabled={pending} type="submit">
             {pending ? "Salvando…" : "Adicionar evento"}
           </button>

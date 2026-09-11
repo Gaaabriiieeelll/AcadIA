@@ -10,6 +10,7 @@ const server = spawn(
     cwd: process.cwd(),
     env: {
       ...process.env,
+      ANDROID_WIDGET_ENABLED: "false",
       NEXTAUTH_URL: origin,
     },
     stdio: ["ignore", "pipe", "pipe"],
@@ -94,6 +95,18 @@ async function run() {
 
   const accountExport = await fetch(`${origin}/api/account/export`, { redirect: "manual" });
   assert.equal(accountExport.status, 401);
+
+  const widgetEvents = await fetch(`${origin}/api/android-widget/events`);
+  assert.equal(widgetEvents.status, 404);
+  assert.equal(widgetEvents.headers.get("cache-control"), "no-store");
+
+  const widgetPairing = await fetch(`${origin}/api/android-widget/pair`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({}),
+  });
+  assert.equal(widgetPairing.status, 404);
+  assert.equal(widgetPairing.headers.get("cache-control"), "no-store");
 
   await Promise.all([
     checkProtectedRoute("/perfil"),

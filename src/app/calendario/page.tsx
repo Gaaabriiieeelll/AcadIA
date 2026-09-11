@@ -10,12 +10,11 @@ import {
   ToggleOpenCalendarEventForm,
 } from "@/components/calendar-event-forms";
 import { GoogleCalendarControl } from "@/components/google-calendar-control";
-import { AndroidWidgetControl } from "@/components/android-widget-control";
+import { AndroidWidgetSection } from "@/components/android-widget-section";
 import { SyncClassroomTasksForm } from "@/components/academic-task-forms";
 import { ProtectedShell } from "@/components/protected-shell";
 import { getCurrentAcademicProfile } from "@/data/academic-profile";
 import { getCurrentAcademicTasks } from "@/data/academic-tasks";
-import { getCurrentAndroidWidgetCredentials } from "@/data/android-widget";
 import {
   academicCalendarCategories,
   academicCalendarEvents,
@@ -369,14 +368,12 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
   const [
     classroomSync,
     googleCalendarStatus,
-    androidWidgetCredentials,
     subjects,
     personalEvents,
     academicTasks,
   ] = await Promise.all([
     getCurrentClassroomTaskSyncStatus(),
     getCurrentGoogleCalendarStatus(),
-    getCurrentAndroidWidgetCredentials(),
     getCurrentSubjects(),
     getCurrentCalendarEvents(monthGrid.gridStart, monthGrid.gridEnd),
     getCurrentAcademicTasks(),
@@ -453,7 +450,7 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
           status={googleCalendarStatus}
         />
 
-        <AndroidWidgetControl credentials={androidWidgetCredentials} />
+        <AndroidWidgetSection />
 
         <aside className={styles.proposalNotice} aria-label="Situação do documento acadêmico">
           <span className={styles.noticeIcon}>

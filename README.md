@@ -65,7 +65,7 @@ a sincronização do Classroom em segundo plano. A atualização ocorre ao abrir
 pode forçar a consulta pelo botão de atualização. Chamadas ao Google Classroom e
 ao endpoint OAuth expiram após 12 segundos para não prender a navegação.
 
-## Compromissos em aberto e widget Android
+## Compromissos em aberto
 
 Ao criar um evento pessoal no Calendário, deixar **Data final** vazia cria um
 compromisso em aberto. Ele permanece ativo até o usuário pressionar **Concluir**
@@ -73,11 +73,19 @@ e pode ser reaberto depois. Enquanto estiver aberto, aparece diariamente no
 calendário privado do AcadIA no Google Agenda; a conclusão limita a repetição ao
 dia em que o compromisso foi encerrado.
 
+## Widget Android (módulo separado)
+
 O módulo em `android/` fornece o widget **AcadIA · Em aberto**. O pareamento usa
 um código temporário de uso único, válido por dez minutos. O Android gera um
 token aleatório, o servidor persiste somente o hash e o aparelho protege token e
 cache com o Android Keystore. Consulte `android/README.md` para gerar o APK,
 conectar o celular e adicionar o widget à tela inicial.
+
+O widget fica desativado por padrão na versão web publicada: seu controle não é
+carregado no Calendário e as rotas `/api/android-widget/*` respondem com `404`.
+Para desenvolver ou publicar o módulo separadamente, defina
+`ANDROID_WIDGET_ENABLED=true` exclusivamente no servidor. Na versão atual da
+Vercel, mantenha a variável ausente ou com o valor `false`.
 
 ## Alertas pelo WhatsApp
 

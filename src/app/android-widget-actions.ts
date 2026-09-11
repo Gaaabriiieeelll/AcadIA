@@ -7,6 +7,7 @@ import {
   createCurrentAndroidWidgetPairing,
   revokeCurrentAndroidWidgetCredential,
 } from "@/data/android-widget";
+import { isAndroidWidgetEnabled } from "@/lib/android-widget-feature";
 import type { AndroidWidgetPairingFormState } from "@/types/android-widget";
 
 const deviceNameSchema = z.string().trim().min(1).max(80);
@@ -16,6 +17,10 @@ export async function createAndroidWidgetPairingAction(
   _previousState: AndroidWidgetPairingFormState,
   formData: FormData,
 ): Promise<AndroidWidgetPairingFormState> {
+  if (!isAndroidWidgetEnabled()) {
+    return { status: "error", message: "O widget Android não está disponível nesta versão." };
+  }
+
   const deviceName = deviceNameSchema.safeParse(formData.get("deviceName"));
   if (!deviceName.success) {
     return { status: "error", message: "Informe um nome para identificar o celular." };
@@ -37,6 +42,8 @@ export async function createAndroidWidgetPairingAction(
 }
 
 export async function revokeAndroidWidgetCredentialAction(credentialId: string) {
+  if (!isAndroidWidgetEnabled()) return;
+
   const parsed = credentialIdSchema.safeParse(credentialId);
   if (!parsed.success) return;
   await revokeCurrentAndroidWidgetCredential(parsed.data);

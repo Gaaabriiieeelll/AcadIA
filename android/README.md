@@ -9,6 +9,7 @@ tocar em um item.
 
 - Android Studio com JDK 17 e Android SDK 37;
 - servidor AcadIA publicado em HTTPS;
+- `ANDROID_WIDGET_ENABLED=true` configurado no servidor;
 - migrações do Prisma aplicadas no servidor.
 
 ## Gerar o APK de desenvolvimento
