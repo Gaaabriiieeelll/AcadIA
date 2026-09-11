@@ -2,8 +2,10 @@ import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 import {
+  isAnyGoogleEmailAllowed,
   isAcademicGoogleEmail,
-  isGoogleEmailAllowed,
+  isAuthorizedGoogleEmail,
+  isGoogleAccessPolicyConfigured,
   normalizeGoogleEmail,
 } from "@/lib/google-account-policy";
 
@@ -49,12 +51,17 @@ export const authOptions: NextAuthOptions = {
 
       const email = normalizeGoogleEmail(profile.email);
       const isAcademicEmail = isAcademicGoogleEmail(email);
+      const allowAnyGoogleEmail = isAnyGoogleEmailAllowed();
 
-      if (isAcademicEmail && process.env.ALLOW_ACADEMIC_EMAIL !== "true") {
+      if (
+        !allowAnyGoogleEmail
+        && isAcademicEmail
+        && process.env.ALLOW_ACADEMIC_EMAIL !== "true"
+      ) {
         return "/login?error=AcademicEmailRequiresAuthorization";
       }
 
-      if (!isGoogleEmailAllowed(email)) {
+      if (!isAuthorizedGoogleEmail(email)) {
         return "/login?error=EmailNotAuthorized";
       }
 
@@ -75,6 +82,6 @@ export function isAuthConfigured() {
     process.env.AUTH_SECRET &&
       process.env.AUTH_GOOGLE_ID &&
       process.env.AUTH_GOOGLE_SECRET &&
-      process.env.ALLOWED_EMAILS,
+      isGoogleAccessPolicyConfigured(),
   );
 }

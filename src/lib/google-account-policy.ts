@@ -21,8 +21,27 @@ export function isGoogleEmailAllowed(email: string) {
   return getAllowedGoogleEmails().has(normalizeGoogleEmail(email));
 }
 
+export function isAnyGoogleEmailAllowed() {
+  return process.env.ALLOW_ANY_GOOGLE_EMAIL === "true";
+}
+
+export function isGoogleAccessPolicyConfigured() {
+  return isAnyGoogleEmailAllowed()
+    || Boolean(process.env.ALLOWED_EMAILS?.trim());
+}
+
+export function isAuthorizedGoogleEmail(email: string) {
+  if (isAnyGoogleEmailAllowed()) return true;
+  if (
+    isAcademicGoogleEmail(email)
+    && process.env.ALLOW_ACADEMIC_EMAIL !== "true"
+  ) {
+    return false;
+  }
+
+  return isGoogleEmailAllowed(email);
+}
+
 export function isAuthorizedAcademicEmail(email: string) {
-  return process.env.ALLOW_ACADEMIC_EMAIL === "true"
-    && isAcademicGoogleEmail(email)
-    && isGoogleEmailAllowed(email);
+  return isAcademicGoogleEmail(email) && isAuthorizedGoogleEmail(email);
 }

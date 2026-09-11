@@ -8,7 +8,7 @@ O acesso com Google OAuth solicita apenas identidade básica: nome, foto e e-mai
 
 Depois do primeiro acesso, o estudante completa o perfil acadêmico com matrícula, campus, curso, período/ano e turma opcional. Esses dados são persistidos no Prisma Postgres. Nome, foto e e-mail permanecem somente na sessão, que expira em até 4 horas.
 
-Enquanto o projeto não tiver autorização institucional, use uma conta Google pessoal de teste. O domínio acadêmico permanece bloqueado por padrão.
+Por padrão, o acesso permanece restrito aos endereços definidos em `ALLOWED_EMAILS`, e o domínio acadêmico continua bloqueado. Uma publicação aberta pode definir `ALLOW_ANY_GOOGLE_EMAIL=true` para aceitar qualquer conta Google autenticada; essa opção substitui tanto a lista individual quanto o bloqueio acadêmico.
 
 ## Preparação
 
@@ -17,7 +17,7 @@ Enquanto o projeto não tiver autorização institucional, use uma conta Google 
 3. Gere uma chave para `AUTH_SECRET`.
 4. Crie um cliente OAuth do tipo **Aplicativo da Web** no Google Cloud.
 5. Cadastre `http://localhost:3000/api/auth/callback/google` como URI de redirecionamento autorizada.
-6. Preencha `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` e `ALLOWED_EMAILS`.
+6. Preencha `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` e `ALLOWED_EMAILS`. Para acesso público com Google, use `ALLOW_ANY_GOOGLE_EMAIL=true` no lugar da lista.
 7. Preencha `DATABASE_URL` com a conexão pooled e `DIRECT_URL` com a conexão direta do Prisma Postgres.
 8. Execute `npm run db:deploy` para aplicar as migrações existentes.
 9. Execute `npm run dev`.
@@ -39,6 +39,7 @@ As consultas da aplicação usam `DATABASE_URL`. Migrações e ferramentas admin
 - Nunca exponha `DATABASE_URL` ou `DIRECT_URL` no navegador ou em commits.
 - Não solicite nem armazene a senha do Google ou do SUAP.
 - Não ative `ALLOW_ACADEMIC_EMAIL` sem autorização institucional adequada.
+- `ALLOW_ANY_GOOGLE_EMAIL=true` abre o cadastro para qualquer conta Google e deve ser usado somente quando esse acesso público for intencional.
 
 ## Privacidade e uso de IA
 

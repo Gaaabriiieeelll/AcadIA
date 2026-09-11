@@ -6,6 +6,7 @@ import { BrandLogo } from "@/components/brand-logo";
 import { GoogleLoginButton } from "@/components/google-login-button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { authOptions, isAuthConfigured } from "@/lib/auth";
+import { isAnyGoogleEmailAllowed } from "@/lib/google-account-policy";
 
 export const metadata: Metadata = {
   title: "Entrar",
@@ -40,6 +41,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   const { account, error } = await searchParams;
   const configured = isAuthConfigured();
+  const allowAnyGoogleEmail = isAnyGoogleEmailAllowed();
   const academicEmailEnabled = process.env.ALLOW_ACADEMIC_EMAIL === "true";
   const errorMessage = error
     ? errorMessages[error] ?? "Não foi possível concluir o acesso. Tente novamente."
@@ -87,9 +89,15 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </div>
 
         <div className="login-box">
-          <span className="login-kicker">Ambiente de testes · Acesso restrito</span>
+          <span className="login-kicker">
+            {allowAnyGoogleEmail ? "Acesso com Google" : "Ambiente de testes · Acesso restrito"}
+          </span>
           <h2 id="login-title">Boas-vindas ao AcadIA</h2>
-          <p className="login-intro">Entre com a conta Google autorizada para acessar o ambiente inicial.</p>
+          <p className="login-intro">
+            {allowAnyGoogleEmail
+              ? "Entre com sua conta Google para acessar o AcadIA."
+              : "Entre com a conta Google autorizada para acessar o ambiente inicial."}
+          </p>
 
           {errorMessage ? (
             <div className="login-alert" role="alert">
@@ -125,15 +133,21 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </div>
 
           <div className="access-policy">
-            <h3>Sobre o e-mail acadêmico</h3>
+            <h3>{allowAnyGoogleEmail ? "Quem pode acessar" : "Sobre o e-mail acadêmico"}</h3>
             <p>
-              {academicEmailEnabled
+              {allowAnyGoogleEmail
+                ? "O acesso está aberto para qualquer conta Google com endereço de e-mail confirmado pelo provedor."
+                : academicEmailEnabled
                 ? "O acesso acadêmico está habilitado somente para endereços incluídos individualmente na lista privada de acesso."
                 : "Enquanto o projeto não tiver autorização institucional, use uma conta pessoal de teste incluída na lista de acesso. O domínio acadêmico está bloqueado por segurança."}
             </p>
           </div>
 
-          <p className="login-terms">Ao continuar, você reconhece que esta é uma versão privada de desenvolvimento.</p>
+          <p className="login-terms">
+            {allowAnyGoogleEmail
+              ? "Ao continuar, você reconhece que esta é uma versão independente em desenvolvimento."
+              : "Ao continuar, você reconhece que esta é uma versão privada de desenvolvimento."}
+          </p>
         </div>
       </section>
     </main>

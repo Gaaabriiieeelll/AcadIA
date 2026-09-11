@@ -73,6 +73,11 @@ async function run() {
   const policyNonce = policy.match(/'nonce-([^']+)'/)?.[1];
   assert.ok(policyNonce, "A CSP deveria conter um nonce");
   const html = await login.text();
+  if (process.env.ALLOW_ANY_GOOGLE_EMAIL === "true") {
+    assert.match(html, /Acesso com Google/);
+    assert.match(html, /Continuar com Google/);
+    assert.doesNotMatch(html, /Configuração necessária/);
+  }
   const scripts = html.match(/<script\b[^>]*>/g) ?? [];
   assert.ok(scripts.length > 0, "A página deveria conter scripts do Next.js");
   for (const script of scripts) {

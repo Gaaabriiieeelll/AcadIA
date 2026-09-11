@@ -21,6 +21,7 @@ jobs:
       AUTH_GOOGLE_SECRET: ci-google-secret
       NEXTAUTH_URL: http://localhost:3199
       ALLOWED_EMAILS: ci@example.com
+      ALLOW_ANY_GOOGLE_EMAIL: "false"
       ALLOW_ACADEMIC_EMAIL: "false"
       DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/acadia
       DIRECT_URL: postgresql://ci:ci@127.0.0.1:5432/acadia
