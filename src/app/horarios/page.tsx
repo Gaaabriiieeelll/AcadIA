@@ -6,13 +6,13 @@ import { redirect } from "next/navigation";
 import { AcademicProfileSection } from "@/components/academic-profile-section";
 import { ProtectedShell } from "@/components/protected-shell";
 import { getCurrentAcademicProfile } from "@/data/academic-profile";
-import { getMecanicaSecondYearSchedule } from "@/data/hifpb";
+import { getHifpbScheduleForSelection } from "@/data/hifpb";
 import { authOptions } from "@/lib/auth";
 import {
-  filterHifpbScheduleByGroup,
-  formatHifpbSubjectName,
-  HIFPB_MECANICA_URL,
-} from "@/lib/hifpb-parser";
+  resolveHifpbProfileSelection,
+  type HifpbProfileSelection,
+} from "@/lib/hifpb-courses";
+import { formatHifpbSubjectName } from "@/lib/hifpb-parser";
 import {
   hifpbWeekdays,
   type HifpbClass,
@@ -22,7 +22,7 @@ import {
 import type { AcademicProfileValues } from "@/types/academic-profile";
 
 export const metadata: Metadata = {
-  title: "Mecânica II e perfil acadêmico",
+  title: "Horários e perfil acadêmico",
 };
 
 const weekdayLabels: Record<HifpbWeekday, string> = {
@@ -74,26 +74,39 @@ function ClassDetails({ academicClass, compact = false }: { academicClass: Hifpb
 
 function HifpbUnavailable({
   profile,
+  selection,
   user,
 }: {
   profile: AcademicProfileValues;
+  selection: HifpbProfileSelection | null;
   user: { name?: string | null; email?: string | null };
 }) {
   return (
     <ProtectedShell active="schedule" user={user}>
       <div className="protected-main schedule-page-main">
         <span className="protected-kicker">Integração pública · hIFPB</span>
-        <h1>Mecânica II</h1>
+        <h1>{selection?.className ?? "Horários da turma"}</h1>
         <section className="hifpb-unavailable" role="status">
           <span className="protected-card-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M12 3 2.8 19h18.4z" /><path d="M12 9v4M12 16.5h.01" /></svg>
           </span>
           <div>
-            <h2>O hIFPB está temporariamente indisponível</h2>
-            <p>A conexão pública não respondeu agora. Você pode tentar novamente ou abrir a grade oficial diretamente.</p>
+            <h2>{selection ? "O hIFPB está temporariamente indisponível" : "Perfil sem grade correspondente"}</h2>
+            <p>
+              {selection
+                ? "A conexão pública não respondeu ou a turma ainda não foi publicada. Você pode tentar novamente ou abrir a grade oficial diretamente."
+                : "Revise o curso e o ano do perfil para localizar a grade oficial correspondente."}
+            </p>
             <div className="hifpb-action-row">
               <Link className="primary-action" href="/horarios">Tentar novamente</Link>
-              <a className="secondary-action" href={HIFPB_MECANICA_URL} rel="noreferrer" target="_blank">Abrir hIFPB</a>
+              <a
+                className="secondary-action"
+                href={selection?.sourceUrl ?? "https://joaopessoa.ifpb.edu.br/horario/curso"}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Abrir hIFPB
+              </a>
             </div>
           </div>
         </section>
@@ -149,28 +162,30 @@ export default async function SchedulePage() {
   const profile = await getCurrentAcademicProfile();
   if (!profile) redirect("/onboarding");
 
+  const selection = resolveHifpbProfileSelection(profile);
   let schedule: HifpbSchedule;
 
+  if (!selection) {
+    return <HifpbUnavailable profile={profile} selection={null} user={session.user} />;
+  }
+
   try {
-    schedule = filterHifpbScheduleByGroup(
-      await getMecanicaSecondYearSchedule(),
-      "G1",
-    );
+    schedule = await getHifpbScheduleForSelection(selection);
   } catch {
-    return <HifpbUnavailable profile={profile} user={session.user} />;
+    return <HifpbUnavailable profile={profile} selection={selection} user={session.user} />;
   }
 
   return (
     <ProtectedShell active="schedule" user={session.user}>
       <div className="protected-main schedule-page-main">
         <span className="protected-kicker">Integração pública · hIFPB</span>
-        <h1>Mecânica II</h1>
+        <h1>{selection.className}</h1>
         <p className="protected-lead">
-          Sua grade oficial do G1, com professores, salas e laboratórios. Apenas as aulas do seu grupo são exibidas.
+          Grade oficial do seu curso e ano, com professores, salas e laboratórios. Nesta primeira etapa, todas as divisões publicadas pelo hIFPB são exibidas.
         </p>
 
         <section className="hifpb-summary" aria-label="Resumo da grade importada">
-          <div><span>Semestre</span><strong>{schedule.semester}</strong><small>Grupo G1 · Campus João Pessoa</small></div>
+          <div><span>Semestre</span><strong>{schedule.semester}</strong><small>{profile.academicStage} · Campus João Pessoa</small></div>
           <div><span>Disciplinas</span><strong>{schedule.subjects.length}</strong><small>na grade atual</small></div>
           <div><span>Professores</span><strong>{schedule.professors.length}</strong><small>com perfil público</small></div>
         </section>
@@ -187,7 +202,7 @@ export default async function SchedulePage() {
           <div className="hifpb-section-heading">
             <div>
               <span>Grade completa</span>
-              <h2 id="hifpb-week-title">Semana de Mecânica II</h2>
+              <h2 id="hifpb-week-title">Semana de {selection.className}</h2>
             </div>
           </div>
           <div className="hifpb-table-scroll" role="region" aria-label="Grade semanal" tabIndex={0}>

@@ -13,6 +13,7 @@ import { getCurrentTaskOverview } from "@/data/academic-tasks";
 import { getCurrentAcademicDashboard } from "@/data/subjects";
 import { authOptions } from "@/lib/auth";
 import { getGradeColorStyle } from "@/lib/grade-colors";
+import { resolveHifpbProfileSelection } from "@/lib/hifpb-courses";
 import {
   EMPTY_SUBJECT_FILTER_VALUE,
   parseSubjectFilter,
@@ -78,6 +79,8 @@ export default async function DashboardPage({
 
   const profile = await getCurrentAcademicProfile();
   if (!profile) redirect("/onboarding");
+  const academicClassName = resolveHifpbProfileSelection(profile)?.className
+    ?? `${profile.course} · ${profile.academicStage}`;
 
   const requestedSubjectIds = parseSubjectFilter((await searchParams).materias);
   const [academicDashboard, taskOverview, alertPreferences] = await Promise.all([
@@ -135,7 +138,7 @@ export default async function DashboardPage({
   return (
     <ProtectedShell active="dashboard" user={session.user}>
       <div className="protected-main dashboard-page-main">
-        <span className="protected-kicker">Mecânica II · painel acadêmico</span>
+        <span className="protected-kicker">{academicClassName} · painel acadêmico</span>
         <h1>Olá, {firstName}!</h1>
         <p className="protected-lead">
           Veja seu desempenho por bimestre, identifique prioridades e acesse rapidamente cada disciplina.

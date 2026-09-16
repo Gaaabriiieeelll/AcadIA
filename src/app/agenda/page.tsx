@@ -18,6 +18,7 @@ import { getCurrentAcademicTasks } from "@/data/academic-tasks";
 import { getCurrentClassroomTaskSyncStatus } from "@/data/google-classroom";
 import { getCurrentSubjects } from "@/data/subjects";
 import { authOptions } from "@/lib/auth";
+import { resolveHifpbProfileSelection } from "@/lib/hifpb-courses";
 import type { AcademicTaskDTO } from "@/types/academic-tasks";
 import type { ClassroomTaskSyncDTO } from "@/types/google-classroom";
 
@@ -59,10 +60,12 @@ function formatSyncDate(value: string) {
 }
 
 function ClassroomSyncCard({
+  academicClassName,
   sync,
   pendingCount,
   completedCount,
 }: {
+  academicClassName: string;
   sync: ClassroomTaskSyncDTO;
   pendingCount: number;
   completedCount: number;
@@ -78,7 +81,7 @@ function ClassroomSyncCard({
         ? "Não foi possível sincronizar agora"
         : `${sync.taskCount} ${sync.taskCount === 1 ? "atividade sincronizada" : "atividades sincronizadas"}`;
   const description = needsConnection
-    ? "A Agenda pode importar automaticamente atividades com prazo das suas turmas de Mecânica II."
+    ? `A Agenda pode importar automaticamente atividades com prazo das suas turmas de ${academicClassName}.`
     : needsPermission
       ? "Falta permitir a leitura das suas próprias atividades. A permissão é somente de leitura."
       : unavailable
@@ -175,6 +178,8 @@ export default async function AgendaPage() {
 
   const profile = await getCurrentAcademicProfile();
   if (!profile) redirect("/onboarding");
+  const academicClassName = resolveHifpbProfileSelection(profile)?.className
+    ?? `${profile.course} · ${profile.academicStage}`;
 
   const classroomSync = await getCurrentClassroomTaskSyncStatus();
   const [subjects, tasks] = await Promise.all([
@@ -200,6 +205,7 @@ export default async function AgendaPage() {
         </p>
 
         <ClassroomSyncCard
+          academicClassName={academicClassName}
           sync={classroomSync}
           pendingCount={classroomPending}
           completedCount={classroomCompleted}

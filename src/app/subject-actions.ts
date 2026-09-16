@@ -102,7 +102,7 @@ export async function importHifpbSubjectsAction(
 
   try {
     const schedule = await getMecanicaSecondYearSchedule();
-    const subjects = getMecanicaSecondYearSubjects(schedule, "G1");
+    const subjects = getMecanicaSecondYearSubjects(schedule, "A");
     const { created } = await importCurrentSubjects(subjects);
 
     revalidateAcademicPages();

@@ -1,5 +1,7 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { db } from "@/lib/db";
 import type { AcademicProfileValues } from "@/types/academic-profile";
 
@@ -13,7 +15,7 @@ const academicProfileSelection = {
   academicStage: true,
 } as const;
 
-export async function getCurrentAcademicProfile(): Promise<AcademicProfileValues | null> {
+export const getCurrentAcademicProfile = cache(async (): Promise<AcademicProfileValues | null> => {
   const { googleSubject } = await requireCurrentIdentity();
   const user = await db.user.findUnique({
     where: { googleSubject },
@@ -25,7 +27,7 @@ export async function getCurrentAcademicProfile(): Promise<AcademicProfileValues
   });
 
   return user?.profile ?? null;
-}
+});
 
 export async function saveCurrentAcademicProfile(values: AcademicProfileValues) {
   const { googleSubject } = await requireCurrentIdentity();

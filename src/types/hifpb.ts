@@ -8,7 +8,7 @@ export const hifpbWeekdays = [
 
 export type HifpbWeekday = (typeof hifpbWeekdays)[number];
 
-export type HifpbGroup = "G1" | "G2";
+export type HifpbGroup = "A" | "B" | "C";
 
 export type HifpbClass = {
   subject: string;

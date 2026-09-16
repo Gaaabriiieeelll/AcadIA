@@ -12,6 +12,7 @@ import {
 } from "@/data/google-classroom";
 import { authOptions } from "@/lib/auth";
 import { ClassroomConnectionError } from "@/lib/google-classroom-credentials";
+import { resolveHifpbProfileSelection } from "@/lib/hifpb-courses";
 import type { ClassroomMaterialDTO } from "@/types/google-classroom";
 
 export const metadata: Metadata = {
@@ -147,6 +148,8 @@ export default async function MaterialsPage() {
 
   const profile = await getCurrentAcademicProfile();
   if (!profile) redirect("/onboarding");
+  const academicClassName = resolveHifpbProfileSelection(profile)?.className
+    ?? `${profile.course} · ${profile.academicStage}`;
 
   let overview = null;
   let connectionIssue: ConnectionIssue | null = null;
@@ -161,7 +164,7 @@ export default async function MaterialsPage() {
   return (
     <ProtectedShell active="materials" user={session.user}>
       <div className="protected-main classroom-page-main">
-        <span className="protected-kicker">Mecânica II · conteúdo acadêmico</span>
+        <span className="protected-kicker">{academicClassName} · conteúdo acadêmico</span>
         <h1>Materiais</h1>
         <p className="protected-lead">
           Consulte em um só lugar os professores, materiais e avisos publicados nas suas turmas ativas do Google Sala de Aula.
@@ -226,7 +229,7 @@ export default async function MaterialsPage() {
             {overview.courses.length === 0 ? (
               <section className="classroom-empty-state">
                 <h2>Nenhuma turma ativa encontrada</h2>
-                <p>Confira se esta conta do Google participa das turmas da Mecânica II.</p>
+                <p>Confira se esta conta do Google participa das turmas de {academicClassName}.</p>
                 <ClassroomConnectButton reconnect />
               </section>
             ) : (

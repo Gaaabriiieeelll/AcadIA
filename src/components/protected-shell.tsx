@@ -5,6 +5,8 @@ import { BrandLogo } from "@/components/brand-logo";
 import { ClassroomBackgroundSync } from "@/components/classroom-background-sync";
 import { SignOutButton } from "@/components/sign-out-button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { getCurrentAcademicProfile } from "@/data/academic-profile";
+import { resolveHifpbProfileSelection } from "@/lib/hifpb-courses";
 
 type ProtectedShellProps = {
   active:
@@ -40,7 +42,7 @@ const navigation = [
   { href: "/alertas", id: "alerts" as const, label: "Central de alertas", mobileLabel: "Alertas" },
   { href: "/disciplinas", id: "subjects" as const, label: "Disciplinas", mobileLabel: "Matérias" },
   { href: "/materiais", id: "materials" as const, label: "Materiais", mobileLabel: "Materiais" },
-  { href: "/horarios", id: "schedule" as const, label: "Mecânica II", mobileLabel: "Horários" },
+  { href: "/horarios", id: "schedule" as const, label: "Horários", mobileLabel: "Horários" },
   { href: "/plano-de-estudos", id: "study" as const, label: "Plano de estudos", mobileLabel: "Plano" },
   { href: "/editais", id: "notices" as const, label: "Editais", mobileLabel: "Editais" },
   { href: "/atendimento", id: "support" as const, label: "Atendimento", mobileLabel: "Ajuda" },
@@ -49,9 +51,11 @@ const navigation = [
 function ProtectedNavigation({
   active,
   mobile = false,
+  scheduleLabel,
 }: {
   active: ProtectedShellProps["active"];
   mobile?: boolean;
+  scheduleLabel: string;
 }) {
   return (
     <nav className={mobile ? "protected-mobile-nav" : undefined} aria-label="Navegação da área protegida">
@@ -81,14 +85,21 @@ function ProtectedNavigation({
           ) : (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M4 19.5V6a2 2 0 0 1 2-2h12v15.5H6A2 2 0 0 0 4 21.5" /><path d="M8 8h6M8 11h8M8 14h5" /></svg>
           )}
-          {mobile ? item.mobileLabel : item.label}
+          {mobile
+            ? item.mobileLabel
+            : item.id === "schedule" ? scheduleLabel : item.label}
         </Link>
       ))}
     </nav>
   );
 }
 
-export function ProtectedShell({ active, children, user }: ProtectedShellProps) {
+export async function ProtectedShell({ active, children, user }: ProtectedShellProps) {
+  const profile = await getCurrentAcademicProfile();
+  const scheduleLabel = profile
+    ? resolveHifpbProfileSelection(profile)?.className ?? "Horários"
+    : "Horários";
+
   return (
     <main className="protected-page">
       <ClassroomBackgroundSync />
@@ -97,7 +108,7 @@ export function ProtectedShell({ active, children, user }: ProtectedShellProps) 
           <BrandLogo size={48} />
           AcadIA
         </Link>
-        <ProtectedNavigation active={active} />
+        <ProtectedNavigation active={active} scheduleLabel={scheduleLabel} />
         <p>Ambiente privado de desenvolvimento.</p>
       </aside>
 
@@ -131,7 +142,7 @@ export function ProtectedShell({ active, children, user }: ProtectedShellProps) 
           </Link>
           <SignOutButton />
         </header>
-        <ProtectedNavigation active={active} mobile />
+        <ProtectedNavigation active={active} mobile scheduleLabel={scheduleLabel} />
         {children}
       </section>
     </main>

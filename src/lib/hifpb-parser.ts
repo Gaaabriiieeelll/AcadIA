@@ -1,5 +1,6 @@
 import { load } from "cheerio";
 
+import type { HifpbProfileSelection } from "@/lib/hifpb-courses";
 import {
   hifpbWeekdays,
   type HifpbClass,
@@ -13,7 +14,6 @@ export const HIFPB_MECANICA_URL =
   "https://joaopessoa.ifpb.edu.br/horario/curso/18";
 
 const HIFPB_ORIGIN = new URL(HIFPB_MECANICA_URL).origin;
-const SECOND_YEAR_TABLE_INDEX = 1;
 
 function normalizeText(value: string) {
   return value.replace(/\s+/g, " ").trim();
@@ -24,7 +24,7 @@ export function formatHifpbSubjectName(subject: string) {
 
   if (!group) return subject;
 
-  const baseName = subject.replace(/\s+-\s+[AB]$/u, "");
+  const baseName = subject.replace(/\s+-\s+[ABC]$/u, "");
   const groupedName = baseName
     .split("/")
     .find((part) => part.endsWith(`-${group}`))
@@ -41,9 +41,7 @@ export function formatHifpbSubjectName(subject: string) {
 }
 
 function getHifpbSubjectGroup(subject: string): HifpbGroup | null {
-  if (/\s+-\s+A$/u.test(subject)) return "G1";
-  if (/\s+-\s+B$/u.test(subject)) return "G2";
-  return null;
+  return subject.match(/\s+-\s+([ABC])$/u)?.[1] as HifpbGroup | undefined ?? null;
 }
 
 export function filterHifpbScheduleByGroup(
@@ -107,11 +105,15 @@ export function filterHifpbScheduleByGroup(
   };
 }
 
-function safeHifpbUrl(value: string | undefined, resource: "professor" | "place") {
+function safeHifpbUrl(
+  value: string | undefined,
+  resource: "professor" | "place",
+  sourceUrl: string,
+) {
   if (!value) return null;
 
   try {
-    const url = new URL(value, HIFPB_MECANICA_URL);
+    const url = new URL(value, sourceUrl);
     const allowedPath =
       resource === "professor"
         ? /^\/horario\/professor\/\d+\/?$/
@@ -137,12 +139,18 @@ function emptyWeek(): Record<HifpbWeekday, HifpbClass[]> {
   };
 }
 
-export function parseMecanicaSecondYearSchedule(html: string): HifpbSchedule {
+export function parseHifpbSchedule(
+  html: string,
+  selection: Pick<
+    HifpbProfileSelection,
+    "className" | "displayName" | "sourceUrl" | "tableIndex"
+  >,
+): HifpbSchedule {
   const $ = load(html);
-  const table = $("table").eq(SECOND_YEAR_TABLE_INDEX);
+  const table = $("table").eq(selection.tableIndex);
 
   if (table.length === 0) {
-    throw new Error("A grade da turma Mecânica II não foi encontrada no hIFPB.");
+    throw new Error(`A grade da turma ${selection.className} não foi encontrada no hIFPB.`);
   }
 
   const semesterHeading = $("h5, h6")
@@ -179,9 +187,17 @@ export function parseMecanicaSecondYearSchedule(html: string): HifpbSchedule {
           classes[weekday].push({
             subject,
             professor: professor || "Professor não informado",
-            professorUrl: safeHifpbUrl(professorAnchor.attr("href"), "professor"),
+            professorUrl: safeHifpbUrl(
+              professorAnchor.attr("href"),
+              "professor",
+              selection.sourceUrl,
+            ),
             room: room || null,
-            roomUrl: safeHifpbUrl(roomAnchor.attr("href"), "place"),
+            roomUrl: safeHifpbUrl(
+              roomAnchor.attr("href"),
+              "place",
+              selection.sourceUrl,
+            ),
           });
         });
     });
@@ -190,7 +206,7 @@ export function parseMecanicaSecondYearSchedule(html: string): HifpbSchedule {
   });
 
   if (slots.length === 0) {
-    throw new Error("O hIFPB retornou uma grade vazia para a turma Mecânica II.");
+    throw new Error(`O hIFPB retornou uma grade vazia para a turma ${selection.className}.`);
   }
 
   const occupiedSlots = slots.filter((slot) =>
@@ -231,11 +247,20 @@ export function parseMecanicaSecondYearSchedule(html: string): HifpbSchedule {
 
   return {
     semester,
-    course: course || "MECÂNICA INTEGRADO",
-    className: "Mecânica II",
-    sourceUrl: HIFPB_MECANICA_URL,
+    course: course || selection.displayName,
+    className: selection.className,
+    sourceUrl: selection.sourceUrl,
     slots: occupiedSlots,
     professors,
     subjects: Array.from(subjects).sort((a, b) => a.localeCompare(b, "pt-BR")),
   };
+}
+
+export function parseMecanicaSecondYearSchedule(html: string): HifpbSchedule {
+  return parseHifpbSchedule(html, {
+    className: "Mecânica II",
+    displayName: "MECÂNICA INTEGRADO",
+    sourceUrl: HIFPB_MECANICA_URL,
+    tableIndex: 1,
+  });
 }

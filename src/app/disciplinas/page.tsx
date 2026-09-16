@@ -16,6 +16,7 @@ import {
 import { getCurrentAcademicProfile } from "@/data/academic-profile";
 import { getCurrentSubjects } from "@/data/subjects";
 import { authOptions } from "@/lib/auth";
+import { resolveHifpbProfileSelection } from "@/lib/hifpb-courses";
 import { SUBJECT_AREAS } from "@/lib/subject-areas";
 import {
   EMPTY_SUBJECT_FILTER_VALUE,
@@ -45,6 +46,8 @@ export default async function SubjectsPage({
 
   const profile = await getCurrentAcademicProfile();
   if (!profile) redirect("/onboarding");
+  const academicClassName = resolveHifpbProfileSelection(profile)?.className
+    ?? `${profile.course} · ${profile.academicStage}`;
 
   const parameters = await searchParams;
   const sortOption = parseSubjectSort(parameters.sort);
@@ -59,19 +62,19 @@ export default async function SubjectsPage({
   return (
     <ProtectedShell active="subjects" user={session.user}>
       <div className="protected-main subjects-page-main">
-        <span className="protected-kicker">Mecânica II · acompanhamento acadêmico</span>
+        <span className="protected-kicker">{academicClassName} · acompanhamento acadêmico</span>
         <h1>Disciplinas</h1>
         <p className="protected-lead">
-          Acompanhe notas bimestrais e frequência das disciplinas da Mecânica II, com sua grade personalizada para o G1.
+          Acompanhe notas bimestrais e frequência das disciplinas salvas para {academicClassName}.
         </p>
 
         <section className="hifpb-subject-sync" aria-label="Origem dos dados acadêmicos">
           <div>
-            <span>Boletim SUAP · 2026/1</span>
-            <h2>Seu acompanhamento acadêmico do G1</h2>
-            <p>Notas e frequências foram conferidas no boletim. Horários e professores continuam vinculados à grade pública do hIFPB, sem exibir o G2.</p>
+            <span>Dados cadastrados no AcadIA · {profile.academicStage}</span>
+            <h2>Acompanhamento de {academicClassName}</h2>
+            <p>Notas e frequências permanecem sob seu controle. A grade pública do hIFPB agora é localizada pelo curso e ano do perfil.</p>
           </div>
-          <strong className="subject-group-badge">G1</strong>
+          <strong className="subject-group-badge">{profile.academicStage}</strong>
         </section>
 
         <div className="subject-area-legend" aria-label="Cores por área de conhecimento">
