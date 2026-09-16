@@ -87,10 +87,9 @@ function calculateAttendance(classesHeld: number, absences: number) {
   return roundMetric(((classesHeld - absences) / classesHeld) * 100);
 }
 
-export async function getCurrentSubjects(): Promise<SubjectDTO[]> {
-  const user = await requireAcademicUser();
+export async function getSubjectsForUser(userId: string): Promise<SubjectDTO[]> {
   const subjects = await db.subject.findMany({
-    where: { userId: user.id },
+    where: { userId },
     orderBy: [{ name: "asc" }, { createdAt: "asc" }],
     select: {
       id: true,
@@ -173,6 +172,11 @@ export async function getCurrentSubjects(): Promise<SubjectDTO[]> {
       })),
     };
   });
+}
+
+export async function getCurrentSubjects(): Promise<SubjectDTO[]> {
+  const user = await requireAcademicUser();
+  return getSubjectsForUser(user.id);
 }
 
 export async function getCurrentAcademicOverview(): Promise<AcademicOverviewDTO> {

@@ -1,33 +1,30 @@
-import { timingSafeEqual } from "node:crypto";
-
 import { dispatchPendingWhatsAppAlerts } from "@/data/whatsapp-alerts";
 import { isEvolutionApiConfigured } from "@/lib/evolution-api";
+import {
+  hasConfiguredJobSecret,
+  isBearerRequestAuthorized,
+} from "@/lib/job-authorization";
 
 export const dynamic = "force-dynamic";
-
-function secureEquals(left: string, right: string) {
-  const leftBuffer = Buffer.from(left);
-  const rightBuffer = Buffer.from(right);
-  return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer);
-}
-
-function authorized(request: Request, secret: string) {
-  const authorization = request.headers.get("authorization") ?? "";
-  const expected = `Bearer ${secret}`;
-  return secureEquals(authorization, expected);
-}
 
 function response(body: unknown, status = 200) {
   return Response.json(body, {
     status,
-    headers: { "cache-control": "no-store" },
+    headers: {
+      "cache-control": "no-store, max-age=0",
+      "x-content-type-options": "nosniff",
+    },
   });
 }
 
 async function runWhatsAppJob(request: Request) {
-  const jobSecret = process.env.WHATSAPP_JOB_SECRET?.trim();
-  if (!jobSecret) return response({ error: "Job diário não configurado." }, 503);
-  if (!authorized(request, jobSecret)) return response({ error: "Não autorizado." }, 401);
+  const jobSecrets = [process.env.CRON_SECRET, process.env.WHATSAPP_JOB_SECRET];
+  if (!hasConfiguredJobSecret(jobSecrets)) {
+    return response({ error: "Job diário não configurado." }, 503);
+  }
+  if (!isBearerRequestAuthorized(request, jobSecrets)) {
+    return response({ error: "Não autorizado." }, 401);
+  }
   if (!isEvolutionApiConfigured()) {
     return response({ error: "Evolution API não configurada." }, 503);
   }

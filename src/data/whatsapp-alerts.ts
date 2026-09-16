@@ -1,5 +1,6 @@
 import "server-only";
 
+import { refreshAcademicAlertRecordsForUser } from "@/data/academic-alerts";
 import { getAcademicCalendarTodayKey } from "@/data/academic-calendar";
 import { db } from "@/lib/db";
 import { EvolutionApiError, sendEvolutionTextMessage } from "@/lib/evolution-api";
@@ -10,6 +11,7 @@ import type {
 } from "@/types/academic-alerts";
 
 const MAX_DELIVERY_ATTEMPTS = 5;
+const DELIVERY_CLAIM_TTL_MS = 10 * 60 * 1_000;
 
 const categoryLabels: Record<AcademicAlertCategory, string> = {
   grades: "Notas",
@@ -27,6 +29,8 @@ const severityLabels: Record<AcademicAlertSeverity, string> = {
 type DispatchPreference = {
   userId: string;
   encryptedWhatsappPhone: string | null;
+  targetAverage: number;
+  minimumAttendance: number;
   gradesEnabled: boolean;
   attendanceEnabled: boolean;
   tasksEnabled: boolean;
@@ -79,6 +83,27 @@ function deliveryError(error: unknown) {
   return "Falha inesperada ao enviar a notificação.";
 }
 
+async function refreshEligibleAlertRecords(preferences: DispatchPreference[]) {
+  let failed = 0;
+  const concurrency = 4;
+
+  for (let index = 0; index < preferences.length; index += concurrency) {
+    const batch = preferences.slice(index, index + concurrency);
+    const results = await Promise.allSettled(
+      batch.map((preference) => refreshAcademicAlertRecordsForUser(
+        preference.userId,
+        {
+          targetAverage: preference.targetAverage,
+          minimumAttendance: preference.minimumAttendance,
+        },
+      )),
+    );
+    failed += results.filter((result) => result.status === "rejected").length;
+  }
+
+  return failed;
+}
+
 export async function dispatchPendingWhatsAppAlerts(requestedLimit = 25) {
   const limit = Math.min(Math.max(Math.trunc(requestedLimit), 1), 100);
   const preferences = await db.academicAlertPreference.findMany({
@@ -86,10 +111,13 @@ export async function dispatchPendingWhatsAppAlerts(requestedLimit = 25) {
       whatsappEnabled: true,
       encryptedWhatsappPhone: { not: null },
       whatsappConsentAt: { not: null },
+      whatsappVerifiedAt: { not: null },
     },
     select: {
       userId: true,
       encryptedWhatsappPhone: true,
+      targetAverage: true,
+      minimumAttendance: true,
       gradesEnabled: true,
       attendanceEnabled: true,
       tasksEnabled: true,
@@ -98,12 +126,25 @@ export async function dispatchPendingWhatsAppAlerts(requestedLimit = 25) {
   });
 
   if (preferences.length === 0) {
-    return { eligible: 0, scanned: 0, sent: 0, failed: 0, skipped: 0 };
+    return {
+      eligible: 0,
+      refreshed: 0,
+      refreshFailed: 0,
+      scanned: 0,
+      sent: 0,
+      failed: 0,
+      skipped: 0,
+    };
   }
 
   const preferenceByUser = new Map(preferences.map((preference) => [preference.userId, preference]));
+  const refreshFailed = await refreshEligibleAlertRecords(preferences);
+  if (refreshFailed > 0) {
+    console.error(`Falha ao recalcular alertas de ${refreshFailed} usuário(s) do WhatsApp.`);
+  }
   const todayDateKey = getAcademicCalendarTodayKey();
   const today = new Date(`${todayDateKey}T12:00:00.000Z`);
+  const staleClaimThreshold = new Date(Date.now() - DELIVERY_CLAIM_TTL_MS);
   const records = await db.academicAlertRecord.findMany({
     where: {
       userId: { in: preferences.map((preference) => preference.userId) },
@@ -111,9 +152,19 @@ export async function dispatchPendingWhatsAppAlerts(requestedLimit = 25) {
       dismissedAt: null,
       whatsappSentAt: null,
       whatsappAttemptCount: { lt: MAX_DELIVERY_ATTEMPTS },
-      OR: [
-        { snoozedUntil: null },
-        { snoozedUntil: { lte: today } },
+      AND: [
+        {
+          OR: [
+            { snoozedUntil: null },
+            { snoozedUntil: { lte: today } },
+          ],
+        },
+        {
+          OR: [
+            { whatsappLastAttemptAt: null },
+            { whatsappLastAttemptAt: { lte: staleClaimThreshold } },
+          ],
+        },
       ],
     },
     orderBy: [
@@ -153,6 +204,10 @@ export async function dispatchPendingWhatsAppAlerts(requestedLimit = 25) {
         id: record.id,
         whatsappSentAt: null,
         whatsappAttemptCount: record.whatsappAttemptCount,
+        OR: [
+          { whatsappLastAttemptAt: null },
+          { whatsappLastAttemptAt: { lte: staleClaimThreshold } },
+        ],
       },
       data: {
         whatsappAttemptCount: { increment: 1 },
@@ -193,6 +248,8 @@ export async function dispatchPendingWhatsAppAlerts(requestedLimit = 25) {
 
   return {
     eligible: preferences.length,
+    refreshed: preferences.length - refreshFailed,
+    refreshFailed,
     scanned,
     sent,
     failed,

@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
 import { EvolutionApiError, getEvolutionConnectionQrCode } from "@/lib/evolution-api";
+import { canManageWhatsApp } from "@/lib/whatsapp-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,9 @@ function jsonError(message: string, status: number) {
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return jsonError("Não autorizado.", 401);
+  if (!canManageWhatsApp(session.user.email)) {
+    return jsonError("Acesso restrito ao administrador do WhatsApp.", 403);
+  }
 
   try {
     const image = await getEvolutionConnectionQrCode();

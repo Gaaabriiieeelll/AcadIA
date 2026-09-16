@@ -33,14 +33,14 @@ async function requireCalendarUser() {
   return user;
 }
 
-export async function getCurrentCalendarEvents(
+export async function getCalendarEventsForUser(
+  userId: string,
   rangeStart: string,
   rangeEnd: string,
 ): Promise<CalendarEventDTO[]> {
-  const user = await requireCalendarUser();
   const events = await db.calendarEvent.findMany({
     where: {
-      userId: user.id,
+      userId,
       startDate: { lte: databaseDate(rangeEnd) },
       OR: [
         { endDate: { gte: databaseDate(rangeStart) } },
@@ -78,6 +78,14 @@ export async function getCurrentCalendarEvents(
       ?? (event.completedAt ? dateKeyInSaoPaulo(new Date(event.completedAt)) : rangeEnd);
     return effectiveEndDate >= rangeStart;
   });
+}
+
+export async function getCurrentCalendarEvents(
+  rangeStart: string,
+  rangeEnd: string,
+): Promise<CalendarEventDTO[]> {
+  const user = await requireCalendarUser();
+  return getCalendarEventsForUser(user.id, rangeStart, rangeEnd);
 }
 
 export async function createCurrentCalendarEvent(values: CalendarEventFormValues) {

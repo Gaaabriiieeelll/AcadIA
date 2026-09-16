@@ -4,10 +4,10 @@ import {
   academicCalendarEvents,
   getAcademicCalendarTodayKey,
 } from "@/data/academic-calendar";
-import { getCurrentAcademicTasks } from "@/data/academic-tasks";
-import { getCurrentCalendarEvents } from "@/data/calendar-events";
+import { getAcademicTasksForUser } from "@/data/academic-tasks";
+import { getCalendarEventsForUser } from "@/data/calendar-events";
 import { requireCurrentIdentity } from "@/data/current-user";
-import { getCurrentSubjects } from "@/data/subjects";
+import { getSubjectsForUser } from "@/data/subjects";
 import { db } from "@/lib/db";
 import {
   EvolutionApiError,
@@ -33,11 +33,20 @@ import type {
 
 type AlertPreferenceValues = Omit<AcademicAlertPreferencesDTO, "browserNotifications">;
 
+type AlertCalculationPreferences = Pick<
+  AcademicAlertPreferencesDTO,
+  "targetAverage" | "minimumAttendance"
+>;
+
 type WhatsAppPreferenceValues = {
   enabled: boolean;
   phone: string;
   consent: boolean;
 };
+
+const WHATSAPP_TEST_COOLDOWN_MS = 10 * 60 * 1_000;
+export const WHATSAPP_TEST_COOLDOWN_MESSAGE =
+  "Aguarde 10 minutos antes de enviar outro teste pelo WhatsApp.";
 
 function databaseDate(value: string) {
   return new Date(`${value}T12:00:00.000Z`);
@@ -166,6 +175,42 @@ async function syncAlertRecords(userId: string, alerts: AcademicAlertDTO[]) {
   ]);
 }
 
+async function calculateAcademicAlertsForUser(
+  userId: string,
+  preferences: AlertCalculationPreferences,
+) {
+  const todayDateKey = getAcademicCalendarTodayKey();
+  const rangeEnd = addDaysToDateKey(todayDateKey, ALERT_LOOKAHEAD_DAYS);
+  const [subjects, tasks, personalEvents] = await Promise.all([
+    getSubjectsForUser(userId),
+    getAcademicTasksForUser(userId),
+    getCalendarEventsForUser(userId, todayDateKey, rangeEnd),
+  ]);
+  const officialEvents = academicCalendarEvents.filter(
+    (event) => event.startDate <= rangeEnd
+      && (event.endDate ?? event.startDate) >= todayDateKey,
+  );
+
+  return buildAcademicAlertCenter({
+    subjects,
+    tasks,
+    personalEvents,
+    officialEvents,
+    todayDateKey,
+    targetAverage: preferences.targetAverage,
+    minimumAttendance: preferences.minimumAttendance,
+  });
+}
+
+export async function refreshAcademicAlertRecordsForUser(
+  userId: string,
+  preferences: AlertCalculationPreferences,
+) {
+  const calculated = await calculateAcademicAlertsForUser(userId, preferences);
+  await syncAlertRecords(userId, calculated.alerts);
+  return calculated.alerts.length;
+}
+
 function historyStatus(record: {
   dismissedAt: Date | null;
   snoozedUntil: Date | null;
@@ -192,39 +237,21 @@ function historyOccurredAt(record: {
 
 export async function getCurrentAcademicAlertCenter(): Promise<AcademicAlertCenterDTO> {
   const user = await requireAlertUser();
-  const todayDateKey = getAcademicCalendarTodayKey();
-  const rangeEnd = addDaysToDateKey(todayDateKey, ALERT_LOOKAHEAD_DAYS);
-  const [subjects, tasks, personalEvents, storedPreference] = await Promise.all([
-    getCurrentSubjects(),
-    getCurrentAcademicTasks(),
-    getCurrentCalendarEvents(todayDateKey, rangeEnd),
-    db.academicAlertPreference.findUnique({
-      where: { userId: user.id },
-      select: {
-        targetAverage: true,
-        minimumAttendance: true,
-        gradesEnabled: true,
-        attendanceEnabled: true,
-        tasksEnabled: true,
-        calendarEnabled: true,
-        browserNotifications: true,
-      },
-    }),
-  ]);
-  const preferences = preferenceDTO(storedPreference);
-  const officialEvents = academicCalendarEvents.filter(
-    (event) => event.startDate <= rangeEnd
-      && (event.endDate ?? event.startDate) >= todayDateKey,
-  );
-  const calculated = buildAcademicAlertCenter({
-    subjects,
-    tasks,
-    personalEvents,
-    officialEvents,
-    todayDateKey,
-    targetAverage: preferences.targetAverage,
-    minimumAttendance: preferences.minimumAttendance,
+  const storedPreference = await db.academicAlertPreference.findUnique({
+    where: { userId: user.id },
+    select: {
+      targetAverage: true,
+      minimumAttendance: true,
+      gradesEnabled: true,
+      attendanceEnabled: true,
+      tasksEnabled: true,
+      calendarEnabled: true,
+      browserNotifications: true,
+    },
   });
+  const preferences = preferenceDTO(storedPreference);
+  const calculated = await calculateAcademicAlertsForUser(user.id, preferences);
+  const { todayDateKey } = calculated;
 
   await syncAlertRecords(user.id, calculated.alerts);
 
@@ -369,6 +396,7 @@ export async function updateCurrentWhatsAppSettings(values: WhatsAppPreferenceVa
       encryptedWhatsappPhone: true,
       whatsappPhoneLastFour: true,
       whatsappVerifiedAt: true,
+      whatsappLastTestAt: true,
     },
   });
 
@@ -403,6 +431,7 @@ export async function updateCurrentWhatsAppSettings(values: WhatsAppPreferenceVa
     whatsappPhoneLastFour: values.phone.slice(-4) || existing?.whatsappPhoneLastFour || null,
     whatsappConsentAt: values.enabled && values.consent ? now : null,
     whatsappVerifiedAt: phoneChanged ? null : existing?.whatsappVerifiedAt ?? null,
+    whatsappLastTestAt: phoneChanged ? null : existing?.whatsappLastTestAt ?? null,
   };
 
   await db.$transaction(async (transaction) => {
@@ -438,6 +467,7 @@ export async function sendCurrentWhatsAppTest() {
       whatsappEnabled: true,
       encryptedWhatsappPhone: true,
       whatsappConsentAt: true,
+      whatsappLastTestAt: true,
     },
   });
 
@@ -449,19 +479,34 @@ export async function sendCurrentWhatsAppTest() {
     throw new Error("Ative e salve o WhatsApp antes de enviar o teste.");
   }
 
+  const testedAt = new Date();
+  const cooldownThreshold = new Date(testedAt.getTime() - WHATSAPP_TEST_COOLDOWN_MS);
+  const claimed = await db.academicAlertPreference.updateMany({
+    where: {
+      userId: user.id,
+      whatsappEnabled: true,
+      encryptedWhatsappPhone: { not: null },
+      whatsappConsentAt: { not: null },
+      OR: [
+        { whatsappLastTestAt: null },
+        { whatsappLastTestAt: { lte: cooldownThreshold } },
+      ],
+    },
+    data: { whatsappLastTestAt: testedAt },
+  });
+  if (claimed.count === 0) throw new Error(WHATSAPP_TEST_COOLDOWN_MESSAGE);
+
   const baseUrl = process.env.NEXTAUTH_URL?.trim().replace(/\/+$/, "");
   const alertUrl = baseUrl ? `\n\nAcesse: ${baseUrl}/alertas` : "";
   const result = await sendEvolutionTextMessage({
     number: decryptServerSecret(preference.encryptedWhatsappPhone),
     text: `✅ *AcadIA conectado*\n\nAs notificações acadêmicas via WhatsApp foram ativadas com sucesso.${alertUrl}`,
   });
-  const testedAt = new Date();
 
   await db.academicAlertPreference.update({
     where: { userId: user.id },
     data: {
       whatsappVerifiedAt: testedAt,
-      whatsappLastTestAt: testedAt,
     },
     select: { id: true },
   });

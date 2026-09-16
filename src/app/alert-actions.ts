@@ -14,6 +14,7 @@ import {
   snoozeCurrentAlert,
   updateCurrentAlertPreferences,
   updateCurrentWhatsAppSettings,
+  WHATSAPP_TEST_COOLDOWN_MESSAGE,
 } from "@/data/academic-alerts";
 import {
   registerCurrentBrowserPushSubscription,
@@ -132,7 +133,10 @@ function whatsAppActionError(error: unknown) {
   }
   if (
     error instanceof Error
-    && error.message === "Ative e salve o WhatsApp antes de enviar o teste."
+    && (
+      error.message === "Ative e salve o WhatsApp antes de enviar o teste."
+      || error.message === WHATSAPP_TEST_COOLDOWN_MESSAGE
+    )
   ) {
     return error.message;
   }

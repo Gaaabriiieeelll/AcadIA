@@ -30,10 +30,9 @@ function taskStatus(dueDate: string, completed: boolean): AcademicTaskStatus {
   return "upcoming";
 }
 
-export async function getCurrentAcademicTasks(): Promise<AcademicTaskDTO[]> {
-  const { googleSubject } = await requireCurrentIdentity();
+export async function getAcademicTasksForUser(userId: string): Promise<AcademicTaskDTO[]> {
   const tasks = await db.academicTask.findMany({
-    where: { subject: { user: { googleSubject } } },
+    where: { subject: { userId } },
     orderBy: [{ dueDate: "asc" }, { dueTime: "asc" }, { createdAt: "asc" }],
     select: {
       id: true,
@@ -92,6 +91,17 @@ export async function getCurrentAcademicTasks(): Promise<AcademicTaskDTO[]> {
         (left.dueTime ?? "").localeCompare(right.dueTime ?? "")
       );
     });
+}
+
+export async function getCurrentAcademicTasks(): Promise<AcademicTaskDTO[]> {
+  const { googleSubject } = await requireCurrentIdentity();
+  const user = await db.user.findUnique({
+    where: { googleSubject },
+    select: { id: true },
+  });
+
+  if (!user) throw new AcademicResourceNotFoundError();
+  return getAcademicTasksForUser(user.id);
 }
 
 export async function getCurrentTaskOverview(): Promise<AcademicTaskOverviewDTO> {

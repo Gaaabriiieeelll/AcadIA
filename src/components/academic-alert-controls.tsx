@@ -440,7 +440,7 @@ export function WhatsAppNotificationControl({
     ? "Configuração pendente"
     : settings.enabled && settings.verifiedAt
       ? "Ativado e testado"
-      : settings.enabled ? "Ativado" : "Desativado";
+      : settings.enabled ? "Ativado · teste pendente" : "Desativado";
   const active = settings.serviceConfigured && settings.enabled;
 
   return (
@@ -450,7 +450,7 @@ export function WhatsAppNotificationControl({
           {status}
         </span>
         <p>
-          O AcadIA enviará uma vez ao dia os novos alertas pelo número conectado à Evolution API.
+          O AcadIA enviará uma vez ao dia os novos alertas depois que o número passar pelo teste.
         </p>
       </div>
 

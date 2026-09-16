@@ -97,9 +97,13 @@ Configure no servidor:
 - `EVOLUTION_API_URL`: URL base da Evolution API, sem barra no final.
 - `EVOLUTION_API_KEY`: chave global ou da instância.
 - `EVOLUTION_INSTANCE_NAME`: nome da instância conectada ao WhatsApp.
-- `WHATSAPP_JOB_SECRET`: segredo exclusivo usado pelo agendador.
+- `WHATSAPP_ADMIN_EMAILS`: e-mails, separados por vírgula, autorizados a abrir o QR da instância global.
+- `CRON_SECRET`: segredo que a Vercel envia automaticamente ao cron.
+- `WHATSAPP_JOB_SECRET`: segredo opcional para um agendador externo ou execução manual.
 
-O job diário deve chamar `GET /api/jobs/whatsapp-alerts` com o cabeçalho `Authorization: Bearer <WHATSAPP_JOB_SECRET>`. O endpoint aceita `?limit=25`, envia somente alertas novos e ativos, evita duplicidade e realiza no máximo cinco tentativas por alerta.
+O `vercel.json` agenda `GET /api/jobs/whatsapp-alerts` diariamente às 11:00 UTC (8:00 no horário de Brasília). No plano Hobby, a Vercel pode executar em qualquer momento dentro dessa hora. O endpoint aceita `?limit=25`, exige `Authorization: Bearer <CRON_SECRET>` (ou o segredo legado), recalcula os alertas dos usuários elegíveis antes do envio, envia somente alertas novos, ativos e com número testado, evita concorrência imediata e realiza no máximo cinco tentativas por alerta.
+
+Com o servidor em execução na URL definida por `NEXTAUTH_URL`, rode manualmente com `npm run jobs:whatsapp`. O botão de teste tem intervalo mínimo de dez minutos por conta para reduzir abuso.
 
 Webhooks da Evolution API não são necessários para iniciar o envio diário. Eles poderão ser adicionados depois para registrar eventos como conexão da instância e atualizações de mensagens.
 
