@@ -11,6 +11,7 @@ import {
   formatHifpbSubjectName,
   parseHifpbSchedule,
 } from "./hifpb-parser";
+import { getHifpbSubjects } from "./hifpb-subjects";
 
 const courseIds = [81, 19, 15, 20, 16, 17, 79, 82, 18];
 
@@ -113,7 +114,8 @@ test("reconhece as divisões A, B e C publicadas pelo hIFPB", () => {
         <div class="card-turma"><div class="card-header"><span>ELETRON DIGIT - B</span></div><a href="/horario/professor/3">DOCENTE B</a></div>
         <div class="card-turma"><div class="card-header"><span>ELETRON DIGIT - C</span></div><a href="/horario/professor/4">DOCENTE C</a></div>
       </td>
-      <td></td><td></td><td></td><td></td>
+      <td><div class="card-turma"><div class="card-header"><span>ELETRON DIGIT - C</span></div><a href="/horario/professor/5">DOCENTE AUXILIAR</a></div></td>
+      <td></td><td></td><td></td>
     </tr></tbody></table>
   `;
   const schedule = parseHifpbSchedule(html, selection);
@@ -125,7 +127,14 @@ test("reconhece as divisões A, B e C publicadas pelo hIFPB", () => {
   );
   assert.deepEqual(
     groupC.professors.map((professor) => professor.name),
-    ["DOCENTE C", "DOCENTE COMUM"],
+    ["DOCENTE AUXILIAR", "DOCENTE C", "DOCENTE COMUM"],
+  );
+  assert.deepEqual(
+    getHifpbSubjects(schedule, "C").map(({ name, teacher }) => ({ name, teacher })),
+    [
+      { name: "ELETRON DIGIT", teacher: "DOCENTE AUXILIAR / DOCENTE C" },
+      { name: "MATEMATICA II", teacher: "DOCENTE COMUM" },
+    ],
   );
   assert.equal(formatHifpbSubjectName("ELETRON DIGIT - C"), "ELETRON DIGIT · C");
 });

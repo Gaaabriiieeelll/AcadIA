@@ -263,28 +263,59 @@ export async function createCurrentSubject(values: SubjectFormValues) {
   });
 }
 
-export async function importCurrentSubjects(subjects: SubjectFormValues[]) {
+function normalizedSubjectName(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLocaleUpperCase("pt-BR");
+}
+
+export async function synchronizeCurrentSubjects(subjects: SubjectFormValues[]) {
   const user = await requireAcademicUser();
   const existingSubjects = await db.subject.findMany({
     where: { userId: user.id },
-    select: { name: true },
+    select: { id: true, name: true, teacher: true },
   });
-  const existingNames = new Set(existingSubjects.map((subject) => subject.name));
-  const missingSubjects = subjects.filter((subject) => !existingNames.has(subject.name));
+  const existingByName = new Map(
+    existingSubjects.map((subject) => [normalizedSubjectName(subject.name), subject]),
+  );
+  const missingSubjects = subjects.filter(
+    (subject) => !existingByName.has(normalizedSubjectName(subject.name)),
+  );
+  const changedSubjects = subjects.flatMap((subject) => {
+    const existing = existingByName.get(normalizedSubjectName(subject.name));
+    return existing && subject.teacher && subject.teacher !== existing.teacher
+      ? [{ id: existing.id, teacher: subject.teacher }]
+      : [];
+  });
 
-  if (missingSubjects.length > 0) {
-    await db.subject.createMany({
-      data: missingSubjects.map((subject) => ({
-        userId: user.id,
-        name: subject.name,
-        teacher: subject.teacher,
-        color: subject.color,
-      })),
-      skipDuplicates: true,
-    });
-  }
+  return db.$transaction(async (transaction) => {
+    const created = missingSubjects.length > 0
+      ? await transaction.subject.createMany({
+          data: missingSubjects.map((subject) => ({
+            userId: user.id,
+            name: subject.name,
+            teacher: subject.teacher,
+            color: subject.color,
+          })),
+          skipDuplicates: true,
+        })
+      : { count: 0 };
 
-  return { created: missingSubjects.length };
+    await Promise.all(
+      changedSubjects.map((subject) =>
+        transaction.subject.update({
+          where: { id: subject.id },
+          data: { teacher: subject.teacher },
+          select: { id: true },
+        }),
+      ),
+    );
+
+    return { created: created.count, updated: changedSubjects.length };
+  });
 }
 
 export async function addCurrentAssessment(

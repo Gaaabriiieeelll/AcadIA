@@ -2,13 +2,8 @@ import "server-only";
 
 import { cache } from "react";
 
-import { ETIM_COURSES } from "@/lib/academic-profile-options";
-import {
-  resolveHifpbProfileSelection,
-  type HifpbProfileSelection,
-} from "@/lib/hifpb-courses";
+import type { HifpbProfileSelection } from "@/lib/hifpb-courses";
 import { parseHifpbSchedule } from "@/lib/hifpb-parser";
-import type { AcademicProfileValues } from "@/types/academic-profile";
 
 const REQUEST_TIMEOUT_MS = 12_000;
 
@@ -63,28 +58,4 @@ export async function getHifpbScheduleForSelection(selection: HifpbProfileSelect
     selection.className,
     selection.displayName,
   );
-}
-
-export async function getHifpbScheduleForProfile(
-  profile: Pick<AcademicProfileValues, "academicStage" | "course">,
-) {
-  const selection = resolveHifpbProfileSelection(profile);
-  if (!selection) throw new Error("O curso ou ano do perfil não possui uma grade mapeada no hIFPB.");
-
-  return {
-    schedule: await getHifpbScheduleForSelection(selection),
-    selection,
-  };
-}
-
-const mecanicaSecondYearSelection = resolveHifpbProfileSelection({
-  academicStage: "2º ano",
-  course: ETIM_COURSES[8],
-});
-
-export async function getMecanicaSecondYearSchedule() {
-  if (!mecanicaSecondYearSelection) {
-    throw new Error("A grade da Mecânica II não foi mapeada.");
-  }
-  return getHifpbScheduleForSelection(mecanicaSecondYearSelection);
 }

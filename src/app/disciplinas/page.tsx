@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { ProtectedShell } from "@/components/protected-shell";
@@ -11,6 +12,7 @@ import {
   AttendanceForm,
   BimesterGradesForm,
   DeleteSubjectForm,
+  HifpbSubjectsImportForm,
   SubjectCreateForm,
 } from "@/components/subject-forms";
 import { getCurrentAcademicProfile } from "@/data/academic-profile";
@@ -74,11 +76,24 @@ export default async function SubjectsPage({
           <div>
             <span>Dados cadastrados no AcadIA · {profile.academicStage}</span>
             <h2>Acompanhamento de {academicClassName}</h2>
-            <p>Notas e frequências permanecem sob seu controle. A grade pública do hIFPB é localizada pelo curso, ano e divisão do perfil.</p>
+            <p>Sincronize as disciplinas e os professores da grade pública. Notas, frequências e disciplinas adicionais são preservadas.</p>
           </div>
-          <strong className="subject-group-badge">
-            {academicClassGroup ? `Divisão ${academicClassGroup}` : "Divisão pendente"}
-          </strong>
+          <div className="hifpb-subject-sync-actions">
+            <strong
+              aria-label={academicClassGroup ? `Divisão ${academicClassGroup}` : "Divisão pendente"}
+              className="subject-group-badge"
+              title={academicClassGroup ? `Divisão ${academicClassGroup}` : "Divisão pendente"}
+            >
+              {academicClassGroup ?? "?"}
+            </strong>
+            {academicClassGroup ? (
+              <HifpbSubjectsImportForm />
+            ) : (
+              <Link className="secondary-action" href="/horarios#perfil-academico">
+                Escolher divisão
+              </Link>
+            )}
+          </div>
         </section>
 
         <div className="subject-area-legend" aria-label="Cores por área de conhecimento">

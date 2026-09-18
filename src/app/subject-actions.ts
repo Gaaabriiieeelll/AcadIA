@@ -5,6 +5,7 @@ import "server-only";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+import { getCurrentAcademicProfile } from "@/data/academic-profile";
 import {
   AcademicProfileRequiredError,
   AcademicResourceNotFoundError,
@@ -12,14 +13,16 @@ import {
   createCurrentSubject,
   deleteCurrentAssessment,
   deleteCurrentSubject,
-  importCurrentSubjects,
+  synchronizeCurrentSubjects,
   updateCurrentAttendance,
   updateCurrentBimesterGrades,
 } from "@/data/subjects";
 import { AuthenticationRequiredError } from "@/data/current-user";
-import { getMecanicaSecondYearSchedule } from "@/data/hifpb";
+import { getHifpbScheduleForSelection } from "@/data/hifpb";
 import { Prisma } from "@/generated/prisma/client";
-import { getMecanicaSecondYearSubjects } from "@/lib/hifpb-subjects";
+import { resolveAcademicClassGroup } from "@/lib/academic-profile-options";
+import { resolveHifpbProfileSelection } from "@/lib/hifpb-courses";
+import { getHifpbSubjects } from "@/lib/hifpb-subjects";
 import {
   assessmentSchema,
   attendanceSchema,
@@ -36,8 +39,11 @@ import type {
 } from "@/types/subjects";
 
 function revalidateAcademicPages() {
+  revalidatePath("/agenda");
+  revalidatePath("/alertas");
   revalidatePath("/dashboard");
   revalidatePath("/disciplinas");
+  revalidatePath("/plano-de-estudos");
 }
 
 function mutationErrorMessage(error: unknown) {
@@ -101,22 +107,50 @@ export async function importHifpbSubjectsAction(
   void _formData;
 
   try {
-    const schedule = await getMecanicaSecondYearSchedule();
-    const subjects = getMecanicaSecondYearSubjects(schedule, "A");
-    const { created } = await importCurrentSubjects(subjects);
+    const profile = await getCurrentAcademicProfile();
+    const selection = profile ? resolveHifpbProfileSelection(profile) : null;
+    const academicClassGroup = resolveAcademicClassGroup(profile?.classGroup);
 
-    revalidateAcademicPages();
-
-    if (created === 0) {
+    if (!profile || !selection || !academicClassGroup) {
       return {
-        status: "success",
-        message: "As disciplinas da Mecânica II já estão atualizadas.",
+        status: "error",
+        message: "Revise o curso, o ano e a divisão no perfil antes de sincronizar.",
       };
     }
 
+    const schedule = await getHifpbScheduleForSelection(selection);
+    const subjects = getHifpbSubjects(schedule, academicClassGroup);
+
+    if (subjects.length === 0) {
+      return {
+        status: "error",
+        message: "O hIFPB não publicou disciplinas para esta divisão.",
+      };
+    }
+
+    const { created, updated } = await synchronizeCurrentSubjects(subjects);
+
+    revalidateAcademicPages();
+
+    if (created === 0 && updated === 0) {
+      return {
+        status: "success",
+        message: `As disciplinas de ${selection.className} · divisão ${academicClassGroup} já estão atualizadas.`,
+      };
+    }
+
+    const changes = [
+      created > 0
+        ? `${created} ${created === 1 ? "disciplina adicionada" : "disciplinas adicionadas"}`
+        : null,
+      updated > 0
+        ? `${updated} ${updated === 1 ? "professor atualizado" : "professores atualizados"}`
+        : null,
+    ].filter((change): change is string => Boolean(change));
+
     return {
       status: "success",
-      message: `${created} disciplina(s) da Mecânica II foram adicionadas.`,
+      message: `${changes.join(" e ")}. Notas e frequências foram preservadas.`,
     };
   } catch (error) {
     const message = mutationErrorMessage(error);

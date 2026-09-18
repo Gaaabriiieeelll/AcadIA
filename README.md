@@ -8,6 +8,8 @@ O acesso com Google OAuth solicita apenas identidade básica: nome, foto e e-mai
 
 Depois do primeiro acesso, o estudante completa o perfil acadêmico com matrícula, campus, curso, período/ano e divisão da turma (A, B ou C). Esses dados são persistidos no Prisma Postgres e a divisão filtra a grade e os professores públicos do hIFPB. Nome, foto e e-mail permanecem somente na sessão, que expira em até 4 horas.
 
+Na página de disciplinas, a sincronização do hIFPB adiciona as matérias ausentes e atualiza os professores conforme o perfil. Notas, frequências, cores personalizadas e disciplinas cadastradas manualmente não são removidas.
+
 Por padrão, o acesso permanece restrito aos endereços definidos em `ALLOWED_EMAILS`, e o domínio acadêmico continua bloqueado. Uma publicação aberta pode definir `ALLOW_ANY_GOOGLE_EMAIL=true` para aceitar qualquer conta Google autenticada; essa opção substitui tanto a lista individual quanto o bloqueio acadêmico.
 
 ## Preparação

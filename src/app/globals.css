@@ -1716,6 +1716,13 @@ html[data-theme="dark"] .theme-toggle-dark-label {
   box-shadow: var(--shadow-sm);
 }
 
+.hifpb-subject-sync-actions {
+  display: flex;
+  flex: none;
+  gap: 12px;
+  align-items: center;
+}
+
 .hifpb-subject-import-form {
   display: grid;
   flex: none;
@@ -4207,6 +4214,12 @@ html[data-theme="dark"] .theme-toggle-dark-label {
   .hifpb-subject-sync {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .hifpb-subject-sync-actions {
+    width: 100%;
+    align-items: flex-start;
+    flex-wrap: wrap;
   }
 
   .subject-color-field {

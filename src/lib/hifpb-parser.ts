@@ -10,10 +10,7 @@ import {
   type HifpbWeekday,
 } from "@/types/hifpb";
 
-export const HIFPB_MECANICA_URL =
-  "https://joaopessoa.ifpb.edu.br/horario/curso/18";
-
-const HIFPB_ORIGIN = new URL(HIFPB_MECANICA_URL).origin;
+const HIFPB_ORIGIN = "https://joaopessoa.ifpb.edu.br";
 
 function normalizeText(value: string) {
   return value.replace(/\s+/g, " ").trim();
@@ -254,13 +251,4 @@ export function parseHifpbSchedule(
     professors,
     subjects: Array.from(subjects).sort((a, b) => a.localeCompare(b, "pt-BR")),
   };
-}
-
-export function parseMecanicaSecondYearSchedule(html: string): HifpbSchedule {
-  return parseHifpbSchedule(html, {
-    className: "Mecânica II",
-    displayName: "MECÂNICA INTEGRADO",
-    sourceUrl: HIFPB_MECANICA_URL,
-    tableIndex: 1,
-  });
 }
