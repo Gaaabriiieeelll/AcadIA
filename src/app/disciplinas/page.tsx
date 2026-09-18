@@ -15,6 +15,7 @@ import {
 } from "@/components/subject-forms";
 import { getCurrentAcademicProfile } from "@/data/academic-profile";
 import { getCurrentSubjects } from "@/data/subjects";
+import { resolveAcademicClassGroup } from "@/lib/academic-profile-options";
 import { authOptions } from "@/lib/auth";
 import { resolveHifpbProfileSelection } from "@/lib/hifpb-courses";
 import { SUBJECT_AREAS } from "@/lib/subject-areas";
@@ -46,6 +47,7 @@ export default async function SubjectsPage({
 
   const profile = await getCurrentAcademicProfile();
   if (!profile) redirect("/onboarding");
+  const academicClassGroup = resolveAcademicClassGroup(profile.classGroup);
   const academicClassName = resolveHifpbProfileSelection(profile)?.className
     ?? `${profile.course} · ${profile.academicStage}`;
 
@@ -72,9 +74,11 @@ export default async function SubjectsPage({
           <div>
             <span>Dados cadastrados no AcadIA · {profile.academicStage}</span>
             <h2>Acompanhamento de {academicClassName}</h2>
-            <p>Notas e frequências permanecem sob seu controle. A grade pública do hIFPB agora é localizada pelo curso e ano do perfil.</p>
+            <p>Notas e frequências permanecem sob seu controle. A grade pública do hIFPB é localizada pelo curso, ano e divisão do perfil.</p>
           </div>
-          <strong className="subject-group-badge">{profile.academicStage}</strong>
+          <strong className="subject-group-badge">
+            {academicClassGroup ? `Divisão ${academicClassGroup}` : "Divisão pendente"}
+          </strong>
         </section>
 
         <div className="subject-area-legend" aria-label="Cores por área de conhecimento">

@@ -12,6 +12,7 @@ import { getCurrentAcademicProfile } from "@/data/academic-profile";
 import { getCurrentTaskOverview } from "@/data/academic-tasks";
 import { getCurrentAcademicDashboard } from "@/data/subjects";
 import { authOptions } from "@/lib/auth";
+import { resolveAcademicClassGroup } from "@/lib/academic-profile-options";
 import { getGradeColorStyle } from "@/lib/grade-colors";
 import { resolveHifpbProfileSelection } from "@/lib/hifpb-courses";
 import {
@@ -79,6 +80,7 @@ export default async function DashboardPage({
 
   const profile = await getCurrentAcademicProfile();
   if (!profile) redirect("/onboarding");
+  const academicClassGroup = resolveAcademicClassGroup(profile.classGroup);
   const academicClassName = resolveHifpbProfileSelection(profile)?.className
     ?? `${profile.course} · ${profile.academicStage}`;
 
@@ -160,7 +162,7 @@ export default async function DashboardPage({
               <span>Panorama do período</span>
               <h2 id="dashboard-overview-title">Seu acompanhamento em um só lugar</h2>
             </div>
-            <strong>{profile.classGroup ?? "Turma não informada"}</strong>
+            <strong>{academicClassGroup ? `Divisão ${academicClassGroup}` : "Divisão pendente"}</strong>
           </div>
 
           <div className="dashboard-overview-metrics">
@@ -396,7 +398,7 @@ export default async function DashboardPage({
             <dl className="profile-summary">
               <div><dt>Curso</dt><dd>{profile.course}</dd></div>
               <div><dt>Etapa</dt><dd>{profile.academicStage}</dd></div>
-              <div><dt>Turma</dt><dd>{profile.classGroup ?? "Não informada"}</dd></div>
+              <div><dt>Divisão</dt><dd>{academicClassGroup ?? "Não informada"}</dd></div>
               <div><dt>Campus</dt><dd>{profile.campus}</dd></div>
             </dl>
             <div className="dashboard-card-links">

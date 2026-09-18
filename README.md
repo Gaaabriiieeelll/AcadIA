@@ -6,7 +6,7 @@ Plataforma acadêmica inteligente em desenvolvimento para estudantes do IFPB Cam
 
 O acesso com Google OAuth solicita apenas identidade básica: nome, foto e e-mail. Permissões do Google Classroom não fazem parte desta etapa.
 
-Depois do primeiro acesso, o estudante completa o perfil acadêmico com matrícula, campus, curso, período/ano e turma opcional. Esses dados são persistidos no Prisma Postgres. Nome, foto e e-mail permanecem somente na sessão, que expira em até 4 horas.
+Depois do primeiro acesso, o estudante completa o perfil acadêmico com matrícula, campus, curso, período/ano e divisão da turma (A, B ou C). Esses dados são persistidos no Prisma Postgres e a divisão filtra a grade e os professores públicos do hIFPB. Nome, foto e e-mail permanecem somente na sessão, que expira em até 4 horas.
 
 Por padrão, o acesso permanece restrito aos endereços definidos em `ALLOWED_EMAILS`, e o domínio acadêmico continua bloqueado. Uma publicação aberta pode definir `ALLOW_ANY_GOOGLE_EMAIL=true` para aceitar qualquer conta Google autenticada; essa opção substitui tanto a lista individual quanto o bloqueio acadêmico.
 

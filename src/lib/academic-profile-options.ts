@@ -17,6 +17,8 @@ export const ACADEMIC_STAGES = [
   "4º ano",
 ] as const;
 
+export const ACADEMIC_CLASS_GROUPS = ["A", "B", "C"] as const;
+
 function searchable(value: string) {
   return value
     .normalize("NFD")
@@ -50,4 +52,9 @@ export function resolveAcademicStage(value: string) {
 
   const stageNumber = value.match(/[1-4]/)?.[0];
   return ACADEMIC_STAGES.find((stage) => stage.startsWith(stageNumber ?? "")) ?? "";
+}
+
+export function resolveAcademicClassGroup(value: string | null | undefined) {
+  const normalized = value?.trim().toLocaleUpperCase("pt-BR");
+  return ACADEMIC_CLASS_GROUPS.find((group) => group === normalized) ?? null;
 }

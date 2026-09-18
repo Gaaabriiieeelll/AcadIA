@@ -5,8 +5,10 @@ import { useActionState } from "react";
 
 import { saveAcademicProfileAction } from "@/app/profile-actions";
 import {
+  ACADEMIC_CLASS_GROUPS,
   ACADEMIC_STAGES,
   ETIM_COURSES,
+  resolveAcademicClassGroup,
   resolveAcademicStage,
   resolveEtimCourse,
 } from "@/lib/academic-profile-options";
@@ -30,6 +32,7 @@ export function AcademicProfileForm({ mode, initialValues }: AcademicProfileForm
   );
   const initialCourse = resolveEtimCourse(initialValues.course);
   const initialAcademicStage = resolveAcademicStage(initialValues.academicStage);
+  const initialAcademicClassGroup = resolveAcademicClassGroup(initialValues.classGroup);
 
   function fieldError(field: AcademicProfileField) {
     const errors = state.fieldErrors?.[field];
@@ -124,16 +127,19 @@ export function AcademicProfileForm({ mode, initialValues }: AcademicProfileForm
         </label>
 
         <label className="profile-field">
-          <span>Turma <small>(opcional)</small></span>
-          <input
+          <span>Divisão da turma</span>
+          <select
             aria-describedby={state.fieldErrors?.classGroup ? "classGroup-error" : undefined}
             aria-invalid={Boolean(state.fieldErrors?.classGroup)}
-            autoComplete="off"
-            defaultValue={initialValues.classGroup ?? ""}
-            maxLength={50}
+            defaultValue={initialAcademicClassGroup ?? ""}
             name="classGroup"
-            placeholder="Ex.: 2026.1"
-          />
+            required
+          >
+            <option disabled value="">Selecione A, B ou C</option>
+            {ACADEMIC_CLASS_GROUPS.map((group) => (
+              <option key={group} value={group}>Divisão {group}</option>
+            ))}
+          </select>
           {fieldError("classGroup")}
         </label>
       </div>

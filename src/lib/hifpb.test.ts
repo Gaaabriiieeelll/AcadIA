@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { ETIM_COURSES } from "./academic-profile-options";
+import {
+  ETIM_COURSES,
+  resolveAcademicClassGroup,
+} from "./academic-profile-options";
 import { resolveHifpbProfileSelection } from "./hifpb-courses";
 import {
   filterHifpbScheduleByGroup,
@@ -10,6 +13,13 @@ import {
 } from "./hifpb-parser";
 
 const courseIds = [81, 19, 15, 20, 16, 17, 79, 82, 18];
+
+test("normaliza somente as divisões acadêmicas aceitas", () => {
+  assert.equal(resolveAcademicClassGroup(" a "), "A");
+  assert.equal(resolveAcademicClassGroup("C"), "C");
+  assert.equal(resolveAcademicClassGroup("2026.1"), null);
+  assert.equal(resolveAcademicClassGroup(null), null);
+});
 
 test("relaciona cada curso ETIM ao identificador oficial do hIFPB", () => {
   ETIM_COURSES.forEach((course, index) => {
@@ -98,10 +108,10 @@ test("reconhece as divisões A, B e C publicadas pelo hIFPB", () => {
     <table><tbody><tr>
       <td>07:00 - 07:50</td>
       <td>
-        <div class="card-turma"><div class="card-header"><span>MATEMATICA II - U</span></div></div>
-        <div class="card-turma"><div class="card-header"><span>ELETRON DIGIT - A</span></div></div>
-        <div class="card-turma"><div class="card-header"><span>ELETRON DIGIT - B</span></div></div>
-        <div class="card-turma"><div class="card-header"><span>ELETRON DIGIT - C</span></div></div>
+        <div class="card-turma"><div class="card-header"><span>MATEMATICA II - U</span></div><a href="/horario/professor/1">DOCENTE COMUM</a></div>
+        <div class="card-turma"><div class="card-header"><span>ELETRON DIGIT - A</span></div><a href="/horario/professor/2">DOCENTE A</a></div>
+        <div class="card-turma"><div class="card-header"><span>ELETRON DIGIT - B</span></div><a href="/horario/professor/3">DOCENTE B</a></div>
+        <div class="card-turma"><div class="card-header"><span>ELETRON DIGIT - C</span></div><a href="/horario/professor/4">DOCENTE C</a></div>
       </td>
       <td></td><td></td><td></td><td></td>
     </tr></tbody></table>
@@ -112,6 +122,10 @@ test("reconhece as divisões A, B e C publicadas pelo hIFPB", () => {
   assert.deepEqual(
     groupC.slots[0]?.classes.monday.map((academicClass) => academicClass.subject),
     ["MATEMATICA II - U", "ELETRON DIGIT - C"],
+  );
+  assert.deepEqual(
+    groupC.professors.map((professor) => professor.name),
+    ["DOCENTE C", "DOCENTE COMUM"],
   );
   assert.equal(formatHifpbSubjectName("ELETRON DIGIT - C"), "ELETRON DIGIT · C");
 });
