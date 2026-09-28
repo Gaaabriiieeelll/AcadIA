@@ -1,0 +1,288 @@
+.card {
+  padding: 24px;
+  margin: 0 0 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.heading,
+.previewHeading,
+.confirmation {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.heading > div > span {
+  color: var(--brand-700);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heading h2 {
+  margin: 4px 0 5px;
+  color: var(--teal-900);
+  font-size: 21px;
+}
+
+.heading p,
+.privacyNote,
+.previewHeading p,
+.reviewNote {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.pdfIcon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--brand-100);
+  color: var(--brand-700);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.uploadForm {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.uploadForm label {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 6px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.uploadForm input {
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.uploadForm input::file-selector-button {
+  margin-right: 12px;
+  border: 0;
+  background: transparent;
+  color: var(--brand-700);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.uploadForm button {
+  flex: none;
+}
+
+.privacyNote {
+  margin-top: 10px;
+  font-size: 11px;
+}
+
+.feedback {
+  padding: 10px 12px;
+  margin: 16px 0 0;
+  border: 1px solid;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+}
+
+.error {
+  border-color: var(--danger-border);
+  background: var(--danger-soft);
+  color: var(--danger-text);
+}
+
+.success {
+  border-color: var(--success-border);
+  background: var(--brand-50);
+  color: var(--brand-700);
+}
+
+.preview {
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+.previewHeading h3 {
+  margin: 0 0 4px;
+  color: var(--teal-900);
+  font-size: 18px;
+}
+
+.previewHeading .warning {
+  color: var(--warning-text);
+  font-weight: 750;
+}
+
+.reviewNote {
+  margin-top: 10px;
+}
+
+.rows {
+  display: grid;
+  gap: 8px;
+  max-height: 560px;
+  overflow-y: auto;
+  padding: 2px;
+  margin-top: 16px;
+}
+
+.row {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+}
+
+.row[open] {
+  border-color: var(--border-strong);
+  background: var(--surface);
+}
+
+.row summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 50px;
+  padding: 11px 14px;
+  color: var(--teal-900);
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.row summary small {
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.row summary strong {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--brand-100);
+  color: var(--brand-700);
+  font-size: 10px;
+}
+
+.rowBody {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.selectRow {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.selectRow input,
+.confirmation input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--brand-600);
+}
+
+.field {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.fieldGrid {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.confirmation {
+  align-items: center;
+  margin-top: 18px;
+}
+
+.confirmation label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.confirmation button {
+  flex: none;
+}
+
+@media (max-width: 700px) {
+  .card {
+    padding: 18px;
+  }
+
+  .uploadForm,
+  .confirmation,
+  .previewHeading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .row summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .row summary small {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .rowBody {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

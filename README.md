@@ -10,6 +10,8 @@ Depois do primeiro acesso, o estudante completa o perfil acadêmico com matrícu
 
 Na página de disciplinas, a sincronização do hIFPB adiciona as matérias ausentes e atualiza os professores conforme o perfil. Notas, frequências, cores personalizadas e disciplinas cadastradas manualmente não são removidas.
 
+Na Visão geral, **Importar boletim em PDF** lê o boletim de notas individual do SUAP/IFPB. O estudante confere as disciplinas, notas por etapa, faltas e vínculos antes de confirmar. Valores vazios no PDF não apagam notas já cadastradas, e o arquivo original não é armazenado.
+
 Por padrão, o acesso permanece restrito aos endereços definidos em `ALLOWED_EMAILS`, e o domínio acadêmico continua bloqueado. Uma publicação aberta pode definir `ALLOW_ANY_GOOGLE_EMAIL=true` para aceitar qualquer conta Google autenticada; essa opção substitui tanto a lista individual quanto o bloqueio acadêmico.
 
 ## Preparação

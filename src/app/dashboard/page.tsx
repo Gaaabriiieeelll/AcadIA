@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { GradeValue } from "@/components/grade-value";
 import { ProtectedShell } from "@/components/protected-shell";
 import { SubjectFilter } from "@/components/subject-filter";
+import { SuapReportImport } from "@/components/suap-report-import";
 import { getCurrentAlertPreferences } from "@/data/academic-alerts";
 import { getCurrentAcademicProfile } from "@/data/academic-profile";
 import { getCurrentTaskOverview } from "@/data/academic-tasks";
@@ -155,6 +156,8 @@ export default async function DashboardPage({
           selectedIds={selectedSubjectIds}
           subjects={availableSubjects}
         />
+
+        <SuapReportImport subjects={availableSubjects} />
 
         <section className="dashboard-overview" aria-labelledby="dashboard-overview-title">
           <div className="dashboard-overview-heading">
