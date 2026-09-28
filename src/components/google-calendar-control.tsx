@@ -31,7 +31,8 @@ export function GoogleCalendarControl({
 }) {
   const [state, action, pending] = useActionState(syncGoogleCalendarAction, initialState);
   const lastSync = lastSyncLabel(status.lastSyncedAt);
-  const needsPermission = status.status === "permission-required";
+  const needsPermission = status.status === "permission-required"
+    || state.status === "permission-required";
 
   return (
     <aside className={styles.googleCalendarNotice} aria-label="Integração com o Google Agenda">
@@ -49,13 +50,13 @@ export function GoogleCalendarControl({
 
       <div className={styles.googleCalendarCopy}>
         <strong>
-          {status.status === "connected"
+          {status.status === "connected" && !needsPermission
             ? `${status.calendarName} conectado`
             : "Levar o AcadIA para o Google Agenda"}
         </strong>
         <p>
           {needsPermission
-            ? "Autorize a integração usando seu e-mail @academico.ifpb.edu.br."
+            ? status.lastError ?? "Autorize a integração usando seu e-mail @academico.ifpb.edu.br."
             : status.status === "error"
               ? status.lastError
               : status.status === "connected"
@@ -65,11 +66,13 @@ export function GoogleCalendarControl({
         <small>
           Inclui planejamento anual, eventos pessoais e atividades da Agenda e do Classroom.
         </small>
-        {connectionMessage ? <p className={styles.googleCalendarFeedback}>{connectionMessage}</p> : null}
-        {state.message ? (
+        {state.status === "idle" && connectionMessage ? (
+          <p className={styles.googleCalendarFeedback}>{connectionMessage}</p>
+        ) : null}
+        {state.message && state.message !== status.lastError ? (
           <p
-            className={`${styles.googleCalendarFeedback} ${state.status === "error" ? styles.googleCalendarFeedbackError : ""}`}
-            role={state.status === "error" ? "alert" : "status"}
+            className={`${styles.googleCalendarFeedback} ${state.status === "error" || state.status === "permission-required" ? styles.googleCalendarFeedbackError : ""}`}
+            role={state.status === "error" || state.status === "permission-required" ? "alert" : "status"}
           >
             {state.message}
           </p>
@@ -79,7 +82,7 @@ export function GoogleCalendarControl({
       <div className={styles.googleCalendarActions}>
         {needsPermission ? (
           <a className={styles.googleCalendarButton} href="/api/classroom/connect?target=calendar">
-            Conectar Google Agenda
+            {status.accountEmail ? "Autorizar novamente" : "Conectar Google Agenda"}
           </a>
         ) : (
           <form action={action}>
@@ -92,11 +95,6 @@ export function GoogleCalendarControl({
             </button>
           </form>
         )}
-        {status.status === "error" ? (
-          <a className={styles.googleCalendarReconnect} href="/api/classroom/connect?target=calendar">
-            Autorizar novamente
-          </a>
-        ) : null}
       </div>
     </aside>
   );

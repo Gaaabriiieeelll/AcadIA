@@ -19,6 +19,10 @@ import {
   googleCalendarColorForAcademicEvent,
   googleCalendarColorForPersonalEvent,
 } from "@/lib/google-calendar-event-colors";
+import {
+  GOOGLE_CALENDAR_REAUTH_MESSAGE,
+  googleCalendarStatusFromStoredState,
+} from "@/lib/google-calendar-status";
 import { CALENDAR_EVENT_TYPE_DETAILS } from "@/types/calendar-events";
 import type {
   GoogleCalendarStatusDTO,
@@ -519,10 +523,12 @@ async function reconcileGoogleEvents(
   return { createdCount, updatedCount, deletedCount, unchangedCount };
 }
 
-function permissionRequiredResult(): GoogleCalendarSyncResult {
+function permissionRequiredResult(
+  message = "Autorize o Google Agenda com seu e-mail institucional.",
+): GoogleCalendarSyncResult {
   return {
     status: "permission-required",
-    message: "Autorize o Google Agenda com seu e-mail institucional.",
+    message,
     calendarName: null,
     eventCount: 0,
     createdCount: 0,
@@ -534,7 +540,7 @@ function permissionRequiredResult(): GoogleCalendarSyncResult {
 
 function calendarErrorMessage(error: unknown) {
   if (error instanceof GoogleCalendarError) {
-    if (error.code === "AUTH_EXPIRED") return "A autorização do Google expirou. Conecte novamente.";
+    if (error.code === "AUTH_EXPIRED") return GOOGLE_CALENDAR_REAUTH_MESSAGE;
     if (error.code === "FORBIDDEN") {
       const googleMessage = error.message.toLocaleLowerCase("en-US");
       if (
@@ -567,6 +573,8 @@ export async function getCurrentGoogleCalendarStatus(): Promise<GoogleCalendarSt
         select: {
           accountEmail: true,
           grantedScopes: true,
+          accessTokenExpiresAt: true,
+          encryptedRefreshToken: true,
         },
       },
       googleCalendarIntegration: {
@@ -580,37 +588,17 @@ export async function getCurrentGoogleCalendarStatus(): Promise<GoogleCalendarSt
     },
   });
   const credential = user?.googleCalendarCredential;
-  if (!credential || !grantedScopesIncludeGoogleCalendar(credential.grantedScopes)) {
-    return {
-      status: "permission-required",
-      accountEmail: null,
-      calendarName: null,
-      eventCount: 0,
-      lastSyncedAt: null,
-      lastError: null,
-    };
-  }
-
-  const integration = user?.googleCalendarIntegration;
-  if (!integration) {
-    return {
-      status: "not-connected",
-      accountEmail: credential.accountEmail,
-      calendarName: null,
-      eventCount: 0,
-      lastSyncedAt: null,
-      lastError: null,
-    };
-  }
-
-  return {
-    status: integration.lastSyncError ? "error" : "connected",
-    accountEmail: credential.accountEmail,
-    calendarName: integration.calendarName,
-    eventCount: integration.lastSyncedEventCount,
-    lastSyncedAt: integration.lastSyncedAt?.toISOString() ?? null,
-    lastError: integration.lastSyncError,
-  };
+  return googleCalendarStatusFromStoredState(
+    credential
+      ? {
+          accountEmail: credential.accountEmail,
+          hasCalendarPermission: grantedScopesIncludeGoogleCalendar(credential.grantedScopes),
+          accessTokenExpiresAt: credential.accessTokenExpiresAt,
+          hasRefreshToken: Boolean(credential.encryptedRefreshToken),
+        }
+      : null,
+    user?.googleCalendarIntegration ?? null,
+  );
 }
 
 export async function syncGoogleCalendarForGoogleSubject(
@@ -626,7 +614,30 @@ export async function syncGoogleCalendarForGoogleSubject(
   try {
     accessToken = await getGoogleCalendarAccessToken(googleSubject);
   } catch (error) {
-    if (error instanceof GoogleCalendarConnectionError) return permissionRequiredResult();
+    if (error instanceof GoogleCalendarConnectionError) {
+      const authorizationExpired = error.code === "AUTH_EXPIRED";
+      const message = error.code === "UPSTREAM_FAILURE"
+        ? "Não foi possível acessar o Google Agenda agora. Tente sincronizar novamente."
+        : authorizationExpired
+          ? GOOGLE_CALENDAR_REAUTH_MESSAGE
+          : "Autorize o Google Agenda com seu e-mail institucional.";
+      await db.googleCalendarIntegration.updateMany({
+        where: { userId: user.id },
+        data: { lastSyncError: message },
+      });
+      return error.code === "UPSTREAM_FAILURE"
+        ? {
+            status: "error",
+            message,
+            calendarName: null,
+            eventCount: 0,
+            createdCount: 0,
+            updatedCount: 0,
+            deletedCount: 0,
+            unchangedCount: 0,
+          }
+        : permissionRequiredResult(message);
+    }
     throw error;
   }
 
@@ -659,12 +670,10 @@ export async function syncGoogleCalendarForGoogleSubject(
     };
   } catch (error) {
     const message = calendarErrorMessage(error);
-    if (integration) {
-      await db.googleCalendarIntegration.updateMany({
-        where: { id: integration.id },
-        data: { lastSyncError: message },
-      });
-    }
+    await db.googleCalendarIntegration.updateMany({
+      where: { userId: user.id },
+      data: { lastSyncError: message },
+    });
     return {
       status: "error",
       message,

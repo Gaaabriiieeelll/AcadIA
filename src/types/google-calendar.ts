@@ -25,6 +25,6 @@ export type GoogleCalendarSyncResult = {
 };
 
 export type GoogleCalendarSyncFormState = {
-  status: "idle" | "success" | "error";
+  status: "idle" | "success" | "permission-required" | "error";
   message?: string;
 };

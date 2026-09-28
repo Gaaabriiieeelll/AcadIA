@@ -34,6 +34,7 @@ import {
   type CalendarEventDTO,
 } from "@/types/calendar-events";
 import type { ClassroomTaskSyncDTO } from "@/types/google-classroom";
+import type { GoogleCalendarConnectionStatus } from "@/types/google-calendar";
 
 import styles from "./calendar.module.css";
 
@@ -259,14 +260,19 @@ function classroomSyncMessage(
   return `${pendingCount} pendente(s) · ${completedCount} enviada(s) ou concluída(s). Última atualização: ${updatedAt}.`;
 }
 
-function googleCalendarConnectionMessage(status: string | undefined) {
+function googleCalendarConnectionMessage(
+  status: string | undefined,
+  currentStatus: GoogleCalendarConnectionStatus,
+) {
+  if (status === "connected" && currentStatus !== "connected") return null;
+  if (status === "sync-error" && currentStatus === "connected") return null;
   if (status === "connected") return "Google Agenda conectado e primeira sincronização concluída.";
   if (status === "denied") return "A autorização do Google Agenda foi cancelada.";
   if (status === "account-mismatch") {
     return "Use uma conta Google do domínio @academico.ifpb.edu.br para conectar o calendário.";
   }
   if (status === "sync-error") {
-    return "A autorização foi recebida, mas o Google Agenda não permitiu criar ou atualizar o calendário.";
+    return "A autorização foi recebida, mas a sincronização com o Google Agenda não foi concluída.";
   }
   if (status === "not-configured") return "A integração do Google ainda não foi configurada no servidor.";
   if (status === "invalid-state") return "A autorização expirou. Inicie a conexão novamente.";
@@ -446,7 +452,10 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
 
         <GoogleCalendarControl
           accountEmail={googleCalendarStatus.accountEmail}
-          connectionMessage={googleCalendarConnectionMessage(googleCalendarParameter)}
+          connectionMessage={googleCalendarConnectionMessage(
+            googleCalendarParameter,
+            googleCalendarStatus.status,
+          )}
           status={googleCalendarStatus}
         />
 

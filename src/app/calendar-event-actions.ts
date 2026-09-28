@@ -100,7 +100,7 @@ export async function syncGoogleCalendarAction(
     const result = await syncCurrentGoogleCalendar();
     revalidateCalendarPages();
     return {
-      status: result.status === "success" ? "success" : "error",
+      status: result.status,
       message: result.message,
     };
   } catch (error) {

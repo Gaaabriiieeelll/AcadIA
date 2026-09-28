@@ -70,6 +70,21 @@ a sincronização do Classroom em segundo plano. A atualização ocorre ao abrir
 pode forçar a consulta pelo botão de atualização. Chamadas ao Google Classroom e
 ao endpoint OAuth expiram após 12 segundos para não prender a navegação.
 
+## Google Agenda em produção
+
+O cliente OAuth usado pelo Google Agenda precisa ter
+`https://SEU-DOMINIO/api/classroom/callback` como URI de redirecionamento autorizada.
+No Google Cloud Console, abra **Google Auth Platform → Público-alvo** e confira o
+status de publicação. Se o app externo estiver em **Teste**, o Google expira a
+autorização e o token de renovação após sete dias quando o escopo do Agenda é
+solicitado. Para manter a conexão, publique o app como **Em produção** e conclua
+as verificações exigidas pelo Google para os escopos configurados. Depois,
+autorize o Google Agenda novamente no AcadIA com a conta institucional.
+
+Quando a autorização expira, o AcadIA mostra **Autorizar novamente**. Falhas
+temporárias de acesso ao Google mostram uma opção para tentar a sincronização de
+novo.
+
 ## Compromissos em aberto
 
 Ao criar um evento pessoal no Calendário, deixar **Data final** vazia cria um

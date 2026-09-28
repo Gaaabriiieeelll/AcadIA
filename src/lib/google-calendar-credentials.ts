@@ -1,6 +1,7 @@
 import "server-only";
 
 import { db } from "@/lib/db";
+import { GOOGLE_CALENDAR_REAUTH_MESSAGE } from "@/lib/google-calendar-status";
 import { GOOGLE_CALENDAR_APP_SCOPE } from "@/lib/google-classroom-scopes";
 import { decryptServerSecret, encryptServerSecret } from "@/lib/secret-box";
 
@@ -91,6 +92,10 @@ export async function saveGoogleCalendarCredentials(
         grantedScopes: credentials.scope ?? "",
       },
     });
+    await transaction.googleCalendarIntegration.updateMany({
+      where: { userId: user.id, lastSyncError: GOOGLE_CALENDAR_REAUTH_MESSAGE },
+      data: { lastSyncError: null },
+    });
   });
 }
 
@@ -123,7 +128,11 @@ async function refreshAccessToken(
   }
 
   if (!response.ok) {
-    throw new GoogleCalendarConnectionError("AUTH_EXPIRED");
+    throw new GoogleCalendarConnectionError(
+      response.status === 400 || response.status === 401
+        ? "AUTH_EXPIRED"
+        : "UPSTREAM_FAILURE",
+    );
   }
 
   const token = await response.json() as {
