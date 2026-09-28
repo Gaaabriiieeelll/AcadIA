@@ -19,6 +19,10 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  serverExternalPackages: ["pdfjs-dist"],
+  outputFileTracingIncludes: {
+    "/api/suap-report/preview": ["./node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs"],
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
