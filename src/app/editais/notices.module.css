@@ -776,6 +776,116 @@
   line-height: 1.55;
 }
 
+.faqDisclosure {
+  border-bottom: 1px solid var(--border);
+}
+
+.faqDisclosure > summary {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 17px clamp(22px, 4vw, 34px);
+  cursor: pointer;
+  list-style: none;
+}
+
+.faqDisclosure > summary::-webkit-details-marker,
+.faqItem > summary::-webkit-details-marker {
+  display: none;
+}
+
+.faqDisclosure > summary > span:first-child {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  margin-right: auto;
+}
+
+.faqDisclosure > summary small {
+  color: var(--brand-700);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.faqDisclosure > summary strong {
+  color: var(--teal-900);
+  font-size: 13px;
+}
+
+.faqCount {
+  color: var(--text-muted);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.faqDisclosure > summary svg,
+.faqItem > summary svg {
+  width: 19px;
+  height: 19px;
+  flex: none;
+  transition: transform 160ms ease;
+}
+
+.faqDisclosure[open] > summary svg,
+.faqItem[open] > summary svg {
+  transform: rotate(180deg);
+}
+
+.faqDisclosure summary:focus-visible {
+  border-radius: 8px;
+  outline: 2px solid var(--brand-500);
+  outline-offset: -3px;
+}
+
+.faqContent {
+  display: grid;
+  gap: 8px;
+  padding: 0 clamp(22px, 4vw, 34px) 22px;
+}
+
+.faqItem {
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface-muted);
+}
+
+.faqItem > summary {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 15px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.45;
+  list-style: none;
+}
+
+.faqItem p {
+  margin: 0;
+  padding: 0 15px 15px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.faqSource {
+  margin: 7px 0 0;
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.faqSource a {
+  color: var(--brand-700);
+  font-weight: 750;
+  text-underline-offset: 2px;
+}
+
 .cardFooter {
   display: flex;
   gap: 16px;
@@ -1010,6 +1120,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .noticeDetails > summary svg,
+  .faqDisclosure > summary svg,
+  .faqItem > summary svg,
   .progressTrack span,
   .cardFooter > a {
     transition: none;

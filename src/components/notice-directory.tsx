@@ -205,6 +205,31 @@ function NoticeCard({
         </div>
       </details>
 
+      <details className={styles.faqDisclosure}>
+        <summary>
+          <span>
+            <small>Respostas rápidas</small>
+            <strong>Perguntas frequentes</strong>
+          </span>
+          <span className={styles.faqCount}>{notice.faqs.length} perguntas</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m7 9 5 5 5-5" /></svg>
+        </summary>
+        <div className={styles.faqContent}>
+          {notice.faqs.map((item) => (
+            <details className={styles.faqItem} key={item.question}>
+              <summary>
+                {item.question}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m7 9 5 5 5-5" /></svg>
+              </summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+          <p className={styles.faqSource}>
+            Respostas resumidas. Confira o <a href={notice.officialUrl} rel="noreferrer" target="_blank">edital e as atualizações oficiais ↗</a>.
+          </p>
+        </div>
+      </details>
+
       <footer className={styles.cardFooter}>
         <div>
           <span>Publicado em {formatDate(notice.publishedAt)}</span>
@@ -244,6 +269,7 @@ export function NoticeDirectory({
         notice.audience,
         notice.benefit,
         ...notice.eligibility,
+        ...notice.faqs.flatMap((item) => [item.question, item.answer]),
       ].join(" "));
       return terms.every((term) => searchable.includes(term));
     });

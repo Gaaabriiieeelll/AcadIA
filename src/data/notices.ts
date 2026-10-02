@@ -66,19 +66,19 @@ function resolveIvsStatus(today: string): NoticeStatusDetails {
       statusDate: "2026-09-17",
     };
   }
-  if (today < "2026-09-23") {
+  if (today < "2026-09-24") {
     return {
       status: "review",
       statusLabel: "Recursos em análise",
-      statusDetail: "O resultado final está previsto para 23 de setembro.",
-      statusDate: "2026-09-23",
+      statusDetail: "Acompanhe a publicação do resultado final na página oficial.",
+      statusDate: "2026-09-24",
     };
   }
   return {
     status: "result",
-    statusLabel: "Resultado final previsto",
-    statusDetail: "Consulte o resultado oficial e confirme a situação do seu IVS no SUAP.",
-    statusDate: "2026-09-23",
+    statusLabel: "Resultado final publicado",
+    statusDetail: "O resultado final foi publicado em 24 de setembro. Confira a situação do seu IVS na página oficial e no SUAP.",
+    statusDate: "2026-09-24",
   };
 }
 
@@ -140,12 +140,12 @@ function resolvePapeStatus(today: string): NoticeStatusDetails {
       statusDate: "2026-08-27",
     };
   }
-  if (today < "2026-08-31") {
+  if (today < "2026-09-01") {
     return {
       status: "review",
-      statusLabel: "Resultado final em 31 ago",
-      statusDetail: "A análise dos recursos foi concluída; acompanhe a publicação oficial.",
-      statusDate: "2026-08-31",
+      statusLabel: "Aguardando resultado final",
+      statusDetail: "Acompanhe a publicação oficial após a análise dos recursos.",
+      statusDate: "2026-09-01",
     };
   }
   if (today <= "2026-09-08") {
@@ -185,8 +185,8 @@ function resolveInnovationStatus(today: string): NoticeStatusDetails {
     return {
       status: "review",
       statusLabel: "Propostas em avaliação",
-      statusDetail: "Acompanhe o resultado final dos projetos em 10 de setembro.",
-      statusDate: "2026-09-10",
+      statusDetail: "Acompanhe a publicação do resultado final dos projetos.",
+      statusDate: "2026-09-11",
     };
   }
   if (today <= "2026-09-16") {
@@ -354,6 +354,11 @@ const noticeDefinitions: NoticeDefinition[] = [
       { id: "enviar-inscricao", label: "Enviei a inscrição e a declaração de matrícula" },
       { id: "acompanhar-etapas", label: "Acompanhei resultados e avaliações" },
     ],
+    faqs: [
+      { question: "Preciso apresentar o certificado de inglês no dia da inscrição?", answer: "O edital permite apresentá-lo até o último dia da avaliação final da primeira etapa. Confira também as instruções do formulário de inscrição." },
+      { question: "Qualquer estudante pode escolher a trilha Computing?", answer: "Não. A trilha Computing recebe apenas inscrições de estudantes do gênero feminino; as demais trilhas seguem os requisitos gerais do edital." },
+      { question: "A segunda etapa é feita pela internet?", answer: "Não. A primeira etapa é remota; a segunda está prevista para 4 de novembro de 2026, presencialmente no Campus Esperança." },
+    ],
     caution: "Consulte o edital para regras completas, formulário de inscrição e atualizações. A seleção e a bolsa dependem do resultado oficial.",
     officialUrl: "https://www.ifpb.edu.br/noticias/2026/09/ifpb-e-ifsertaopb-abrem-selecao-interna-para-a-huawei-ict-competition",
     publishedAt: "2026-09-25",
@@ -397,6 +402,10 @@ const noticeDefinitions: NoticeDefinition[] = [
       { id: "preparar-projeto", label: "Preparei o projeto e o painel explicativo" },
       { id: "organizar-estande", label: "Organizei a montagem e a apresentação" },
     ],
+    faqs: [
+      { question: "Posso inscrever um projeto sozinho?", answer: "Não. Cada equipe deve ter cinco estudantes dos cursos técnicos integrados ao ensino médio do Campus João Pessoa." },
+      { question: "Qual é o valor da ajuda de custo para a equipe?", answer: "A retificação 40/2026 fixou R$ 100 por grupo classificado, com limite de 30 ajudas de custo, conforme a ordem de classificação." },
+    ],
     caution: "As inscrições terminaram em 30 de setembro. Confira o edital, a retificação 40/2026 e as publicações da comissão antes de cada etapa.",
     officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/edital-n-o-35-2026-direcao-geral",
     publishedAt: "2026-09-02",
@@ -432,6 +441,10 @@ const noticeDefinitions: NoticeDefinition[] = [
       { id: "conferir-resultado", label: "Conferi o resultado preliminar oficial" },
       { id: "confirmar-convocacao", label: "Confirmei convocação e treinamento com a organização" },
       { id: "planejar-turnos", label: "Planejei meus turnos no PULSAR" },
+    ],
+    faqs: [
+      { question: "Ser monitor voluntário também dá direito a certificado?", answer: "Sim. O edital prevê certificado para monitores selecionados e voluntários que cumprirem pelo menos 12 horas presenciais e as reuniões e treinamentos obrigatórios." },
+      { question: "O apoio de R$ 120 é pago a toda pessoa inscrita?", answer: "Não. Ele é destinado aos monitores selecionados que cumprirem pelo menos 12 horas presenciais, após comprovação, conforme a disponibilidade orçamentária." },
     ],
     caution: "As inscrições terminaram em 20 de setembro. A retificação e as publicações oficiais prevalecem; confirme a convocação e o treinamento com a organização.",
     officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/edital-n-o-36-2026-direcao-geral",
@@ -475,6 +488,11 @@ const noticeDefinitions: NoticeDefinition[] = [
       { id: "conferir-resultado", label: "Conferi o resultado e avaliei se preciso recorrer" },
       { id: "cadastrar-conta", label: "Cadastrei meus dados bancários, se classificado" },
     ],
+    faqs: [
+      { question: "Posso me inscrever sem IVS válido?", answer: "Não. O SUAP verifica automaticamente se há IVS válido no momento da inscrição. Se não houver, procure o setor de assistência estudantil para saber como solicitar a análise." },
+      { question: "Todos os estudantes classificados recebem o mesmo valor?", answer: "Não. O edital prevê faixas de R$ 500, R$ 300 e R$ 200 por mês, conforme o IVS e o número de vagas de cada faixa." },
+      { question: "Existe lista de espera para quem ficar fora das vagas?", answer: "Não. O edital informa que estudantes fora do número de vagas precisam se inscrever em um próximo edital do PAPE." },
+    ],
     caution: "A classificação depende do resultado oficial do IFPB. Consulte o edital e eventuais retificações antes de cada etapa.",
     officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/edital-n-o-41-2026-direcao-geral",
     publishedAt: "2026-09-28",
@@ -515,6 +533,10 @@ const noticeDefinitions: NoticeDefinition[] = [
       { id: "solicitar-suap", label: "Abri o processo no SUAP no prazo" },
       { id: "prestar-contas", label: "Planejei a prestação de contas após o evento" },
     ],
+    faqs: [
+      { question: "Posso pedir o apoio poucos dias antes do evento?", answer: "Não. O processo eletrônico no SUAP precisa chegar ao DIPPED pelo menos 30 dias antes do evento, além de respeitar o prazo final do edital." },
+      { question: "O apoio cobre todas as despesas?", answer: "O edital prevê apoio parcial, sujeito à análise e aos recursos disponíveis. Consulte os itens de despesa aceitos antes de fazer a solicitação." },
+    ],
     caution: "O prazo de 30 dias antes do evento pode terminar antes de 30 de novembro. A concessão depende dos recursos e da análise oficial.",
     officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/edital-n-o-24-2026-direcao-geral",
     publishedAt: "2026-07-20",
@@ -548,21 +570,25 @@ const noticeDefinitions: NoticeDefinition[] = [
     ],
     schedule: [
       { label: "Inscrições das propostas", dateLabel: "26 a 31 de agosto", startDate: "2026-08-26", endDate: "2026-08-31" },
-      { label: "Resultado final dos projetos", dateLabel: "10 de setembro", startDate: "2026-09-10" },
+      { label: "Resultado final dos projetos publicado", dateLabel: "11 de setembro", startDate: "2026-09-11" },
       { label: "Seleção de estudantes bolsistas", dateLabel: "11 a 16 de setembro", startDate: "2026-09-11", endDate: "2026-09-16", calendar: true },
       { label: "Início das atividades", dateLabel: "18 de setembro", startDate: "2026-09-18" },
       { label: "Fim das atividades", dateLabel: "29 de janeiro de 2027", startDate: "2027-01-29" },
     ],
     checklist: [
       { id: "atualizar-lattes", label: "Atualizei meu currículo Lattes" },
-      { id: "acompanhar-projetos", label: "Vou conferir quais projetos foram aprovados em 10/09" },
+      { id: "acompanhar-projetos", label: "Conferi quais projetos foram aprovados" },
       { id: "buscar-selecao", label: "Verifiquei as seleções de bolsistas entre 11 e 16/09" },
       { id: "revisar-disponibilidade", label: "Confirmei minha disponibilidade e compatibilidade de bolsas" },
     ],
+    faqs: [
+      { question: "O estudante envia o projeto principal neste edital?", answer: "Não. Servidores coordenadores submetem os projetos; a escolha dos estudantes bolsistas ocorre depois, nos projetos aprovados." },
+      { question: "Ser indicado para um projeto garante a bolsa?", answer: "Não. A indicação de estudante coautor exige critérios documentados pelo coordenador. A escolha dos bolsistas e o pagamento seguem as demais condições do edital." },
+    ],
     caution: "O estudante não submete a proposta principal deste edital. A entrada como bolsista ocorre na seleção simplificada conduzida por um projeto aprovado.",
     officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/edital-n-o-33-2026-direcao-geral",
-    publishedAt: "2026-08-24",
-    verifiedAt: "2026-08-30",
+    publishedAt: "2026-08-25",
+    verifiedAt: "2026-10-02",
     resolveStatus: resolveInnovationStatus,
   },
   {
@@ -592,9 +618,9 @@ const noticeDefinitions: NoticeDefinition[] = [
     ],
     schedule: [
       { label: "Inscrições", dateLabel: "12 a 23 de agosto", startDate: "2026-08-12", endDate: "2026-08-23", calendar: true },
-      { label: "Resultado preliminar", dateLabel: "25 de agosto", startDate: "2026-08-25" },
+      { label: "Resultado preliminar publicado", dateLabel: "26 de agosto", startDate: "2026-08-26" },
       { label: "Recursos", dateLabel: "26 e 27 de agosto", startDate: "2026-08-26", endDate: "2026-08-27", calendar: true },
-      { label: "Resultado final", dateLabel: "31 de agosto", startDate: "2026-08-31" },
+      { label: "Resultado final publicado", dateLabel: "1º de setembro", startDate: "2026-09-01" },
       { label: "Cadastro da conta no SUAP", dateLabel: "1º a 8 de setembro", startDate: "2026-09-01", endDate: "2026-09-08", calendar: true },
     ],
     checklist: [
@@ -603,10 +629,14 @@ const noticeDefinitions: NoticeDefinition[] = [
       { id: "atualizar-conta-suap", label: "Confirmei ou atualizei os dados bancários no SUAP" },
       { id: "documento-especifico", label: "Enviei laudo ou declaração de matrícula vínculo, se aplicável" },
     ],
+    faqs: [
+      { question: "Estar no resultado final dispensa o cadastro da conta bancária?", answer: "Não. Quem foi classificado deve inserir, confirmar ou atualizar no SUAP uma conta bancária de sua titularidade. A falta desse cadastro no prazo pode suspender o atendimento." },
+      { question: "Este é o mesmo processo do PAPE IV?", answer: "Não. O Edital 28/2026 corresponde à seleção anterior, com cronograma próprio; o PAPE IV é o Edital 41/2026. Consulte o resultado ou a inscrição do edital correto." },
+    ],
     caution: "O AcadIA explica o processo, mas não calcula classificação nem confirma direito ao auxílio. A decisão válida é a publicada pelo IFPB.",
     officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/edital-n-o-28-2026-direcao-geral",
-    publishedAt: "2026-08-11",
-    verifiedAt: "2026-08-30",
+    publishedAt: "2026-08-24",
+    verifiedAt: "2026-10-02",
     resolveStatus: resolvePapeStatus,
   },
   {
@@ -634,7 +664,7 @@ const noticeDefinitions: NoticeDefinition[] = [
       "Compareça à entrevista e apresente informações adicionais, se for convocado.",
       "Confira o resultado preliminar em 14 de setembro.",
       "Se houver erro, apresente recurso fundamentado pelo SUAP entre 15 e 17 de setembro.",
-      "Consulte o resultado final em 23 de setembro.",
+      "Consulte o resultado final publicado em 24 de setembro.",
     ],
     schedule: [
       { label: "Análise da documentação", dateLabel: "24 de agosto a 4 de setembro", startDate: "2026-08-24", endDate: "2026-09-04" },
@@ -642,7 +672,7 @@ const noticeDefinitions: NoticeDefinition[] = [
       { label: "Entrevistas", dateLabel: "9 a 11 de setembro", startDate: "2026-09-09", endDate: "2026-09-11" },
       { label: "Resultado preliminar", dateLabel: "14 de setembro", startDate: "2026-09-14" },
       { label: "Recursos", dateLabel: "15 a 17 de setembro", startDate: "2026-09-15", endDate: "2026-09-17", calendar: true },
-      { label: "Resultado final", dateLabel: "23 de setembro", startDate: "2026-09-23" },
+      { label: "Resultado final publicado", dateLabel: "24 de setembro", startDate: "2026-09-24" },
     ],
     checklist: [
       { id: "acompanhar-entrevista", label: "Vou conferir o cronograma de entrevistas em 08/09" },
@@ -651,10 +681,14 @@ const noticeDefinitions: NoticeDefinition[] = [
       { id: "avaliar-recurso", label: "Avaliei se preciso apresentar recurso pelo SUAP" },
       { id: "conferir-final", label: "Conferi o resultado final e a validade do IVS" },
     ],
+    faqs: [
+      { question: "Ter IVS aprovado significa receber auxílio automaticamente?", answer: "Não. O IVS é um índice usado como critério em seleções da Assistência Estudantil. Cada programa tem inscrição, vagas e condições próprias." },
+      { question: "Por quanto tempo o IVS é válido?", answer: "O edital prevê validade de dois anos a partir do mês e ano do resultado homologado, com possibilidade de prorrogação conforme suas regras." },
+    ],
     caution: "A lista completa varia conforme a composição e a renda familiar. Consulte os quadros de documentos e anexos do edital oficial antes de enviar ou complementar informações.",
     officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/edital-n-o-26-2026-direcao-geral",
     publishedAt: "2026-08-06",
-    verifiedAt: "2026-08-30",
+    verifiedAt: "2026-10-02",
     resolveStatus: resolveIvsStatus,
   },
   {
@@ -691,10 +725,14 @@ const noticeDefinitions: NoticeDefinition[] = [
       { id: "acompanhar-qrcode", label: "Acompanhei as orientações de acesso por QR Code" },
       { id: "documento-especifico", label: "Enviei laudo ou declaração de matrícula vínculo, se aplicável" },
     ],
+    faqs: [
+      { question: "Posso trocar almoço por jantar depois de ser incluído?", answer: "Não. O edital não permite alterar posteriormente o tipo de refeição escolhido na inscrição." },
+      { question: "Preciso ter IVS válido para participar?", answer: "Sim. O SUAP verifica automaticamente o IVS válido no momento da inscrição, além dos demais requisitos do edital." },
+    ],
     caution: "As refeições são disponibilizadas por ordem de chegada e dentro do limite diário. Consulte o resultado e as orientações oficiais do campus.",
     officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/copy_of_edital-n-o-26-2026-direcao-geral",
     publishedAt: "2026-08-10",
-    verifiedAt: "2026-08-30",
+    verifiedAt: "2026-10-02",
     resolveStatus: resolveFoodStatus,
   },
 ];

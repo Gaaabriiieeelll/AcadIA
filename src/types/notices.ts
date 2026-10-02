@@ -19,6 +19,11 @@ export type NoticeChecklistItemDTO = {
   detail?: string;
 };
 
+export type NoticeFAQDTO = {
+  question: string;
+  answer: string;
+};
+
 export type NoticeDTO = {
   id: string;
   number: string;
@@ -36,6 +41,7 @@ export type NoticeDTO = {
   steps: string[];
   schedule: NoticeScheduleItemDTO[];
   checklist: NoticeChecklistItemDTO[];
+  faqs: NoticeFAQDTO[];
   caution: string;
   officialUrl: string;
   publishedAt: string;
