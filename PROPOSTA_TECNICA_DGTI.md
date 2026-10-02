@@ -1,7 +1,7 @@
 # Proposta técnica preliminar — Integração do AcadIA com o SUAP/IFPB
 
-**Versão:** 0.3 — minuta para revisão  
-**Data:** 30 de agosto de 2026  
+**Versão:** 0.4 — minuta para revisão  
+**Data:** 2 de outubro de 2026  
 **Situação:** documento preliminar, sem autorização institucional concedida
 
 ## 1. Identificação
@@ -21,7 +21,7 @@ O professor indicado autorizou sua identificação como apoiador da proposta. Es
 
 O AcadIA é uma plataforma web independente de apoio à vida acadêmica do estudante. Sua finalidade é reunir, em uma experiência responsiva e instalável, o acompanhamento de desempenho, a organização de atividades, o planejamento de estudos, o acesso orientado a informações institucionais e o recebimento de alertas. O sistema não substitui o SUAP, o Google Sala de Aula nem os canais oficiais do IFPB; ele organiza informações do próprio usuário e mantém visível a origem dos dados externos.
 
-O MVP atual já funciona sem integração com o SUAP e combina registros locais do estudante, integrações autorizadas de leitura e consultas a fontes públicas. A futura integração solicitada nesta proposta acrescentaria uma fonte institucional confiável para notas, médias, frequência e demais dados acadêmicos autorizados, reduzindo a necessidade de preenchimento manual.
+O MVP atual já funciona sem conexão automática com o SUAP e combina registros locais do estudante, importação manual de boletim em PDF, integrações autorizadas de leitura e consultas a fontes públicas. A futura integração solicitada nesta proposta acrescentaria uma fonte institucional para sincronização autorizada de notas, médias e frequência, reduzindo a necessidade de preenchimento manual.
 
 Esta proposta solicita à Diretoria de Gestão de Tecnologia da Informação (DGTI) a análise de viabilidade de uma integração oficial, controlada e exclusivamente de leitura com o SUAP-Ensino. O objetivo inicial é realizar um piloto com aproximadamente 35 estudantes, permitindo que cada participante consulte e sincronize somente os próprios dados acadêmicos, sem fornecer sua senha do SUAP ao AcadIA e sem modificar qualquer informação no sistema institucional.
 
@@ -29,17 +29,17 @@ A execução ficará condicionada à autorização institucional e aos requisito
 
 ### 2.1 Funcionalidades existentes no MVP
 
-- **visão geral acadêmica:** painel com médias, frequência, avaliações registradas, desempenho por bimestre, disciplinas que exigem atenção, maiores e menores médias e resumo da agenda;
-- **disciplinas e desempenho:** cadastro e importação de disciplinas, registro de avaliações, notas, pesos, aulas e faltas, com cálculo de médias e situação acadêmica;
-- **agenda e calendário:** criação e acompanhamento de tarefas e eventos, calendário acadêmico público do IFPB e sincronização de atividades do Google Sala de Aula;
-- **materiais e horários:** consulta de turmas, avisos e materiais do Google Sala de Aula, além da grade pública da turma de Mecânica II no hIFPB, com aulas, docentes, salas e laboratórios;
+- **visão geral acadêmica:** painel com médias, frequência, avaliações registradas, gráficos anuais e filtro por bimestre, disciplinas que exigem atenção e resumo da agenda;
+- **disciplinas e desempenho:** cadastro e sincronização de disciplinas pela grade pública da turma, registro de avaliações, notas, pesos, aulas e faltas, com cálculo de médias e situação acadêmica; importação manual do boletim individual em PDF gerado pelo SUAP, com conferência antes de salvar e sem armazenamento do arquivo original;
+- **agenda e calendário:** criação e acompanhamento de tarefas e eventos, visualizações diária, semanal e mensal, calendário acadêmico público do IFPB, prazos de editais, sincronização de atividades do Google Sala de Aula e integração opcional com o Google Agenda;
+- **materiais e horários:** consulta de turmas, avisos e materiais do Google Sala de Aula, além da grade pública do hIFPB selecionada conforme curso, ano e divisão da turma, com aulas, docentes, salas e laboratórios;
 - **central de alertas:** avisos explicáveis sobre notas, frequência, prazos e calendário, com preferências por categoria, leitura, adiamento, ocultação, histórico, notificações Web Push e envio opcional pelo WhatsApp;
 - **plano de estudos:** organização semanal conforme disponibilidade, meta de tempo, prioridades calculadas a partir de desempenho e atividades, sessões automáticas ou manuais e acompanhamento do progresso;
-- **orientação opcional por inteligência artificial:** bate-papo para interpretar notas, priorizar estudos e relacionar conteúdos do Google Sala de Aula a videoaulas do YouTube, somente após consentimento específico;
-- **editais e atendimento:** editais do Campus João Pessoa apresentados em linguagem simplificada, com cronogramas, requisitos, documentos, fontes oficiais e checklists individuais, além de uma central pesquisável de setores e canais de atendimento;
+- **orientação opcional por inteligência artificial:** bate-papo com a Groq para interpretar notas, priorizar estudos e relacionar conteúdos do Google Sala de Aula a videoaulas do YouTube, mediante consentimento próprio; recomendações automáticas de vídeo usam consentimento separado para a OpenAI;
+- **editais, oportunidades e atendimento:** editais do Campus João Pessoa apresentados em linguagem simplificada, com cronogramas, requisitos, documentos, fontes oficiais e checklists individuais; área inicial de estágios com canais oficiais e editais acadêmicos acompanhados; central pesquisável de setores e canais de atendimento;
 - **conta e privacidade:** exportação dos dados em JSON, desconexão local do Google Sala de Aula, revogação do consentimento da IA, controle dos canais de notificação e exclusão permanente da conta.
 
-As funcionalidades acima não significam que exista acesso atual ao SUAP. Não há, até o momento, cliente, credenciais, endpoints ou rota de sincronização do SUAP ativos no AcadIA. Os dados oficiais dessa futura integração somente serão tratados após a tramitação e a autorização institucional correspondentes.
+O AcadIA não possui cliente, credenciais, endpoints ou rota de sincronização automática do SUAP. O estudante pode importar manualmente o próprio boletim em PDF; as notas e faltas confirmadas passam a integrar seus registros no AcadIA. Esta proposta trata de uma futura conexão oficial com a API, sujeita à tramitação e à autorização institucional correspondentes.
 
 ## 3. Problema e justificativa
 
@@ -100,7 +100,7 @@ Se a API retornar campos adicionais, o AcadIA deverá ignorá-los e não armazen
 
 ## 7. Funcionamento e autenticação
 
-O AcadIA utiliza atualmente Google OAuth para identidade básica, com os escopos `openid`, `email` e `profile`. Nome, foto e e-mail permanecem na sessão, cuja duração máxima configurada é de quatro horas. O domínio acadêmico está bloqueado no MVP enquanto não houver autorização institucional.
+O AcadIA utiliza atualmente Google OAuth para identidade básica, com os escopos `openid`, `email` e `profile`. Nome, foto e e-mail permanecem na sessão, cuja duração máxima configurada é de quatro horas. A política de acesso pode limitar contas específicas ou permitir qualquer conta Google autenticada, conforme a configuração da implantação. O acesso ao AcadIA não concede acesso à API do SUAP.
 
 A autenticação perante a API do SUAP será implementada exclusivamente pelo mecanismo oficial definido pela DGTI, preferencialmente com autorização delegada, escopos mínimos e tokens revogáveis. O AcadIA não solicitará nem armazenará a senha do estudante.
 
@@ -129,23 +129,23 @@ O mecanismo de associação entre a identidade Google e o usuário institucional
 | Aplicação web | Next.js 16, React 19 e TypeScript, com interface responsiva e recursos de aplicação web instalável (PWA) |
 | Processamento no servidor | Rotas e ações de servidor do Next.js |
 | Persistência | PostgreSQL acessado por Prisma ORM |
-| Autenticação atual | Google OAuth por NextAuth, com lista restrita de contas |
+| Autenticação atual | Google OAuth por NextAuth, com política de contas configurável |
 | Validação de entrada | Zod e validação no servidor |
 | Google Sala de Aula | Conexão separada e autorizada, somente de leitura, para turmas, materiais, avisos e atividades |
 | Fontes públicas do IFPB | Consulta da grade do hIFPB, calendário acadêmico, editais e páginas oficiais de atendimento |
 | Plano e alertas | Regras locais explicáveis, tarefas agendadas e preferências individuais |
-| Inteligência artificial opcional | OpenAI para orientação de estudos, condicionada a consentimento ativo e com requisições configuradas com `store: false` |
+| Inteligência artificial opcional | Groq para bate-papo de estudos e OpenAI para geração de recomendações de vídeo, cada uma com consentimento próprio; o bate-papo não usa recursos de persistência da API da Groq |
 | Recomendações de vídeo | YouTube Data API para localizar videoaulas a partir de pesquisas acadêmicas |
 | Notificações | Web Push e WhatsApp por instância própria da Evolution API, ambos ativados pelo usuário |
 | Integração SUAP | Adaptador de API a ser criado após autorização e documentação oficial |
-| Hospedagem de produção | A definir com o IFPB |
+| Hospedagem atual | Aplicação publicada na Vercel e PostgreSQL gerenciado; infraestrutura do eventual piloto institucional a definir com o IFPB |
 | Monitoramento e auditoria | Verificações de saúde já existentes; trilha específica da integração SUAP a implementar antes do piloto |
 
 Todas as consultas existentes de dados privados são vinculadas ao identificador interno do usuário autenticado. Credenciais de integrações, telefone e material de assinatura Web Push são protegidos no banco por criptografia autenticada. A futura integração deverá manter o mesmo isolamento e adotar o mecanismo de proteção de tokens definido ou aprovado pela DGTI.
 
 ## 9. Hospedagem e localização dos dados
 
-O ambiente atual é de desenvolvimento e utiliza banco PostgreSQL gerenciado fora da infraestrutura institucional. A hospedagem definitiva ainda não foi decidida.
+O AcadIA já está publicado na Vercel e utiliza PostgreSQL gerenciado fora da infraestrutura institucional. Essa implantação não define automaticamente a infraestrutura do piloto com dados provenientes da API do SUAP. A hospedagem desse piloto ainda dependerá da avaliação e das condições estabelecidas pelo IFPB.
 
 Para o piloto, propõem-se as seguintes opções, em ordem de preferência:
 
@@ -175,7 +175,7 @@ Propõe-se que, ao fim do piloto ou após solicitação de exclusão, os dados p
 ### 11.1 Controles existentes no MVP
 
 - autenticação Google com identidade verificada;
-- lista restrita de contas autorizadas;
+- política configurável de contas autorizadas;
 - sessão com duração máxima de quatro horas;
 - segredos e conexões mantidos somente no servidor;
 - validação de entradas e ações sensíveis no servidor;
@@ -225,14 +225,15 @@ O MVP utiliza ou prevê os serviços abaixo. A eventual utilização de dados pr
 |---|---|---|
 | Google OAuth | Identidade básica: nome, foto e e-mail | O login, por si só, não envia dados acadêmicos ao Google |
 | Google Sala de Aula | Integração separada e somente de leitura para turmas, materiais, avisos e atividades | Permanece uma fonte independente; não receberá dados do SUAP |
-| OpenAI | Bate-papo e recomendações de estudo opcionais; recebe nomes de disciplinas, notas e conteúdo textual selecionado do Classroom após consentimento, sem e-mail, matrícula, telefone ou tokens, com `store: false` | Dados originados do SUAP ficarão excluídos durante o piloto, salvo avaliação e autorização expressas em escopo separado |
+| Groq | Bate-papo de estudos opcional; recebe contexto acadêmico autorizado após consentimento próprio, sem e-mail, matrícula, telefone ou tokens | Dados obtidos pela futura API do SUAP ficarão excluídos durante o piloto, salvo avaliação e autorização expressas em escopo separado |
+| OpenAI | Geração opcional de recomendações de vídeo, com consentimento separado e requisições configuradas com `store: false` | A mesma restrição se aplica aos dados obtidos pela futura API do SUAP |
 | YouTube Data API | Busca videoaulas por termos de disciplina ou assunto, sem envio da identidade do estudante | Não receberá registros brutos do SUAP; eventual pesquisa derivada seguirá a regra aprovada pelo IFPB |
 | Evolution API e WhatsApp | Envio opcional de alertas ao número informado e verificado pelo usuário | Alertas contendo ou derivados de dados do SUAP somente serão enviados se esse fluxo for expressamente autorizado |
 | Serviços Web Push | Entrega opcional de notificações ao navegador cadastrado | A mesma restrição será aplicada a notificações contendo ou derivadas de dados do SUAP |
 | hIFPB e páginas oficiais do IFPB | Consulta de horários e reprodução referenciada de calendário, editais e contatos públicos | Fontes públicas, sem compartilhamento de dados pessoais do estudante |
 | Hospedagem, PostgreSQL e monitoramento | Execução, persistência e disponibilidade da aplicação | Prestadores, região, acesso, retenção e suboperadores serão informados e submetidos às condições do IFPB |
 
-A autorização de uma integração não será reutilizada para outra finalidade. Em especial, o consentimento atual da funcionalidade de IA não será interpretado como autorização para enviar dados provenientes do SUAP a esse serviço.
+A autorização de uma integração não será reutilizada para outra finalidade. Em especial, os consentimentos atuais das funcionalidades de IA não serão interpretados como autorização para enviar a esses serviços dados obtidos pela futura API do SUAP.
 
 ## 14. Auditoria e revogação
 
@@ -276,6 +277,7 @@ Caso a proposta seja considerada viável, solicita-se orientação sobre:
 - modelo de autenticação e autorização suportado;
 - escopos disponíveis e princípio de menor privilégio;
 - documentação dos endpoints e contratos de dados;
+- existência de uma fonte oficial de leitura para vagas de estágio e outras oportunidades, com data de publicação, prazo, cursos aceitos, local e instruções de candidatura, se esse tema puder integrar o escopo institucional;
 - ambiente de homologação ou dados de teste;
 - processo de cadastro do cliente e das URIs de retorno;
 - limites de requisição e frequência permitida de sincronização;
