@@ -1,8 +1,8 @@
 # Proposta técnica preliminar — Integração do AcadIA com o SUAP/IFPB
 
-**Versão:** 0.4 — minuta para revisão  
-**Data:** 2 de outubro de 2026  
-**Situação:** documento preliminar, sem autorização institucional concedida
+- **Versão:** 0.4 — minuta para revisão
+- **Data:** 2 de outubro de 2026
+- **Situação:** documento preliminar, sem autorização institucional concedida
 
 ## 1. Identificação
 
