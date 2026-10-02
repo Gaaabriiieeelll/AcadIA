@@ -1,7 +1,16 @@
+"use client";
+
 import type { CSSProperties } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
-import type { AcademicBimesterOverviewDTO, AcademicOverviewDTO, SubjectDTO } from "@/types/subjects";
+import {
+  BIMESTERS,
+  type AcademicBimesterOverviewDTO,
+  type AcademicOverviewDTO,
+  type BimesterNumber,
+  type SubjectDTO,
+} from "@/types/subjects";
 
 import styles from "./dashboard-charts.module.css";
 
@@ -45,6 +54,7 @@ function Goal({ label, value, target, suffix, color }: {
 }
 
 export function DashboardCharts({ bimesters, subjects, overview, targetAverage, minimumAttendance }: Props) {
+  const [selectedBimester, setSelectedBimester] = useState<BimesterNumber | null>(null);
   const chartWidth = 640;
   const chartHeight = 180;
   const x = (index: number) => 44 + index * (chartWidth - 88) / 3;
@@ -62,6 +72,19 @@ export function DashboardCharts({ bimesters, subjects, overview, targetAverage, 
   const attendance = [...subjects]
     .filter((subject) => subject.attendancePercentage !== null)
     .sort((a, b) => (a.attendancePercentage ?? 0) - (b.attendancePercentage ?? 0));
+  const selectedOverview = bimesters.find((item) => item.bimester === selectedBimester);
+  const selectedScores = selectedBimester === null ? [] : subjects
+    .filter((subject) => subject.bimesterCount >= selectedBimester)
+    .map((subject) => ({
+      subject,
+      score: subject.bimesterGrades.find((grade) => grade.bimester === selectedBimester)?.score ?? null,
+    }))
+    .sort((left, right) => {
+      if (left.score === null) return right.score === null
+        ? left.subject.name.localeCompare(right.subject.name, "pt-BR") : 1;
+      if (right.score === null) return -1;
+      return left.score - right.score || left.subject.name.localeCompare(right.subject.name, "pt-BR");
+    });
 
   return (
     <section className={styles.section} aria-labelledby="dashboard-charts-title">
@@ -71,9 +94,56 @@ export function DashboardCharts({ bimesters, subjects, overview, targetAverage, 
       </div>
       <div className={styles.grid}>
         <article className={styles.panel}>
-          <h3>Evolução anual das notas</h3>
-          <p>Média das notas registradas em cada bimestre.</p>
-          {points.every((point) => point === null) ? (
+          <h3>{selectedBimester === null ? "Evolução anual das notas" : `Notas do ${selectedBimester}º bimestre`}</h3>
+          <p>{selectedBimester === null
+            ? "Média das notas registradas em cada bimestre."
+            : "Compare as disciplinas deste bimestre. As menores notas aparecem primeiro."}</p>
+          <div aria-label="Filtrar gráfico de notas por bimestre" className={styles.periodFilter} role="group">
+            <button aria-pressed={selectedBimester === null} onClick={() => setSelectedBimester(null)} type="button">Ano todo</button>
+            {BIMESTERS.map((bimester) => (
+              <button
+                aria-label={`${bimester}º bimestre`}
+                aria-pressed={selectedBimester === bimester}
+                key={bimester}
+                onClick={() => setSelectedBimester(bimester)}
+                type="button"
+              >
+                {bimester}º
+              </button>
+            ))}
+          </div>
+          {selectedBimester !== null ? (
+            <div className={styles.bimesterBreakdown}>
+              <div aria-live="polite" className={styles.bimesterSummary}>
+                <div><span>Média do bimestre</span><strong>{selectedOverview?.averageScore === null || selectedOverview?.averageScore === undefined ? "—" : formatNumber(selectedOverview.averageScore)}</strong></div>
+                <div><span>Notas registradas</span><strong>{selectedOverview?.filledGrades ?? 0}/{selectedOverview?.eligibleSubjects ?? 0}</strong></div>
+              </div>
+              {selectedScores.length === 0 ? (
+                <p className={styles.empty}>Nenhuma disciplina selecionada tem este bimestre.</p>
+              ) : (
+                <div className={styles.scoreList}>
+                  {selectedScores.map(({ subject, score }) => (
+                    <div className={styles.scoreRow} key={subject.id}>
+                      <div>
+                        <Link href={`/disciplinas#disciplina-${subject.id}`}>{subject.name}</Link>
+                        <strong>{score === null ? "Sem nota" : formatNumber(score)}</strong>
+                      </div>
+                      <div
+                        aria-label={`${subject.name}: ${score === null ? "sem nota" : formatNumber(score)}`}
+                        aria-valuemin={score === null ? undefined : 0}
+                        aria-valuemax={score === null ? undefined : 100}
+                        aria-valuenow={score ?? undefined}
+                        className={styles.track}
+                        role={score === null ? undefined : "meter"}
+                      >
+                        <i style={{ width: `${Math.min(100, Math.max(0, score ?? 0))}%`, backgroundColor: score !== null && score < targetAverage ? "#dc5a49" : subject.color }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : points.every((point) => point === null) ? (
             <p className={styles.empty}>Adicione notas para acompanhar a evolução.</p>
           ) : (
             <div className={styles.chartScroll}>
@@ -96,7 +166,7 @@ export function DashboardCharts({ bimesters, subjects, overview, targetAverage, 
               </svg>
             </div>
           )}
-          <small>Sem nota, o bimestre fica sem ponto. Disciplinas sem 3º e 4º bimestres não entram nessas médias.</small>
+          <small>Disciplinas com dois bimestres não entram no 3º e 4º. Notas ausentes ficam sem ponto no gráfico anual.</small>
         </article>
 
         <article className={styles.panel}>

@@ -9,6 +9,19 @@
 .panel p { margin: 5px 0 16px; color: var(--text-secondary); font-size: 11px; }
 .panel .empty { padding: 30px 12px; border: 1px dashed var(--border-strong); border-radius: 12px; text-align: center; }
 .chartScroll { overflow-x: auto; }
+.periodFilter { display: flex; gap: 5px; flex-wrap: wrap; margin: 0 0 16px; }
+.periodFilter button { min-height: 34px; padding: 6px 10px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); color: var(--text-secondary); font: inherit; font-size: 10px; font-weight: 800; cursor: pointer; }
+.periodFilter button[aria-pressed="true"] { border-color: var(--brand-600); background: var(--brand-100); color: var(--brand-700); }
+.periodFilter button:focus-visible { outline: 2px solid var(--brand-600); outline-offset: 2px; }
+.bimesterBreakdown { min-height: 190px; }
+.bimesterSummary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+.bimesterSummary > div { display: grid; gap: 3px; padding: 12px; border-radius: 10px; background: var(--surface-muted); }
+.bimesterSummary span { color: var(--text-secondary); font-size: 10px; }
+.bimesterSummary strong { color: var(--teal-900); font-size: 20px; }
+.scoreList { display: grid; gap: 13px; max-height: 300px; overflow-y: auto; }
+.scoreRow > div:first-child { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.scoreRow a { min-width: 0; color: var(--text-primary); font-size: 11px; font-weight: 750; overflow-wrap: anywhere; }
+.scoreRow strong { color: var(--teal-900); font-size: 11px; white-space: nowrap; }
 .chart { display: block; width: 100%; min-width: 390px; height: auto; }
 .gridLine { stroke: var(--border); stroke-width: 1; }
 .axisText { fill: var(--text-muted); font-size: 11px; font-weight: 650; }
