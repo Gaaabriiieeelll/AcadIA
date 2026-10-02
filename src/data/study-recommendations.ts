@@ -42,6 +42,14 @@ function configured(value: string | undefined) {
   return Boolean(value?.trim());
 }
 
+function describeRecommendedVideo(rationale: string, selectionReason: string) {
+  const available = 600 - selectionReason.length - 1;
+  if (rationale.length <= available) return `${rationale} ${selectionReason}`;
+  const excerpt = rationale.slice(0, available - 1);
+  const lastSpace = excerpt.lastIndexOf(" ");
+  return `${excerpt.slice(0, lastSpace > 0 ? lastSpace : excerpt.length).trimEnd()}… ${selectionReason}`;
+}
+
 export async function getCurrentStudyRecommendationOverview(): Promise<StudyRecommendationOverviewDTO> {
   const { googleSubject } = await requireCurrentIdentity();
   const user = await db.user.findUnique({
@@ -202,7 +210,7 @@ export async function generateCurrentStudyRecommendations() {
       userId: user.id,
       subjectId: subject.id,
       topic: recommendation.topic,
-      rationale: recommendation.rationale,
+      rationale: describeRecommendedVideo(recommendation.rationale, video.selectionReason),
       searchQuery: recommendation.searchQuery,
       sourceMaterialTitle: material.title,
       averageScore: subject.averageScore,
@@ -322,7 +330,7 @@ export async function answerCurrentStudyChat(
       subjectName: subject.name,
       subjectColor: subject.color,
       topic: query.topic,
-      rationale: query.rationale,
+      rationale: describeRecommendedVideo(query.rationale, video.selectionReason),
       videoTitle: video.title,
       channelTitle: video.channelTitle,
       thumbnailUrl: video.thumbnailUrl,
