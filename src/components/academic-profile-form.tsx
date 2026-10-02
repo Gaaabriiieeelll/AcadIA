@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 
 import { saveAcademicProfileAction } from "@/app/profile-actions";
 import {
@@ -11,6 +11,7 @@ import {
   resolveAcademicClassGroup,
   resolveAcademicStage,
   resolveEtimCourse,
+  searchEtimCourses,
 } from "@/lib/academic-profile-options";
 import type {
   AcademicProfileField,
@@ -31,6 +32,12 @@ export function AcademicProfileForm({ mode, initialValues }: AcademicProfileForm
     initialState,
   );
   const initialCourse = resolveEtimCourse(initialValues.course);
+  const [courseSearch, setCourseSearch] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState(initialCourse);
+  const matchingCourses = searchEtimCourses(courseSearch);
+  const visibleCourses = ETIM_COURSES.filter(
+    (course) => course === selectedCourse || matchingCourses.includes(course),
+  );
   const initialAcademicStage = resolveAcademicStage(initialValues.academicStage);
   const initialAcademicClassGroup = resolveAcademicClassGroup(initialValues.classGroup);
 
@@ -93,16 +100,33 @@ export function AcademicProfileForm({ mode, initialValues }: AcademicProfileForm
         </label>
 
         <label className="profile-field profile-field-wide">
+          <span>Buscar curso</span>
+          <input
+            autoComplete="off"
+            onChange={(event) => setCourseSearch(event.target.value)}
+            placeholder="Digite o nome do curso"
+            type="search"
+            value={courseSearch}
+          />
+          <small aria-live="polite">
+            {matchingCourses.length === 0
+              ? "Nenhum curso encontrado. Tente outro termo."
+              : `${matchingCourses.length} curso(s) encontrado(s).`}
+          </small>
+        </label>
+
+        <label className="profile-field profile-field-wide">
           <span>Curso</span>
           <select
             aria-describedby={state.fieldErrors?.course ? "course-error" : undefined}
             aria-invalid={Boolean(state.fieldErrors?.course)}
-            defaultValue={initialCourse}
             name="course"
+            onChange={(event) => setSelectedCourse(event.target.value)}
             required
+            value={selectedCourse}
           >
             <option disabled value="">Selecione seu curso ETIM</option>
-            {ETIM_COURSES.map((course) => (
+            {visibleCourses.map((course) => (
               <option key={course} value={course}>{course}</option>
             ))}
           </select>

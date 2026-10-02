@@ -27,6 +27,11 @@ function searchable(value: string) {
     .toLocaleUpperCase("pt-BR");
 }
 
+export function searchEtimCourses(query: string) {
+  const normalizedQuery = searchable(query);
+  return ETIM_COURSES.filter((course) => searchable(course).includes(normalizedQuery));
+}
+
 export function resolveEtimCourse(value: string) {
   if (ETIM_COURSES.some((course) => course === value)) return value;
 
