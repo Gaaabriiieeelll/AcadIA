@@ -117,6 +117,7 @@ async function run() {
     checkProtectedRoute("/perfil"),
     checkProtectedRoute("/atendimento"),
     checkProtectedRoute("/editais"),
+    checkProtectedRoute("/oportunidades"),
   ]);
 
   process.stdout.write("Smoke test de produção aprovado.\n");

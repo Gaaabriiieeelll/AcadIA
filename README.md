@@ -185,6 +185,10 @@ oficialmente das versões corrigidas.
 
 A rota `/atendimento` reúne contatos oficiais de setores do Campus João Pessoa e permite pesquisar pelo assunto da dúvida. Cada cartão informa finalidade, canais disponíveis, local, horário, fonte oficial e data da última conferência. Quando a fonte não publica sala ou horário, a interface orienta o estudante a confirmar antes do atendimento presencial.
 
+## Estágios e oportunidades
+
+A rota `/oportunidades` reúne os canais oficiais da Coordenação de Estágios do Campus João Pessoa, as páginas públicas de vagas e o SUAP. Ela mostra o curso do perfil e destaca editais de pesquisa e oportunidades já acompanhados pelo AcadIA. O estudante pode registrar prazos encontrados como eventos pessoais no calendário. As listas públicas consultadas em 02/10/2026 não tinham vagas atuais verificadas pelo AcadIA; a página não afirma que uma vaga antiga continua aberta nem presume elegibilidade pelo curso.
+
 ## Editais simplificados
 
 A rota `/editais` acompanha seis processos oficiais de 2026 do Campus João Pessoa: IVS, Programa de Alimentação, PAPE (Editais 28 e 41), Pesquisa e Inovação Aplicada e apoio a estudantes para participação em eventos. A página apresenta público, benefício, requisitos, documentos, passo a passo e cronograma em linguagem simples, sem substituir o documento oficial. Prazos que exigem ação do estudante aparecem no calendário acadêmico e na sincronização com o Google Agenda.

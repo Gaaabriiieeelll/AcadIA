@@ -1,0 +1,226 @@
+.pageMain {
+  width: min(100%, 1180px);
+}
+
+.eyebrow {
+  color: var(--brand-700);
+  font-size: 10px;
+  font-weight: 820;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.35fr);
+  gap: 24px;
+  align-items: center;
+  padding: clamp(22px, 4vw, 34px);
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: radial-gradient(circle at 90% 12%, rgb(49 184 90 / 15%), transparent 36%), var(--surface);
+  box-shadow: var(--shadow-md);
+}
+
+.intro h2,
+.sectionHeading h2,
+.nextSteps h2 {
+  margin: 5px 0 9px;
+  color: var(--teal-900);
+  font-size: clamp(20px, 2.5vw, 28px);
+  letter-spacing: -0.035em;
+}
+
+.intro p,
+.sectionHeading p,
+.nextSteps p {
+  max-width: 720px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.intro p strong {
+  color: var(--teal-900);
+}
+
+.profileBadge {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 19px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-glass-medium);
+}
+
+.profileBadge span,
+.profileBadge small {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.profileBadge strong {
+  overflow-wrap: anywhere;
+  color: var(--teal-900);
+  font-size: 16px;
+}
+
+.sourceSection,
+.noticeSection {
+  margin-bottom: 26px;
+}
+
+.sectionHeading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.sectionHeading h2 {
+  margin-bottom: 0;
+  font-size: 21px;
+}
+
+.sectionHeading > a {
+  color: var(--brand-700);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.sourceGrid,
+.noticeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sourceCard,
+.noticeCard {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.sourceCard h3,
+.noticeCard h3 {
+  margin: 0 0 8px;
+  color: var(--teal-900);
+  font-size: 17px;
+}
+
+.sourceCard p,
+.noticeCard p,
+.verificationNote,
+.emptyState {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.sourceCard a,
+.noticeCard a {
+  margin-top: auto;
+  padding-top: 16px;
+  color: var(--brand-700);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.verificationNote {
+  margin-top: 12px;
+  padding: 13px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+
+.noticeMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+  align-items: center;
+  margin-bottom: 11px;
+  font-size: 10px;
+}
+
+.noticeMeta span {
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: var(--brand-700);
+  background: var(--brand-100);
+  font-weight: 760;
+}
+
+.noticeMeta time {
+  color: var(--text-secondary);
+}
+
+.noticeCard .statusDetail {
+  margin-top: 10px;
+  color: var(--teal-900);
+  font-weight: 700;
+}
+
+.nextSteps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(20px, 3vw, 28px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+}
+
+.nextSteps h2 {
+  font-size: 21px;
+}
+
+.nextActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.nextActions a {
+  padding: 11px 13px;
+  border: 1px solid var(--brand-700);
+  border-radius: var(--radius-md);
+  color: var(--brand-700);
+  font-size: 11px;
+  font-weight: 760;
+  text-align: center;
+}
+
+.nextActions a:first-child {
+  color: white;
+  border-color: var(--teal-solid);
+  background: var(--teal-solid);
+}
+
+@media (max-width: 760px) {
+  .intro,
+  .sourceGrid,
+  .noticeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .nextActions,
+  .nextActions a {
+    width: 100%;
+  }
+}

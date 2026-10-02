@@ -18,6 +18,7 @@ type ProtectedShellProps = {
     | "alerts"
     | "study"
     | "notices"
+    | "opportunities"
     | "support"
     | "profile";
   children: ReactNode;
@@ -45,6 +46,7 @@ const navigation = [
   { href: "/horarios", id: "schedule" as const, label: "Horários", mobileLabel: "Horários" },
   { href: "/plano-de-estudos", id: "study" as const, label: "Plano de estudos", mobileLabel: "Plano" },
   { href: "/editais", id: "notices" as const, label: "Editais", mobileLabel: "Editais" },
+  { href: "/oportunidades", id: "opportunities" as const, label: "Estágios e oportunidades", mobileLabel: "Vagas" },
   { href: "/atendimento", id: "support" as const, label: "Atendimento", mobileLabel: "Ajuda" },
 ];
 
@@ -80,6 +82,8 @@ function ProtectedNavigation({
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" /><path d="M10 21h4" /></svg>
           ) : item.id === "notices" ? (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M7 4.5h10a2 2 0 0 1 2 2v14H5v-14a2 2 0 0 1 2-2Z" /><path d="M9 3h6v4H9zM8.5 11h7M8.5 15h7M8.5 19h4" /></svg>
+          ) : item.id === "opportunities" ? (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2" /></svg>
           ) : item.id === "support" ? (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2M4 13v4h3v-6H4zM20 13v4h-3v-6h3zM17 18c-.7 1.3-2.1 2-4 2h-1" /><circle cx="10.5" cy="20" r="1" /></svg>
           ) : (

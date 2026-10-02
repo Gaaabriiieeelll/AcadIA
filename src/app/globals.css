@@ -681,6 +681,8 @@ html[data-theme="dark"] .theme-toggle-dark-label {
 
 .protected-sidebar nav {
   flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .protected-sidebar nav a {
@@ -4342,7 +4344,7 @@ html[data-theme="dark"] .theme-toggle-dark-label {
     left: 0;
     z-index: 50;
     display: grid;
-    grid-template-columns: repeat(9, minmax(58px, 1fr));
+    grid-template-columns: repeat(10, minmax(58px, 1fr));
     gap: 2px;
     overflow-x: auto;
     padding: 6px max(7px, env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(7px, env(safe-area-inset-left));
