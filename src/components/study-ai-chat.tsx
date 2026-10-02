@@ -69,16 +69,16 @@ function ChatVideo({ video }: { video: StudyChatVideoDTO }) {
 
 export function StudyAiChat({
   classroomConnected,
-  aiConsentGranted,
-  openAIConfigured,
+  chatConsentGranted,
+  chatConfigured,
   youtubeConfigured,
 }: {
   classroomConnected: boolean;
-  aiConsentGranted: boolean;
-  openAIConfigured: boolean;
+  chatConsentGranted: boolean;
+  chatConfigured: boolean;
   youtubeConfigured: boolean;
 }) {
-  const ready = classroomConnected && aiConsentGranted && openAIConfigured;
+  const ready = classroomConnected && chatConsentGranted && chatConfigured;
   const initialMessage = ready
     ? "Olá! Posso analisar suas notas e os assuntos publicados no Google Sala de Aula. Pergunte sobre prioridades, conteúdos ou peça videoaulas para estudar."
     : "Olá! Para conversarmos sobre seus estudos, conecte o Classroom e autorize o uso informado dos dados acadêmicos pela IA.";

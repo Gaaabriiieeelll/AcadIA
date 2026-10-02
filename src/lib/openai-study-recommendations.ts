@@ -3,8 +3,14 @@ import "server-only";
 import { createHash } from "node:crypto";
 
 import { z } from "zod";
+import {
+  DEFAULT_GROQ_CHAT_MODEL,
+  compactGroqStudyContext,
+  studyChatProvider,
+} from "@/lib/study-chat-provider";
 
 const OPENAI_RESPONSES_URL = "https://api.openai.com/v1/responses";
+const GROQ_RESPONSES_URL = "https://api.groq.com/openai/v1/responses";
 const DEFAULT_RECOMMENDATION_MODEL = "gpt-5.4-mini";
 
 export type RecommendationAnalysisInput = {
@@ -63,7 +69,7 @@ type OpenAIResponse = {
 };
 
 export class RecommendationAIError extends Error {
-  constructor(public readonly code: "NOT_CONFIGURED" | "UNAVAILABLE" | "INVALID_RESPONSE") {
+  constructor(public readonly code: "NOT_CONFIGURED" | "UNAVAILABLE" | "INVALID_RESPONSE" | "RATE_LIMITED") {
     super(code);
     this.name = "RecommendationAIError";
   }
@@ -156,6 +162,7 @@ export async function analyzeStudyRecommendations(input: RecommendationAnalysisI
     throw new RecommendationAIError("UNAVAILABLE");
   });
 
+  if (response.status === 429) throw new RecommendationAIError("RATE_LIMITED");
   if (!response.ok) {
     throw new RecommendationAIError("UNAVAILABLE");
   }
@@ -175,11 +182,21 @@ export async function analyzeStudyRecommendations(input: RecommendationAnalysisI
 }
 
 export async function answerStudyChat(input: StudyChatAnalysisInput) {
-  const apiKey = process.env.OPENAI_API_KEY?.trim();
+  const provider = studyChatProvider({
+    GROQ_API_KEY: process.env.GROQ_API_KEY,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  });
+  const useGroq = provider === "groq";
+  const apiKey = (useGroq ? process.env.GROQ_API_KEY : process.env.OPENAI_API_KEY)?.trim();
   if (!apiKey) throw new RecommendationAIError("NOT_CONFIGURED");
 
-  const model = recommendationModel();
-  const response = await fetch(OPENAI_RESPONSES_URL, {
+  const model = useGroq
+    ? process.env.GROQ_CHAT_MODEL?.trim() || DEFAULT_GROQ_CHAT_MODEL
+    : recommendationModel();
+  const context = useGroq
+    ? compactGroqStudyContext(input.history, input.subjects)
+    : { history: input.history, subjects: input.subjects };
+  const response = await fetch(useGroq ? GROQ_RESPONSES_URL : OPENAI_RESPONSES_URL, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -187,12 +204,12 @@ export async function answerStudyChat(input: StudyChatAnalysisInput) {
     },
     body: JSON.stringify({
       model,
-      store: false,
-      reasoning: { effort: "none" },
+      ...(!useGroq ? {
+        store: false,
+        safety_identifier: createHash("sha256").update(input.userIdentifier).digest("hex"),
+      } : {}),
+      reasoning: { effort: useGroq ? "low" : "none" },
       max_output_tokens: 2200,
-      safety_identifier: createHash("sha256")
-        .update(input.userIdentifier)
-        .digest("hex"),
       instructions: [
         "Você é o assistente de estudos do AcadIA e conversa em português do Brasil.",
         "Responda de modo acolhedor, direto e útil, usando apenas os dados acadêmicos fornecidos.",
@@ -207,13 +224,13 @@ export async function answerStudyChat(input: StudyChatAnalysisInput) {
       ].join(" "),
       input: JSON.stringify({
         conversation: [
-          ...input.history,
+          ...context.history,
           { role: "user", content: input.message },
         ],
-        subjects: input.subjects,
+        subjects: context.subjects,
       }),
       text: {
-        verbosity: "low",
+        ...(!useGroq ? { verbosity: "low" } : {}),
         format: {
           type: "json_schema",
           name: "acadia_study_chat",
@@ -225,7 +242,7 @@ export async function answerStudyChat(input: StudyChatAnalysisInput) {
               reply: { type: "string" },
               videoQueries: {
                 type: "array",
-                maxItems: 3,
+                ...(!useGroq ? { maxItems: 3 } : {}),
                 items: {
                   type: "object",
                   additionalProperties: false,
@@ -256,6 +273,7 @@ export async function answerStudyChat(input: StudyChatAnalysisInput) {
     throw new RecommendationAIError("UNAVAILABLE");
   });
 
+  if (response.status === 429) throw new RecommendationAIError("RATE_LIMITED");
   if (!response.ok) {
     throw new RecommendationAIError("UNAVAILABLE");
   }

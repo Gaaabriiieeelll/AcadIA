@@ -21,6 +21,9 @@ export type StudyRecommendationOverviewDTO = {
   classroomConnected: boolean;
   aiConsentGranted: boolean;
   openAIConfigured: boolean;
+  chatProvider: "Groq" | "OpenAI" | null;
+  chatConfigured: boolean;
+  chatConsentGranted: boolean;
   youtubeConfigured: boolean;
 };
 

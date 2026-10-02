@@ -57,6 +57,26 @@ vigente. Quando autorizada, envia nomes de disciplinas, notas, títulos,
 descrições e nomes de anexos do Classroom. E-mail, matrícula, telefone e tokens
 de acesso não são enviados. As requisições usam `store: false`.
 
+O bate-papo pode usar o modelo `openai/gpt-oss-120b` hospedado na Groq. Quando
+`GROQ_API_KEY` está configurada, ele usa a Groq e exige uma autorização própria,
+separada da análise pela OpenAI. O contexto enviado é limitado a disciplinas,
+notas, materiais selecionados e histórico recente da conversa; e-mail, matrícula,
+telefone e tokens do perfil não são anexados automaticamente. A Groq informa que
+não usa os dados para treinamento sem permissão, mas pode retê-los temporariamente
+para confiabilidade ou investigação de abuso. Sem a chave Groq, o bate-papo mantém
+o provedor OpenAI e o consentimento anterior.
+
+Para ativar a Groq em produção:
+
+1. Crie uma chave em [Groq Console](https://console.groq.com/keys).
+2. Cadastre `GROQ_API_KEY` como variável de ambiente **Production** na Vercel e
+   faça um novo deploy. A chave não deve ir para o GitHub nem para o navegador.
+3. Cada estudante deve abrir **Perfil** no AcadIA e autorizar o bate-papo pela
+   Groq. A autorização anterior para a OpenAI não é reaproveitada.
+
+O plano gratuito da Groq tem limites compartilhados entre os usuários do app.
+Confira os limites atuais no [painel da Groq](https://console.groq.com/docs/rate-limits).
+
 As páginas HTML usam uma Content Security Policy com nonce novo por requisição.
 Scripts sem o nonce são bloqueados; frames, objetos e formulários para outras
 origens também não são permitidos. Os estilos inline continuam liberados porque

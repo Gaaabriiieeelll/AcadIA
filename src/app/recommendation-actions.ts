@@ -50,7 +50,8 @@ function recommendationErrorMessage(error: unknown) {
       : "O Google Sala de Aula está indisponível agora.";
   }
   if (error instanceof RecommendationAIError) {
-    if (error.code === "NOT_CONFIGURED") return "Configure a chave da OpenAI no servidor.";
+    if (error.code === "NOT_CONFIGURED") return "Configure a chave do provedor de IA no servidor.";
+    if (error.code === "RATE_LIMITED") return "O limite de consultas da IA foi atingido. Tente novamente mais tarde.";
     if (error.code === "INVALID_RESPONSE") return "A IA não conseguiu organizar os assuntos desta vez. Tente novamente.";
     return "A análise por IA está indisponível agora. Tente novamente em instantes.";
   }

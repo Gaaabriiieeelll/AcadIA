@@ -14,6 +14,12 @@ export type AccountPrivacyOverviewDTO = {
     grantedAt: string | null;
     version: string;
   };
+  groqChatConsent: {
+    granted: boolean;
+    grantedAt: string | null;
+    version: string;
+  };
+  groqChatConfigured: boolean;
   classroom: {
     connected: boolean;
     lastSyncAt: string | null;

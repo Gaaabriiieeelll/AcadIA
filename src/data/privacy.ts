@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import {
   AI_ACADEMIC_ANALYSIS_PURPOSE,
   AI_CONSENT_VERSION,
+  GROQ_STUDY_CHAT_CONSENT_VERSION,
+  GROQ_STUDY_CHAT_PURPOSE,
 } from "@/lib/privacy-constants";
 import { decryptServerSecret } from "@/lib/secret-box";
 import type { AccountPrivacyOverviewDTO } from "@/types/privacy";
@@ -51,19 +53,25 @@ export async function getCurrentAccountPrivacyOverview(): Promise<AccountPrivacy
       },
       privacyConsents: {
         where: {
-          purpose: AI_ACADEMIC_ANALYSIS_PURPOSE,
-          version: AI_CONSENT_VERSION,
           revokedAt: null,
+          OR: [
+            { purpose: AI_ACADEMIC_ANALYSIS_PURPOSE, version: AI_CONSENT_VERSION },
+            { purpose: GROQ_STUDY_CHAT_PURPOSE, version: GROQ_STUDY_CHAT_CONSENT_VERSION },
+          ],
         },
         orderBy: { grantedAt: "desc" },
-        select: { grantedAt: true },
-        take: 1,
+        select: { purpose: true, grantedAt: true },
       },
     },
   });
 
   if (!user) throw new AccountNotFoundError();
-  const consent = user.privacyConsents[0] ?? null;
+  const consent = user.privacyConsents.find(
+    (item) => item.purpose === AI_ACADEMIC_ANALYSIS_PURPOSE,
+  ) ?? null;
+  const groqConsent = user.privacyConsents.find(
+    (item) => item.purpose === GROQ_STUDY_CHAT_PURPOSE,
+  ) ?? null;
 
   return {
     accountCreatedAt: user.createdAt.toISOString(),
@@ -72,6 +80,12 @@ export async function getCurrentAccountPrivacyOverview(): Promise<AccountPrivacy
       grantedAt: consent?.grantedAt.toISOString() ?? null,
       version: AI_CONSENT_VERSION,
     },
+    groqChatConsent: {
+      granted: Boolean(groqConsent),
+      grantedAt: groqConsent?.grantedAt.toISOString() ?? null,
+      version: GROQ_STUDY_CHAT_CONSENT_VERSION,
+    },
+    groqChatConfigured: Boolean(process.env.GROQ_API_KEY?.trim()),
     classroom: {
       connected: Boolean(user.classroomCredential),
       lastSyncAt: user.classroomCredential?.lastTaskSyncAt?.toISOString() ?? null,
@@ -100,6 +114,25 @@ export async function hasCurrentAiConsent() {
 
 export async function requireCurrentAiConsent() {
   if (!(await hasCurrentAiConsent())) throw new AiConsentRequiredError();
+}
+
+export async function hasCurrentGroqChatConsent() {
+  const { googleSubject } = await requireCurrentIdentity();
+  const consent = await db.privacyConsent.findFirst({
+    where: {
+      user: { googleSubject },
+      purpose: GROQ_STUDY_CHAT_PURPOSE,
+      version: GROQ_STUDY_CHAT_CONSENT_VERSION,
+      revokedAt: null,
+    },
+    select: { id: true },
+  });
+
+  return Boolean(consent);
+}
+
+export async function requireCurrentGroqChatConsent() {
+  if (!(await hasCurrentGroqChatConsent())) throw new AiConsentRequiredError();
 }
 
 export async function setCurrentAiConsent(granted: boolean) {
@@ -143,6 +176,41 @@ export async function setCurrentAiConsent(granted: boolean) {
       where: { userId: user.id },
     }),
   ]);
+}
+
+export async function setCurrentGroqChatConsent(granted: boolean) {
+  const user = await requirePrivacyUser();
+  const now = new Date();
+
+  if (granted) {
+    await db.privacyConsent.upsert({
+      where: {
+        userId_purpose_version: {
+          userId: user.id,
+          purpose: GROQ_STUDY_CHAT_PURPOSE,
+          version: GROQ_STUDY_CHAT_CONSENT_VERSION,
+        },
+      },
+      create: {
+        userId: user.id,
+        purpose: GROQ_STUDY_CHAT_PURPOSE,
+        version: GROQ_STUDY_CHAT_CONSENT_VERSION,
+        grantedAt: now,
+      },
+      update: { grantedAt: now, revokedAt: null },
+      select: { id: true },
+    });
+    return;
+  }
+
+  await db.privacyConsent.updateMany({
+    where: {
+      userId: user.id,
+      purpose: GROQ_STUDY_CHAT_PURPOSE,
+      revokedAt: null,
+    },
+    data: { revokedAt: now },
+  });
 }
 
 export async function disconnectCurrentClassroom() {

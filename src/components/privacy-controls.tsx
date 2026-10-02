@@ -7,6 +7,7 @@ import {
   deleteAccountAction,
   disconnectClassroomAction,
   updateAiConsentAction,
+  updateGroqChatConsentAction,
 } from "@/app/privacy-actions";
 import { ACCOUNT_DELETION_CONFIRMATION } from "@/lib/privacy-constants";
 import type { AccountPrivacyOverviewDTO, PrivacyActionState } from "@/types/privacy";
@@ -28,11 +29,16 @@ function ActionFeedback({ state }: { state: PrivacyActionState }) {
 export function AiConsentControl({
   granted,
   grantedAt,
+  provider = "openai",
 }: {
   granted: boolean;
   grantedAt?: string | null;
+  provider?: "openai" | "groq";
 }) {
-  const [state, action, pending] = useActionState(updateAiConsentAction, initialState);
+  const [state, action, pending] = useActionState(
+    provider === "groq" ? updateGroqChatConsentAction : updateAiConsentAction,
+    initialState,
+  );
 
   return (
     <div className="ai-consent-control">
@@ -55,7 +61,8 @@ export function AiConsentControl({
         >
           {pending
             ? "Atualizando…"
-            : granted ? "Revogar autorização" : "Autorizar análise por IA"}
+            : granted ? "Revogar autorização"
+              : provider === "groq" ? "Autorizar bate-papo pela Groq" : "Autorizar análise por IA"}
         </button>
       </form>
       <ActionFeedback state={state} />
@@ -222,6 +229,33 @@ export function PrivacyControls({
             grantedAt={overview.aiConsent.grantedAt}
           />
         </div>
+
+        {overview.groqChatConfigured ? (
+          <div className="privacy-control-card privacy-control-card-wide">
+            <div className="privacy-control-heading">
+              <div>
+                <span>Inteligência artificial</span>
+                <h2>Bate-papo pela Groq</h2>
+              </div>
+            </div>
+            <p>
+              Quando autorizado, o bate-papo envia à Groq sua pergunta e histórico recente,
+              nomes das disciplinas, notas e textos selecionados do Classroom. O AcadIA não anexa
+              automaticamente e-mail, matrícula, telefone nem tokens de acesso do perfil. A Groq
+              informa que não usa esses dados para treinamento sem permissão e pode retê-los
+              temporariamente para confiabilidade ou investigação de abuso. Esta autorização é
+              separada da análise pela OpenAI. Leia os detalhes na{" "}
+              <a href="https://console.groq.com/docs/your-data" rel="noreferrer" target="_blank">
+                documentação de dados da Groq
+              </a>.
+            </p>
+            <AiConsentControl
+              granted={overview.groqChatConsent.granted}
+              grantedAt={overview.groqChatConsent.grantedAt}
+              provider="groq"
+            />
+          </div>
+        ) : null}
       </section>
 
       <DeleteAccountControl email={email} />

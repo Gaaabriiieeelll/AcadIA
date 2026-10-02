@@ -11,6 +11,7 @@ import {
   deleteCurrentAccount,
   disconnectCurrentClassroom,
   setCurrentAiConsent,
+  setCurrentGroqChatConsent,
 } from "@/data/privacy";
 import { AuthenticationRequiredError } from "@/data/current-user";
 import { authOptions } from "@/lib/auth";
@@ -60,6 +61,31 @@ export async function updateAiConsentAction(
     message: parsed.data === "grant"
       ? "Consentimento registrado. A análise por IA está disponível."
       : "Consentimento revogado. Nenhum novo dado acadêmico será enviado à IA.",
+  };
+}
+
+export async function updateGroqChatConsentAction(
+  _previousState: PrivacyActionState,
+  formData: FormData,
+): Promise<PrivacyActionState> {
+  void _previousState;
+  const parsed = aiConsentIntentSchema.safeParse(formData.get("consent"));
+  if (!parsed.success) {
+    return { status: "error", message: "A escolha de consentimento é inválida." };
+  }
+
+  try {
+    await setCurrentGroqChatConsent(parsed.data === "grant");
+  } catch (error) {
+    return { status: "error", message: privacyErrorMessage(error) };
+  }
+
+  revalidatePrivacyPages();
+  return {
+    status: "success",
+    message: parsed.data === "grant"
+      ? "Consentimento registrado. O bate-papo pela Groq está disponível."
+      : "Consentimento revogado. O bate-papo não enviará novos dados à Groq.",
   };
 }
 

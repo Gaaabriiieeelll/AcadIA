@@ -91,8 +91,8 @@ function RecommendationCard({ recommendation }: { recommendation: StudyVideoReco
 
 export function StudyAiSection({ overview }: { overview: StudyRecommendationOverviewDTO }) {
   const readyForChat = overview.classroomConnected
-    && overview.aiConsentGranted
-    && overview.openAIConfigured;
+    && overview.chatConsentGranted
+    && overview.chatConfigured;
 
   return (
     <section className={styles.embeddedAiSection} id="bate-papo-ia" aria-labelledby="study-ai-title">
@@ -107,8 +107,8 @@ export function StudyAiSection({ overview }: { overview: StudyRecommendationOver
       <div className={styles.aiWorkspace}>
         <StudyAiChat
           classroomConnected={overview.classroomConnected}
-          aiConsentGranted={overview.aiConsentGranted}
-          openAIConfigured={overview.openAIConfigured}
+          chatConsentGranted={overview.chatConsentGranted}
+          chatConfigured={overview.chatConfigured}
           youtubeConfigured={overview.youtubeConfigured}
         />
 
@@ -139,21 +139,21 @@ export function StudyAiSection({ overview }: { overview: StudyRecommendationOver
             </article>
 
             <article>
-              <span className={overview.openAIConfigured ? styles.sourceReady : styles.sourcePending}>
+              <span className={overview.chatConfigured ? styles.sourceReady : styles.sourcePending}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
                   <path d="m12 3 1.3 3.7L17 8l-3.7 1.3L12 13l-1.3-3.7L7 8l3.7-1.3z" />
                   <path d="M5 16v4h14v-4" />
                 </svg>
               </span>
               <div>
-                <strong>OpenAI</strong>
-                <small>{overview.openAIConfigured ? "Conversa disponível" : "Chave não configurada"}</small>
+                <strong>{overview.chatProvider ?? "Modelo de IA"}</strong>
+                <small>{overview.chatConfigured ? "Conversa disponível" : "Chave não configurada"}</small>
               </div>
-              <i>{overview.openAIConfigured ? "Ativa" : "Pendente"}</i>
+              <i>{overview.chatConfigured ? "Ativa" : "Pendente"}</i>
             </article>
 
             <article>
-              <span className={overview.aiConsentGranted ? styles.sourceReady : styles.sourcePending}>
+              <span className={overview.chatConsentGranted ? styles.sourceReady : styles.sourcePending}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
                   <path d="M12 3 5 6v5c0 4.6 2.7 8.2 7 10 4.3-1.8 7-5.4 7-10V6z" />
                   <path d="m9 12 2 2 4-4" />
@@ -161,9 +161,9 @@ export function StudyAiSection({ overview }: { overview: StudyRecommendationOver
               </span>
               <div>
                 <strong>Autorização de dados</strong>
-                <small>{overview.aiConsentGranted ? "Consentimento registrado" : "Consentimento necessário"}</small>
+                <small>{overview.chatConsentGranted ? "Consentimento registrado" : "Consentimento necessário"}</small>
               </div>
-              <i>{overview.aiConsentGranted ? "Ativa" : "Pendente"}</i>
+              <i>{overview.chatConsentGranted ? "Ativa" : "Pendente"}</i>
             </article>
 
             <article>
@@ -187,14 +187,20 @@ export function StudyAiSection({ overview }: { overview: StudyRecommendationOver
               <path d="M8 10V7a4 4 0 0 1 8 0v3" />
             </svg>
             <p>
-              <strong>Uso informado</strong> A análise envia à OpenAI nomes de disciplinas,
-              notas e conteúdo textual do Classroom. E-mail, matrícula, telefone e tokens
-              de acesso não são enviados, e a opção de armazenamento fica desativada.
+              <strong>Uso informado</strong> O bate-papo envia ao provedor ativo sua pergunta,
+              histórico recente, disciplinas, notas e textos selecionados do Classroom. O AcadIA
+              não anexa automaticamente e-mail, matrícula, telefone nem tokens de acesso do perfil.
+              {overview.chatProvider === "Groq"
+                ? " A Groq pode reter dados temporariamente para confiabilidade ou investigação de abuso."
+                : " Na OpenAI, a opção de armazenamento fica desativada."}
             </p>
           </div>
 
           <div className={styles.consentPanel}>
-            <AiConsentControl granted={overview.aiConsentGranted} />
+            <AiConsentControl
+              granted={overview.chatConsentGranted}
+              provider={overview.chatProvider === "Groq" ? "groq" : "openai"}
+            />
           </div>
         </aside>
       </div>
@@ -231,7 +237,7 @@ export function StudyAiSection({ overview }: { overview: StudyRecommendationOver
             <p>
               {readyForChat
                 ? "Peça à AcadIA para recomendar videoaulas ou identificar quais conteúdos merecem atenção."
-                : "Quando o Classroom, a OpenAI e sua autorização estiverem prontos, o bate-papo será liberado."}
+                : "Quando o Classroom, o modelo de IA e sua autorização estiverem prontos, o bate-papo será liberado."}
             </p>
           </div>
         </section>

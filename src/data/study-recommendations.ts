@@ -2,13 +2,19 @@ import "server-only";
 
 import { getCurrentClassroomOverview } from "@/data/google-classroom";
 import { requireCurrentIdentity } from "@/data/current-user";
-import { requireCurrentAiConsent } from "@/data/privacy";
+import {
+  requireCurrentAiConsent,
+  requireCurrentGroqChatConsent,
+} from "@/data/privacy";
 import { getCurrentSubjects } from "@/data/subjects";
 import { db } from "@/lib/db";
 import {
   AI_ACADEMIC_ANALYSIS_PURPOSE,
   AI_CONSENT_VERSION,
+  GROQ_STUDY_CHAT_CONSENT_VERSION,
+  GROQ_STUDY_CHAT_PURPOSE,
 } from "@/lib/privacy-constants";
+import { studyChatProvider } from "@/lib/study-chat-provider";
 import {
   RecommendationAIError,
   analyzeStudyRecommendations,
@@ -58,12 +64,13 @@ export async function getCurrentStudyRecommendationOverview(): Promise<StudyReco
       classroomCredential: { select: { id: true } },
       privacyConsents: {
         where: {
-          purpose: AI_ACADEMIC_ANALYSIS_PURPOSE,
-          version: AI_CONSENT_VERSION,
           revokedAt: null,
+          OR: [
+            { purpose: AI_ACADEMIC_ANALYSIS_PURPOSE, version: AI_CONSENT_VERSION },
+            { purpose: GROQ_STUDY_CHAT_PURPOSE, version: GROQ_STUDY_CHAT_CONSENT_VERSION },
+          ],
         },
-        select: { id: true },
-        take: 1,
+        select: { purpose: true },
       },
       videoRecommendations: {
         orderBy: [{ averageScore: "asc" }, { createdAt: "desc" }],
@@ -95,12 +102,26 @@ export async function getCurrentStudyRecommendationOverview(): Promise<StudyReco
     }),
   );
 
+  const provider = studyChatProvider({
+    GROQ_API_KEY: process.env.GROQ_API_KEY,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  });
+  const openAiConsentGranted = Boolean(user?.privacyConsents.some(
+    (consent) => consent.purpose === AI_ACADEMIC_ANALYSIS_PURPOSE,
+  ));
+  const groqConsentGranted = Boolean(user?.privacyConsents.some(
+    (consent) => consent.purpose === GROQ_STUDY_CHAT_PURPOSE,
+  ));
+
   return {
     recommendations,
     generatedAt: user?.videoRecommendations[0]?.createdAt.toISOString() ?? null,
     classroomConnected: Boolean(user?.classroomCredential),
-    aiConsentGranted: Boolean(user?.privacyConsents[0]),
+    aiConsentGranted: openAiConsentGranted,
     openAIConfigured: configured(process.env.OPENAI_API_KEY),
+    chatProvider: provider === "none" ? null : provider === "groq" ? "Groq" : "OpenAI",
+    chatConfigured: provider !== "none",
+    chatConsentGranted: provider === "groq" ? groqConsentGranted : openAiConsentGranted,
     youtubeConfigured: configured(process.env.YOUTUBE_API_KEY),
   };
 }
@@ -243,7 +264,12 @@ export async function answerCurrentStudyChat(
   message: string,
   history: StudyChatHistoryMessage[],
 ): Promise<StudyChatResponse> {
-  await requireCurrentAiConsent();
+  const provider = studyChatProvider({
+    GROQ_API_KEY: process.env.GROQ_API_KEY,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  });
+  if (provider === "groq") await requireCurrentGroqChatConsent();
+  else await requireCurrentAiConsent();
   const { googleSubject } = await requireCurrentIdentity();
   const [subjects, classroom] = await Promise.all([
     getCurrentSubjects(),
