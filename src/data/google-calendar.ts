@@ -8,6 +8,7 @@ import {
   academicCalendarMetadata,
 } from "@/data/academic-calendar";
 import { requireCurrentIdentity } from "@/data/current-user";
+import { getNoticeCalendarDeadlines } from "@/data/notices";
 import { db } from "@/lib/db";
 import {
   getGoogleCalendarAccessToken,
@@ -256,6 +257,24 @@ async function desiredGoogleEvents(userId: string) {
     },
   ));
 
+  const noticeDeadlines = getNoticeCalendarDeadlines().map((deadline) => desiredEvent(
+    `notice:${deadline.id}`,
+    {
+      summary: `[Edital IFPB] ${deadline.noticeNumber}: ${deadline.title}`,
+      description: [
+        "Prazo de edital do Campus João Pessoa.",
+        "Confira requisitos, horários e possíveis retificações na publicação oficial.",
+        deadline.officialUrl,
+        "Sincronizado pelo AcadIA.",
+      ].join("\n"),
+      colorId: GOOGLE_CALENDAR_EVENT_COLOR_IDS.YELLOW,
+      ...eventPeriod(deadline.startDate, deadline.endDate, null, null),
+      transparency: "transparent" as const,
+      visibility: "private" as const,
+      reminders: { useDefault: true },
+    },
+  ));
+
   const personal = personalEvents.map((event) => {
     const startDate = event.startDate.toISOString().slice(0, 10);
     const endDate = event.endDate?.toISOString().slice(0, 10) ?? startDate;
@@ -311,7 +330,7 @@ async function desiredGoogleEvents(userId: string) {
     });
   });
 
-  return [...official, ...personal, ...tasks];
+  return [...official, ...noticeDeadlines, ...personal, ...tasks];
 }
 
 function calendarErrorCode(status: number): GoogleCalendarErrorCode {

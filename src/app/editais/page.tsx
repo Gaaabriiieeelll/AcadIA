@@ -50,7 +50,7 @@ export default async function NoticesPage() {
             </span>
             <div>
               <span>Atualização manual verificada</span>
-              <h2 id="notices-overview-title">Quatro processos do Campus João Pessoa acompanhados</h2>
+              <h2 id="notices-overview-title">{notices.length} processos do Campus João Pessoa acompanhados</h2>
               <p>Os estados abaixo mudam conforme o cronograma de cada edital. O AcadIA explica; o IFPB publica e decide oficialmente.</p>
             </div>
           </div>

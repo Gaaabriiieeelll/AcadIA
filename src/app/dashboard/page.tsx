@@ -5,6 +5,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { GradeValue } from "@/components/grade-value";
+import { DashboardCharts } from "@/components/dashboard-charts";
 import { ProtectedShell } from "@/components/protected-shell";
 import { SubjectFilter } from "@/components/subject-filter";
 import { SuapReportImport } from "@/components/suap-report-import";
@@ -197,6 +198,14 @@ export default async function DashboardPage({
             <span><strong>{overview.twoBimesterSubjects}</strong> disciplina(s) com 2 bimestres</span>
           </div>
         </section>
+
+        <DashboardCharts
+          bimesters={bimesters}
+          minimumAttendance={alertPreferences.minimumAttendance}
+          overview={overview}
+          subjects={subjects}
+          targetAverage={alertPreferences.targetAverage}
+        />
 
         <div className="dashboard-insights-grid">
           <section className="dashboard-panel" aria-labelledby="bimester-progress-title">

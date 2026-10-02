@@ -213,7 +213,131 @@ function resolveInnovationStatus(today: string): NoticeStatusDetails {
   };
 }
 
+function resolvePape41Status(today: string): NoticeStatusDetails {
+  if (today <= "2026-10-08") return {
+    status: "open", statusLabel: "Inscrições abertas",
+    statusDetail: "Inscreva-se no PAPE IV pelo SUAP até 8 de outubro.", statusDate: "2026-10-08",
+  };
+  if (today < "2026-10-13") return {
+    status: "review", statusLabel: "Em análise",
+    statusDetail: "O resultado preliminar está previsto para 13 de outubro.", statusDate: "2026-10-13",
+  };
+  if (today <= "2026-10-15") return {
+    status: "action", statusLabel: "Resultado e recursos",
+    statusDetail: "Confira o resultado preliminar e recorra pelo SUAP, se necessário.", statusDate: "2026-10-15",
+  };
+  if (today < "2026-10-19") return {
+    status: "review", statusLabel: "Aguardando resultado final",
+    statusDetail: "A publicação do resultado final está prevista para 19 de outubro.", statusDate: "2026-10-19",
+  };
+  if (today <= "2026-10-25") return {
+    status: "action", statusLabel: "Cadastre sua conta",
+    statusDetail: "Se classificado, atualize os dados bancários no SUAP até 25 de outubro.", statusDate: "2026-10-25",
+  };
+  if (today <= "2026-12-31") return {
+    status: "active", statusLabel: "Programa em vigência",
+    statusDetail: "O auxílio previsto abrange outubro a dezembro de 2026.", statusDate: "2026-12-31",
+  };
+  return { status: "closed", statusLabel: "Encerrado", statusDetail: "A vigência prevista terminou.", statusDate: null };
+}
+
+function resolveEventSupport24Status(today: string): NoticeStatusDetails {
+  if (today <= "2026-11-30") return {
+    status: "open", statusLabel: "Solicitações em andamento",
+    statusDetail: "Solicite pelo SUAP até 30 de novembro e com pelo menos 30 dias de antecedência do evento.",
+    statusDate: "2026-11-30",
+  };
+  if (today <= "2026-12-31") return {
+    status: "active", statusLabel: "Eventos em andamento",
+    statusDetail: "Acompanhe a participação e a prestação de contas no edital oficial.",
+    statusDate: "2026-12-31",
+  };
+  return { status: "closed", statusLabel: "Encerrado", statusDetail: "O período previsto terminou.", statusDate: null };
+}
+
 const noticeDefinitions: NoticeDefinition[] = [
+  {
+    id: "edital-41-2026-pape-iv",
+    number: "Edital 41/2026",
+    title: "Programa de Apoio à Permanência do Estudante — PAPE IV",
+    category: "assistance",
+    summary: "Nova seleção do PAPE para estudantes com IVS válido, com auxílio mensal para apoiar a permanência no curso.",
+    audience: "Estudantes presenciais dos cursos técnicos integrados, subsequentes e de graduação do Campus João Pessoa.",
+    benefit: "200 vagas com auxílios de R$ 200, R$ 300 ou R$ 500 por mês, de outubro a dezembro de 2026, conforme disponibilidade orçamentária.",
+    eligibility: [
+      "Estar regularmente matriculado em curso presencial do Campus João Pessoa.",
+      "Ter renda familiar per capita de até um salário mínimo e IVS válido na inscrição.",
+      "Não ter pendência de prestação de contas de auxílio anterior.",
+    ],
+    documents: [
+      "Dados bancários de conta em nome do estudante classificado, para cadastro no SUAP.",
+      "Laudo médico no SUAP para contemplados nas vagas reservadas a pessoas com deficiência, no prazo do edital.",
+    ],
+    steps: [
+      "Inscreva-se no SUAP entre 1º e 8 de outubro e selecione a modalidade de concorrência.",
+      "Confira o resultado preliminar em 13 de outubro e apresente recurso nos dias 14 ou 15, se necessário.",
+      "Confira o resultado final previsto para 19 de outubro.",
+      "Se classificado, cadastre ou atualize sua conta bancária no SUAP de 20 a 25 de outubro.",
+    ],
+    schedule: [
+      { label: "Inscrições no SUAP", dateLabel: "1º a 8 de outubro", startDate: "2026-10-01", endDate: "2026-10-08", calendar: true },
+      { label: "Resultado preliminar", dateLabel: "13 de outubro", startDate: "2026-10-13" },
+      { label: "Recursos no SUAP", dateLabel: "14 e 15 de outubro", startDate: "2026-10-14", endDate: "2026-10-15", calendar: true },
+      { label: "Resultado final previsto", dateLabel: "19 de outubro", startDate: "2026-10-19" },
+      { label: "Cadastro de dados bancários", dateLabel: "20 a 25 de outubro", startDate: "2026-10-20", endDate: "2026-10-25", calendar: true },
+    ],
+    checklist: [
+      { id: "confirmar-ivs", label: "Confirmei que meu IVS está válido" },
+      { id: "inscrever-suap", label: "Fiz minha inscrição pelo SUAP" },
+      { id: "conferir-resultado", label: "Conferi o resultado e avaliei se preciso recorrer" },
+      { id: "cadastrar-conta", label: "Cadastrei meus dados bancários, se classificado" },
+    ],
+    caution: "A classificação depende do resultado oficial do IFPB. Consulte o edital e eventuais retificações antes de cada etapa.",
+    officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/edital-n-o-41-2026-direcao-geral",
+    publishedAt: "2026-09-28",
+    verifiedAt: "2026-10-02",
+    resolveStatus: resolvePape41Status,
+  },
+  {
+    id: "edital-24-2026-eventos-discentes",
+    number: "Edital 24/2026",
+    title: "Apoio a estudantes para participação em eventos",
+    category: "opportunity",
+    summary: "Apoio financeiro para apresentar ou publicar trabalhos em eventos educacionais, científicos ou tecnológicos no segundo semestre de 2026.",
+    audience: "Estudantes regularmente matriculados no Campus João Pessoa, inclusive de cursos técnicos, que atendam aos critérios do edital.",
+    benefit: "Apoio parcial para despesas de inscrição, transporte, hospedagem e alimentação, sujeito à disponibilidade de recursos.",
+    eligibility: [
+      "Ter trabalho aceito para apresentação ou publicação em evento entre agosto e dezembro de 2026.",
+      "Apresentar a solicitação pelo SUAP com no mínimo 30 dias de antecedência do evento.",
+      "Cumprir os requisitos acadêmicos e não ter pendências institucionais descritos no edital.",
+    ],
+    documents: [
+      "Comprovante de matrícula e informações do evento.",
+      "Resumo ou texto do trabalho e carta de aceite da organização.",
+      "Estimativa das despesas e documentos adicionais exigidos pelo edital, conforme o caso.",
+    ],
+    steps: [
+      "Confira se o evento e seu trabalho atendem às regras do edital.",
+      "Abra processo eletrônico no SUAP e anexe os documentos ao menos 30 dias antes do evento.",
+      "Envie a solicitação até 30 de novembro de 2026, observado o prazo individual de antecedência.",
+      "Se contemplado, apresente certificado e prestação de contas após o evento.",
+    ],
+    schedule: [
+      { label: "Prazo final para solicitar apoio", dateLabel: "Até 30 de novembro; também 30 dias antes do evento", startDate: "2026-11-30", calendar: true },
+      { label: "Eventos contemplados", dateLabel: "Agosto a dezembro de 2026", startDate: "2026-08-01", endDate: "2026-12-31" },
+    ],
+    checklist: [
+      { id: "confirmar-evento", label: "Confirmei o aceite do trabalho e a data do evento" },
+      { id: "reunir-documentos", label: "Separei comprovantes e estimativa de despesas" },
+      { id: "solicitar-suap", label: "Abri o processo no SUAP no prazo" },
+      { id: "prestar-contas", label: "Planejei a prestação de contas após o evento" },
+    ],
+    caution: "O prazo de 30 dias antes do evento pode terminar antes de 30 de novembro. A concessão depende dos recursos e da análise oficial.",
+    officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/edital-n-o-24-2026-direcao-geral",
+    publishedAt: "2026-07-20",
+    verifiedAt: "2026-10-02",
+    resolveStatus: resolveEventSupport24Status,
+  },
   {
     id: "edital-33-2026-inovacao",
     number: "Edital 33/2026",
@@ -242,7 +366,7 @@ const noticeDefinitions: NoticeDefinition[] = [
     schedule: [
       { label: "Inscrições das propostas", dateLabel: "26 a 31 de agosto", startDate: "2026-08-26", endDate: "2026-08-31" },
       { label: "Resultado final dos projetos", dateLabel: "10 de setembro", startDate: "2026-09-10" },
-      { label: "Seleção de estudantes bolsistas", dateLabel: "11 a 16 de setembro", startDate: "2026-09-11", endDate: "2026-09-16" },
+      { label: "Seleção de estudantes bolsistas", dateLabel: "11 a 16 de setembro", startDate: "2026-09-11", endDate: "2026-09-16", calendar: true },
       { label: "Início das atividades", dateLabel: "18 de setembro", startDate: "2026-09-18" },
       { label: "Fim das atividades", dateLabel: "29 de janeiro de 2027", startDate: "2027-01-29" },
     ],
@@ -284,11 +408,11 @@ const noticeDefinitions: NoticeDefinition[] = [
       "Acompanhe as notificações e mantenha matrícula regular e frequência mínima de 75%.",
     ],
     schedule: [
-      { label: "Inscrições", dateLabel: "12 a 23 de agosto", startDate: "2026-08-12", endDate: "2026-08-23" },
+      { label: "Inscrições", dateLabel: "12 a 23 de agosto", startDate: "2026-08-12", endDate: "2026-08-23", calendar: true },
       { label: "Resultado preliminar", dateLabel: "25 de agosto", startDate: "2026-08-25" },
-      { label: "Recursos", dateLabel: "26 e 27 de agosto", startDate: "2026-08-26", endDate: "2026-08-27" },
+      { label: "Recursos", dateLabel: "26 e 27 de agosto", startDate: "2026-08-26", endDate: "2026-08-27", calendar: true },
       { label: "Resultado final", dateLabel: "31 de agosto", startDate: "2026-08-31" },
-      { label: "Cadastro da conta no SUAP", dateLabel: "1º a 8 de setembro", startDate: "2026-09-01", endDate: "2026-09-08" },
+      { label: "Cadastro da conta no SUAP", dateLabel: "1º a 8 de setembro", startDate: "2026-09-01", endDate: "2026-09-08", calendar: true },
     ],
     checklist: [
       { id: "conferir-resultado", label: "Conferi o resultado final oficial" },
@@ -334,7 +458,7 @@ const noticeDefinitions: NoticeDefinition[] = [
       { label: "Cronograma e local das entrevistas", dateLabel: "8 de setembro", startDate: "2026-09-08" },
       { label: "Entrevistas", dateLabel: "9 a 11 de setembro", startDate: "2026-09-09", endDate: "2026-09-11" },
       { label: "Resultado preliminar", dateLabel: "14 de setembro", startDate: "2026-09-14" },
-      { label: "Recursos", dateLabel: "15 a 17 de setembro", startDate: "2026-09-15", endDate: "2026-09-17" },
+      { label: "Recursos", dateLabel: "15 a 17 de setembro", startDate: "2026-09-15", endDate: "2026-09-17", calendar: true },
       { label: "Resultado final", dateLabel: "23 de setembro", startDate: "2026-09-23" },
     ],
     checklist: [
@@ -408,14 +532,16 @@ function decorateSchedule(
   today: string,
 ): NoticeScheduleItemDTO[] {
   const activeIndex = schedule.findIndex((item) =>
-    today >= item.startDate && today <= (item.endDate ?? item.startDate));
+    item.calendar && today >= item.startDate && today <= (item.endDate ?? item.startDate));
   const nextIndex = activeIndex >= 0
     ? activeIndex
-    : schedule.findIndex((item) => item.startDate >= today);
+    : schedule.findIndex((item) => item.calendar && item.startDate >= today);
+  const displayIndex = nextIndex >= 0 ? nextIndex : schedule.findIndex((item) =>
+    today >= item.startDate && today <= (item.endDate ?? item.startDate));
 
   return schedule.map((item, index) => ({
     ...item,
-    highlighted: index === nextIndex,
+    highlighted: index === displayIndex,
   }));
 }
 
@@ -442,6 +568,20 @@ export function getOfficialNotices(now = new Date()): NoticeDTO[] {
       if (byStatus !== 0) return byStatus;
       return (a.statusDate ?? "9999-12-31").localeCompare(b.statusDate ?? "9999-12-31");
     });
+}
+
+export function getNoticeCalendarDeadlines() {
+  return noticeDefinitions.flatMap((notice) => notice.schedule
+    .filter((item) => item.calendar)
+    .map((item) => ({
+      id: `${notice.id}:${item.startDate}:${item.label}`,
+      noticeId: notice.id,
+      noticeNumber: notice.number,
+      title: item.label,
+      startDate: item.startDate,
+      endDate: item.endDate ?? item.startDate,
+      officialUrl: notice.officialUrl,
+    })));
 }
 
 export function isKnownNoticeChecklistItem(noticeKey: string, itemKey: string) {

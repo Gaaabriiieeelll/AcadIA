@@ -1,4 +1,4 @@
-export const NOTICE_CATEGORIES = ["assistance", "research"] as const;
+export const NOTICE_CATEGORIES = ["assistance", "research", "opportunity"] as const;
 export const NOTICE_STATUSES = ["open", "action", "review", "result", "active", "closed"] as const;
 
 export type NoticeCategory = (typeof NOTICE_CATEGORIES)[number];
@@ -10,6 +10,7 @@ export type NoticeScheduleItemDTO = {
   startDate: string;
   endDate?: string;
   highlighted?: boolean;
+  calendar?: boolean;
 };
 
 export type NoticeChecklistItemDTO = {

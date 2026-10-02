@@ -611,6 +611,49 @@
   box-shadow: var(--shadow-md);
 }
 
+.viewNavigation {
+  display: inline-flex;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.viewNavigation a {
+  min-width: 72px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.viewNavigation a[aria-current="page"] {
+  background: var(--brand-600);
+  color: #fff;
+}
+
+.focusDays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0;
+  overflow-x: auto;
+}
+
+.focusDays.singleDay { grid-template-columns: minmax(0, 1fr); }
+.focusDay { min-width: 0; min-height: 180px; padding: 12px; border-right: 1px solid var(--border); }
+.focusDay:last-child { border-right: 0; }
+.focusDay h3 { margin: 0 0 12px; color: var(--teal-900); font-size: 11px; }
+.focusDay h3 a { color: inherit; }
+.focusDay p { color: var(--text-muted); font-size: 10px; }
+.focusToday { background: var(--brand-50); }
+.focusEvents { display: grid; align-content: start; gap: 6px; }
+.singleDay .focusDay { min-height: 110px; }
+.singleDay .focusEvents { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.focusEvents .eventPill { min-height: 28px; font-size: 10px; }
+
 .calendarToolbar {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -827,6 +870,11 @@
   background: color-mix(in srgb, var(--calendar-event-color) 14%, var(--surface));
 }
 
+.dayHeading a { border-radius: 50%; }
+.dayHeading a:focus-visible { outline: 2px solid var(--brand-600); outline-offset: 2px; }
+
+.noticeLegend { border: 2px solid #d97706; background: #fff1d6; }
+
 .completedPill {
   opacity: 0.58;
 }
@@ -982,6 +1030,8 @@
   color: var(--info-text);
 }
 
+.eventCardTopline .noticeBadge { background: #fff1d6; color: #8a4900; }
+
 .eventCardContent h3 {
   margin: 7px 0 2px;
   color: var(--teal-900);
@@ -1135,6 +1185,10 @@
 }
 
 @media (max-width: 760px) {
+  .focusDays:not(.singleDay) { grid-template-columns: repeat(7, minmax(145px, 1fr)); }
+  .focusDays .eventPill { display: flex; width: auto; min-height: 28px; padding: 4px 6px; border: 1px solid color-mix(in srgb, var(--calendar-event-color) 24%, var(--surface)); border-radius: 6px; }
+  .focusDays .eventPill > span { display: block; }
+  .focusDays .eventPill i { width: 6px; min-width: 6px; height: 6px; }
   .hero {
     gap: 22px;
     padding: 24px 20px;

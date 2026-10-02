@@ -167,6 +167,6 @@ A rota `/atendimento` reúne contatos oficiais de setores do Campus João Pessoa
 
 ## Editais simplificados
 
-A rota `/editais` acompanha inicialmente quatro processos oficiais de 2026: IVS, Programa de Alimentação, PAPE e Pesquisa e Inovação Aplicada. A página apresenta público, benefício, requisitos, documentos, passo a passo e cronograma em linguagem simples, sem substituir o documento oficial.
+A rota `/editais` acompanha seis processos oficiais de 2026 do Campus João Pessoa: IVS, Programa de Alimentação, PAPE (Editais 28 e 41), Pesquisa e Inovação Aplicada e apoio a estudantes para participação em eventos. A página apresenta público, benefício, requisitos, documentos, passo a passo e cronograma em linguagem simples, sem substituir o documento oficial. Prazos que exigem ação do estudante aparecem no calendário acadêmico e na sincronização com o Google Agenda.
 
 O checklist de cada edital é salvo por usuário na tabela `notice_checklist_items`. Depois de atualizar o projeto, aplique a migração com `npm run db:deploy`.

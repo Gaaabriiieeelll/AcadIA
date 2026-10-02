@@ -15,6 +15,7 @@ import type {
 const categoryLabels: Record<NoticeCategory, string> = {
   assistance: "Assistência estudantil",
   research: "Pesquisa e inovação",
+  opportunity: "Oportunidades acadêmicas",
 };
 
 const statusLabels: Record<NoticeStatus, string> = {

@@ -1,0 +1,35 @@
+.section { margin: 28px 0; }
+.heading { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 16px; }
+.heading span { color: var(--brand-700); font-size: 9px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.heading h2 { margin: 3px 0 0; color: var(--teal-900); font-size: clamp(24px, 3vw, 34px); letter-spacing: -.04em; }
+.heading small, .panel > small { color: var(--text-muted); font-size: 10px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.panel { min-width: 0; padding: 22px; border: 1px solid var(--border); border-radius: 18px; background: var(--surface); box-shadow: var(--shadow-sm); }
+.panel h3 { margin: 0; color: var(--teal-900); font-size: 17px; }
+.panel p { margin: 5px 0 16px; color: var(--text-secondary); font-size: 11px; }
+.panel .empty { padding: 30px 12px; border: 1px dashed var(--border-strong); border-radius: 12px; text-align: center; }
+.chartScroll { overflow-x: auto; }
+.chart { display: block; width: 100%; min-width: 390px; height: auto; }
+.gridLine { stroke: var(--border); stroke-width: 1; }
+.axisText { fill: var(--text-muted); font-size: 11px; font-weight: 650; }
+.line { fill: none; stroke: var(--brand-600); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.dot { fill: var(--brand-600); stroke: var(--surface); stroke-width: 3; }
+.valueText { fill: var(--teal-900); font-size: 12px; font-weight: 800; }
+.attendanceList { display: grid; gap: 13px; max-height: 310px; overflow-y: auto; }
+.attendanceRow > div:first-child { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.attendanceRow a { color: var(--text-primary); font-size: 11px; font-weight: 750; }
+.attendanceRow strong { color: var(--teal-900); font-size: 11px; }
+.attendanceRow small { color: var(--text-muted); font-size: 9px; }
+.track { height: 8px; margin: 5px 0 3px; overflow: hidden; border-radius: 99px; background: var(--surface-muted); }
+.track i { display: block; height: 100%; border-radius: inherit; }
+.goalsPanel { grid-column: 1 / -1; }
+.goalsHeading { display: flex; justify-content: space-between; gap: 15px; align-items: start; }
+.goalsHeading a { color: var(--brand-700); font-size: 10px; font-weight: 800; }
+.goalList { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.goal { display: flex; align-items: center; gap: 16px; }
+.goalRing { display: grid; place-items: center; flex: 0 0 94px; height: 94px; border-radius: 50%; background: radial-gradient(closest-side, var(--surface) 75%, transparent 77%), conic-gradient(var(--goal-color) var(--goal-progress), var(--surface-muted) 0); }
+.goalRing strong { color: var(--teal-900); font-size: 20px; }
+.goal > div:last-child { display: grid; gap: 3px; }
+.goal > div:last-child strong { color: var(--text-primary); font-size: 12px; }
+.goal span, .goal small { color: var(--text-secondary); font-size: 10px; }
+@media (max-width: 760px) { .heading { align-items: start; flex-direction: column; gap: 4px; } .grid, .goalList { grid-template-columns: 1fr; } .goalsPanel { grid-column: auto; } .panel { padding: 17px; } }
