@@ -3,9 +3,11 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { OpportunityBoard } from "@/components/opportunity-board";
 import { ProtectedShell } from "@/components/protected-shell";
 import { getCurrentAcademicProfile } from "@/data/academic-profile";
 import { getOfficialNotices } from "@/data/notices";
+import { getCurrentOpportunities } from "@/data/opportunities";
 import { authOptions } from "@/lib/auth";
 
 import styles from "./opportunities.module.css";
@@ -51,11 +53,26 @@ function formatDate(value: string) {
   }).format(new Date(Date.UTC(year, month - 1, day, 12)));
 }
 
+function todayInSaoPaulo() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "America/Sao_Paulo",
+  }).formatToParts(new Date());
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((item) => item.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}-${part("day")}`;
+}
+
 export default async function OpportunitiesPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect("/login");
 
-  const profile = await getCurrentAcademicProfile();
+  const [profile, opportunities] = await Promise.all([
+    getCurrentAcademicProfile(),
+    getCurrentOpportunities(),
+  ]);
   if (!profile) redirect("/onboarding");
 
   const academicOpportunities = getOfficialNotices()
@@ -87,6 +104,8 @@ export default async function OpportunitiesPage() {
             <small>{profile.academicStage}</small>
           </div>
         </section>
+
+        <OpportunityBoard opportunities={opportunities} profileCourse={profile.course} today={todayInSaoPaulo()} />
 
         <section className={styles.sourceSection} aria-labelledby="opportunities-sources-title">
           <div className={styles.sectionHeading}>
@@ -147,9 +166,9 @@ export default async function OpportunitiesPage() {
         <aside className={styles.nextSteps} aria-labelledby="opportunities-next-title">
           <div>
             <span className={styles.eyebrow}>Achou uma vaga?</span>
-            <h2 id="opportunities-next-title">Guarde o prazo no seu calendário</h2>
+            <h2 id="opportunities-next-title">Guarde a oportunidade e o prazo</h2>
             <p>
-              Registre a data limite como evento pessoal e consulte a Coordenação de Estágios
+              Use o formulário acima para salvar a vaga e colocar o prazo no calendário. Consulte a Coordenação de Estágios
               se precisar de orientação sobre os documentos ou a formalização.
             </p>
           </div>

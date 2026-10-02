@@ -68,6 +68,284 @@
   font-size: 16px;
 }
 
+.board {
+  margin-bottom: 28px;
+}
+
+.boardExplanation {
+  max-width: 760px;
+  margin: 0 0 14px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.createDisclosure,
+.editDisclosure {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.createDisclosure {
+  margin-bottom: 17px;
+  box-shadow: var(--shadow-sm);
+}
+
+.createDisclosure > summary,
+.editDisclosure > summary {
+  cursor: pointer;
+  color: var(--brand-700);
+  font-size: 12px;
+  font-weight: 780;
+  list-style-position: inside;
+}
+
+.createDisclosure > summary {
+  padding: 16px 20px;
+}
+
+.editDisclosure > summary {
+  padding: 9px 11px;
+}
+
+.opportunityForm {
+  display: grid;
+  gap: 14px;
+  padding: 18px 20px 22px;
+  border-top: 1px solid var(--border);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.formGrid label,
+.filters label:not(.filterCheck) {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 730;
+}
+
+.formGrid input,
+.formGrid select,
+.formGrid textarea,
+.filters input:not([type="checkbox"]),
+.filters select {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 11px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  background: var(--surface);
+  font: inherit;
+  font-weight: 500;
+}
+
+.formGrid textarea {
+  resize: vertical;
+}
+
+.wideField {
+  grid-column: 1 / -1;
+}
+
+.fieldError,
+.formError {
+  color: var(--danger-text);
+}
+
+.formError,
+.formSuccess {
+  margin: 0;
+  font-size: 12px;
+}
+
+.formSuccess {
+  color: var(--brand-700);
+}
+
+.reminderChoice,
+.filterCheck {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.reminderChoice input,
+.filterCheck input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand-700);
+}
+
+.submitButton {
+  justify-self: start;
+  padding: 11px 15px;
+  border: 1px solid var(--teal-solid);
+  border-radius: var(--radius-md);
+  color: white;
+  background: var(--teal-solid);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.submitButton:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  align-items: end;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.filters .filterCheck {
+  align-self: center;
+  font-weight: 650;
+}
+
+.resultCount {
+  margin: 12px 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.savedGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.savedCard {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.savedTop,
+.savedMeta,
+.savedActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.savedTop {
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.kindBadge,
+.savedMeta span {
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: var(--brand-700);
+  background: var(--brand-100);
+  font-size: 10px;
+  font-weight: 730;
+}
+
+.favoriteButton,
+.deleteButton {
+  border: 0;
+  color: var(--brand-700);
+  background: transparent;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 760;
+}
+
+.deleteButton {
+  color: var(--danger-text);
+}
+
+.savedCard h3 {
+  margin: 0;
+  color: var(--teal-900);
+  font-size: 17px;
+}
+
+.savedCard p {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.savedCard p strong {
+  color: var(--teal-900);
+}
+
+.savedCard .organization {
+  margin-top: 4px;
+  font-weight: 700;
+}
+
+.savedMeta {
+  margin-top: 12px;
+}
+
+.savedMeta span {
+  color: var(--text-secondary);
+  background: var(--surface-muted);
+}
+
+.savedCard .matchNote {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+}
+
+.sourceLink {
+  display: inline-block;
+  margin-top: 15px;
+  color: var(--brand-700);
+  font-size: 11px;
+  font-weight: 780;
+}
+
+.savedActions {
+  margin-top: 13px;
+  padding-top: 13px;
+  border-top: 1px solid var(--border);
+}
+
+.editDisclosure {
+  width: 100%;
+}
+
+.editDisclosure:not([open]) {
+  width: auto;
+}
+
+.emptyState {
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+
 .sourceSection,
 .noticeSection {
   margin-bottom: 26px;
@@ -215,12 +493,28 @@
 @media (max-width: 760px) {
   .intro,
   .sourceGrid,
-  .noticeGrid {
+  .noticeGrid,
+  .savedGrid,
+  .formGrid {
     grid-template-columns: 1fr;
+  }
+
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wideField {
+    grid-column: auto;
   }
 
   .nextActions,
   .nextActions a {
     width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .filters {
+    grid-template-columns: 1fr;
   }
 }

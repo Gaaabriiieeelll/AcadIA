@@ -36,6 +36,8 @@ Por padrão, o acesso permanece restrito aos endereços definidos em `ALLOWED_EM
 
 As consultas da aplicação usam `DATABASE_URL`. Migrações e ferramentas administrativas usam `DIRECT_URL`.
 
+Na Vercel, o comando de build aplica `npm run db:deploy` antes do build em deploys de produção; `DIRECT_URL` precisa estar disponível no ambiente Production. Deploys Preview executam apenas o build. A migração de `opportunities` é aditiva e precisa ser aplicada antes de acessar a área de oportunidades com o código novo.
+
 ## Segurança
 
 - Nunca envie `.env.local` ao Git.
@@ -187,10 +189,10 @@ A rota `/atendimento` reúne contatos oficiais de setores do Campus João Pessoa
 
 ## Estágios e oportunidades
 
-A rota `/oportunidades` reúne os canais oficiais da Coordenação de Estágios do Campus João Pessoa, as páginas públicas de vagas e o SUAP. Ela mostra o curso do perfil e destaca editais de pesquisa e oportunidades já acompanhados pelo AcadIA. O estudante pode registrar prazos encontrados como eventos pessoais no calendário. As listas públicas consultadas em 02/10/2026 não tinham vagas atuais verificadas pelo AcadIA; a página não afirma que uma vaga antiga continua aberta nem presume elegibilidade pelo curso.
+A rota `/oportunidades` reúne os canais oficiais da Coordenação de Estágios do Campus João Pessoa, as páginas públicas de vagas e o SUAP. Ela mostra o curso do perfil e destaca editais de pesquisa e oportunidades já acompanhados pelo AcadIA. Cada estudante pode salvar até 100 anúncios com o link original, modalidade, cursos aceitos, requisitos, documentos, prazo, favoritos e anotações. Há filtros por texto, tipo, modalidade, local, curso citado, favoritos e prazo. Ao escolher um lembrete, o prazo vira evento no calendário acadêmico e pode ser sincronizado com o Google Agenda conectado. As listas públicas consultadas em 02/10/2026 não tinham vagas atuais verificadas pelo AcadIA; a página não afirma que uma vaga antiga continua aberta nem presume elegibilidade pelo curso. Os registros pessoais são armazenados na tabela `opportunities` e incluídos na exportação de dados da conta.
 
 ## Editais simplificados
 
-A rota `/editais` acompanha seis processos oficiais de 2026 do Campus João Pessoa: IVS, Programa de Alimentação, PAPE (Editais 28 e 41), Pesquisa e Inovação Aplicada e apoio a estudantes para participação em eventos. A página apresenta público, benefício, requisitos, documentos, passo a passo e cronograma em linguagem simples, sem substituir o documento oficial. Prazos que exigem ação do estudante aparecem no calendário acadêmico e na sincronização com o Google Agenda.
+A rota `/editais` acompanha nove processos oficiais de 2026 relevantes ao Campus João Pessoa: IVS, Programa de Alimentação, PAPE (Editais 28 e 41), Pesquisa e Inovação Aplicada, apoio a estudantes para participação em eventos, II Feira de Ciências, monitoria do PULSAR e seleção interna para a Huawei ICT Competition. A página apresenta público, benefício, requisitos, documentos, passo a passo e cronograma em linguagem simples, sem substituir o documento oficial. Prazos que exigem ação do estudante aparecem no calendário acadêmico e na sincronização com o Google Agenda. As retificações dos editais 35 e 36 foram consultadas em 02/10/2026.
 
 O checklist de cada edital é salvo por usuário na tabela `notice_checklist_items`. Depois de atualizar o projeto, aplique a migração com `npm run db:deploy`.

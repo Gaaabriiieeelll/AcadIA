@@ -255,7 +255,190 @@ function resolveEventSupport24Status(today: string): NoticeStatusDetails {
   return { status: "closed", statusLabel: "Encerrado", statusDetail: "O período previsto terminou.", statusDate: null };
 }
 
+function resolveHuaweiStatus(today: string): NoticeStatusDetails {
+  if (today <= "2026-10-02") return {
+    status: "open", statusLabel: "Inscrições até 2 de outubro",
+    statusDetail: "Envie a inscrição até 23h59 de 2 de outubro pelo formulário indicado no edital.", statusDate: "2026-10-02",
+  };
+  if (today < "2026-10-21") return {
+    status: "review", statusLabel: "Primeira etapa",
+    statusDetail: "Acompanhe a homologação e as avaliações remotas da primeira etapa.", statusDate: "2026-10-21",
+  };
+  if (today <= "2026-10-22") return {
+    status: "action", statusLabel: "Resultado e recurso",
+    statusDetail: "Confira o resultado preliminar da primeira etapa e recorra em 22 de outubro, se necessário.", statusDate: "2026-10-22",
+  };
+  if (today <= "2026-11-04") return {
+    status: "action", statusLabel: "Etapa presencial",
+    statusDetail: "Confira o resultado final da primeira etapa e prepare-se para a avaliação presencial em Esperança.", statusDate: "2026-11-04",
+  };
+  return { status: "result", statusLabel: "Resultado previsto", statusDetail: "Consulte o resultado oficial da seleção.", statusDate: null };
+}
+
+function resolveScienceFairStatus(today: string): NoticeStatusDetails {
+  if (today <= "2026-09-30") return {
+    status: "open", statusLabel: "Inscrições abertas",
+    statusDetail: "Equipes do ensino técnico integrado podem submeter projetos até 30 de setembro.", statusDate: "2026-09-30",
+  };
+  if (today < "2026-10-03") return {
+    status: "review", statusLabel: "Aguardando lista",
+    statusDetail: "A lista de inscrições está prevista para 3 de outubro.", statusDate: "2026-10-03",
+  };
+  if (today <= "2026-10-04") return {
+    status: "action", statusLabel: "Lista e recursos",
+    statusDetail: "Confira a lista; o prazo para recurso é 4 de outubro.", statusDate: "2026-10-04",
+  };
+  if (today <= "2026-10-14") return {
+    status: "active", statusLabel: "Preparação dos projetos",
+    statusDetail: "Equipes selecionadas elaboram os projetos de 6 a 14 de outubro.", statusDate: "2026-10-14",
+  };
+  if (today <= "2026-10-17") return {
+    status: "active", statusLabel: "Feira em andamento",
+    statusDetail: "As apresentações ocorrem em 16 e 17 de outubro.", statusDate: "2026-10-17",
+  };
+  return { status: "closed", statusLabel: "Encerrado", statusDetail: "A feira foi prevista para 16 e 17 de outubro.", statusDate: null };
+}
+
+function resolvePulsarMonitorsStatus(today: string): NoticeStatusDetails {
+  if (today <= "2026-09-20") return {
+    status: "open", statusLabel: "Inscrições abertas",
+    statusDetail: "Estudantes de qualquer curso do campus podem se inscrever.", statusDate: "2026-09-20",
+  };
+  if (today <= "2026-10-13") return {
+    status: "result", statusLabel: "Resultado preliminar publicado",
+    statusDetail: "Confira a classificação e as próximas orientações na página oficial do edital.", statusDate: null,
+  };
+  if (today <= "2026-10-17") return {
+    status: "active", statusLabel: "PULSAR em andamento",
+    statusDetail: "Monitores selecionados atuam durante o PULSAR 2026.", statusDate: "2026-10-17",
+  };
+  return { status: "closed", statusLabel: "Encerrado", statusDetail: "O PULSAR foi previsto para 14 a 17 de outubro.", statusDate: null };
+}
+
 const noticeDefinitions: NoticeDefinition[] = [
+  {
+    id: "edital-10-2026-huawei-ict",
+    number: "Edital Conjunto 10/2026",
+    title: "Seleção interna para a Huawei ICT Competition",
+    category: "opportunity",
+    summary: "Seleciona estudantes do IFPB e do IFSertãoPB para quatro trilhas de tecnologia: Innovation, Cloud, Network e Computing.",
+    audience: "Estudantes regularmente matriculados no IFPB ou IFSertãoPB, de cursos presenciais ou a distância, que atendam aos requisitos do edital.",
+    benefit: "Doze estudantes seguem para até nove meses de preparação; a bolsa prevista é de R$ 300 mensais para ensino técnico e R$ 700 para ensino superior ou pós-graduação.",
+    eligibility: [
+      "Ter 18 anos ou completar 18 até 31 de janeiro de 2027.",
+      "Ter disponibilidade de oito horas semanais, domínio de inglês comprovado e disponibilidade para viagens.",
+      "A trilha Computing aceita apenas inscrições de estudantes do gênero feminino.",
+    ],
+    documents: [
+      "Declaração de matrícula extraída do SUAP.",
+      "Certificado de proficiência em inglês, que pode ser apresentado até o fim da avaliação final da primeira etapa.",
+    ],
+    steps: [
+      "Escolha uma trilha e preencha o formulário indicado no edital até 23h59 de 2 de outubro.",
+      "Confira a homologação das inscrições em 5 de outubro.",
+      "Participe das avaliações remotas de 6 a 20 de outubro.",
+      "Confira o resultado preliminar em 21 de outubro; se necessário, recorra em 22 de outubro.",
+      "Se selecionado, participe da etapa presencial no Campus Esperança em 4 de novembro.",
+    ],
+    schedule: [
+      { label: "Inscrições", dateLabel: "26 de setembro a 2 de outubro", startDate: "2026-09-26", endDate: "2026-10-02", calendar: true },
+      { label: "Homologação das inscrições", dateLabel: "5 de outubro", startDate: "2026-10-05" },
+      { label: "Primeira etapa remota", dateLabel: "6 a 20 de outubro", startDate: "2026-10-06", endDate: "2026-10-20", calendar: true },
+      { label: "Resultado preliminar", dateLabel: "21 de outubro", startDate: "2026-10-21" },
+      { label: "Recursos", dateLabel: "22 de outubro", startDate: "2026-10-22", calendar: true },
+      { label: "Etapa presencial e resultado final", dateLabel: "4 de novembro", startDate: "2026-11-04", calendar: true },
+    ],
+    checklist: [
+      { id: "confirmar-requisitos", label: "Confirmei idade, inglês e disponibilidade" },
+      { id: "escolher-trilha", label: "Escolhi minha trilha de competição" },
+      { id: "enviar-inscricao", label: "Enviei a inscrição e a declaração de matrícula" },
+      { id: "acompanhar-etapas", label: "Acompanhei resultados e avaliações" },
+    ],
+    caution: "Consulte o edital para regras completas, formulário de inscrição e atualizações. A seleção e a bolsa dependem do resultado oficial.",
+    officialUrl: "https://www.ifpb.edu.br/noticias/2026/09/ifpb-e-ifsertaopb-abrem-selecao-interna-para-a-huawei-ict-competition",
+    publishedAt: "2026-09-25",
+    verifiedAt: "2026-10-02",
+    resolveStatus: resolveHuaweiStatus,
+  },
+  {
+    id: "edital-35-2026-feira-ciencias",
+    number: "Edital 35/2026, retificado pelo 40/2026",
+    title: "II Feira de Ciências do PULSAR 2026",
+    category: "opportunity",
+    summary: "Equipes de estudantes do ensino técnico integrado apresentam projetos autorais sobre mulheres na ciência e tecnologia.",
+    audience: "Equipes de cinco estudantes dos cursos técnicos integrados ao ensino médio do Campus João Pessoa.",
+    benefit: "Ajuda de custo de R$ 100 por grupo classificado, limitada a 30 grupos, conforme a retificação; há premiação nas categorias da feira.",
+    eligibility: [
+      "Formar equipe de cinco estudantes regularmente matriculados no ensino técnico integrado do campus.",
+      "Cada estudante pode integrar somente uma equipe; o grupo deve indicar líder e vice-líder.",
+      "Apresentar projeto autoral e inédito alinhado ao tema do evento.",
+    ],
+    documents: [
+      "Dados do projeto, disciplinas e docentes responsáveis no formulário de inscrição.",
+      "Nomes completos e matrículas dos integrantes da equipe.",
+    ],
+    steps: [
+      "Confira a lista de inscrições em 3 de outubro e recorra em 4 de outubro, se necessário.",
+      "Consulte o resultado final previsto para 5 de outubro.",
+      "Elabore o projeto de 6 a 14 de outubro e prepare o estande em 15 de outubro.",
+      "Apresente o projeto na feira em 16 e 17 de outubro.",
+    ],
+    schedule: [
+      { label: "Lista de inscritos", dateLabel: "3 de outubro", startDate: "2026-10-03" },
+      { label: "Recursos", dateLabel: "4 de outubro", startDate: "2026-10-04", calendar: true },
+      { label: "Resultado final", dateLabel: "5 de outubro", startDate: "2026-10-05" },
+      { label: "Elaboração dos projetos", dateLabel: "6 a 14 de outubro", startDate: "2026-10-06", endDate: "2026-10-14", calendar: true },
+      { label: "Montagem dos estandes", dateLabel: "15 de outubro", startDate: "2026-10-15", calendar: true },
+      { label: "II Feira de Ciências", dateLabel: "16 e 17 de outubro", startDate: "2026-10-16", endDate: "2026-10-17", calendar: true },
+    ],
+    checklist: [
+      { id: "conferir-lista", label: "Conferi a lista de inscritos" },
+      { id: "avaliar-recurso", label: "Avaliei se preciso apresentar recurso" },
+      { id: "preparar-projeto", label: "Preparei o projeto e o painel explicativo" },
+      { id: "organizar-estande", label: "Organizei a montagem e a apresentação" },
+    ],
+    caution: "As inscrições terminaram em 30 de setembro. Confira o edital, a retificação 40/2026 e as publicações da comissão antes de cada etapa.",
+    officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/edital-n-o-35-2026-direcao-geral",
+    publishedAt: "2026-09-02",
+    verifiedAt: "2026-10-02",
+    resolveStatus: resolveScienceFairStatus,
+  },
+  {
+    id: "edital-36-2026-monitores-pulsar",
+    number: "Edital 36/2026, retificado pelo 39/2026",
+    title: "Monitoria do PULSAR 2026",
+    category: "opportunity",
+    summary: "Seleção de estudantes para apoiar a organização, a recepção e outras atividades do PULSAR 2026.",
+    audience: "Estudantes regularmente matriculados em qualquer curso do Campus João Pessoa.",
+    benefit: "Apoio de R$ 120 e certificado para selecionados que cumprirem pelo menos 12 horas presenciais, conforme as condições e a disponibilidade orçamentária.",
+    eligibility: [
+      "Ter matrícula regular em curso do campus.",
+      "Cumprir reuniões, treinamento obrigatório e pelo menos 12 horas presenciais para certificação.",
+    ],
+    documents: [
+      "Histórico escolar atualizado e declaração do curso em PDF, exigidos na inscrição encerrada.",
+      "Documentos comprobatórios usados nos critérios de pontuação, quando aplicáveis.",
+    ],
+    steps: [
+      "Confira o resultado preliminar e as atualizações na página oficial do edital.",
+      "Se selecionado, acompanhe a convocação e confirme as datas de treinamento diretamente com a organização.",
+      "Participe das atividades do PULSAR entre 14 e 17 de outubro.",
+    ],
+    schedule: [
+      { label: "Resultado preliminar", dateLabel: "Publicado em 29 de setembro", startDate: "2026-09-29" },
+      { label: "Atuação dos monitores no PULSAR", dateLabel: "14 a 17 de outubro", startDate: "2026-10-14", endDate: "2026-10-17", calendar: true },
+    ],
+    checklist: [
+      { id: "conferir-resultado", label: "Conferi o resultado preliminar oficial" },
+      { id: "confirmar-convocacao", label: "Confirmei convocação e treinamento com a organização" },
+      { id: "planejar-turnos", label: "Planejei meus turnos no PULSAR" },
+    ],
+    caution: "As inscrições terminaram em 20 de setembro. A retificação e as publicações oficiais prevalecem; confirme a convocação e o treinamento com a organização.",
+    officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/edital-n-o-36-2026-direcao-geral",
+    publishedAt: "2026-09-10",
+    verifiedAt: "2026-10-02",
+    resolveStatus: resolvePulsarMonitorsStatus,
+  },
   {
     id: "edital-41-2026-pape-iv",
     number: "Edital 41/2026",

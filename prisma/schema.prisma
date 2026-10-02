@@ -24,6 +24,7 @@ model User {
   studySessions             StudySession[]
   videoRecommendations      StudyVideoRecommendation[]
   noticeChecklistItems      NoticeChecklistItem[]
+  opportunities             Opportunity[]
   subjects                  Subject[]
   calendarEvents            CalendarEvent[]
   createdAt                 DateTime                   @default(now()) @map("created_at")
@@ -61,6 +62,31 @@ model NoticeChecklistItem {
   @@unique([userId, noticeKey, itemKey])
   @@index([userId, noticeKey])
   @@map("notice_checklist_items")
+}
+
+model Opportunity {
+  id              String         @id @default(uuid()) @db.Uuid
+  userId          String         @map("user_id") @db.Uuid
+  title           String         @db.VarChar(140)
+  organization    String         @db.VarChar(120)
+  kind            String         @db.VarChar(20)
+  acceptedCourses String?        @map("accepted_courses") @db.VarChar(250)
+  modality        String         @default("unspecified") @db.VarChar(20)
+  location        String?        @db.VarChar(120)
+  deadline        DateTime?      @db.Date
+  sourceUrl       String         @map("source_url") @db.Text
+  requirements    String?        @db.Text
+  documents       String?        @db.Text
+  notes           String?        @db.Text
+  favorite        Boolean        @default(false)
+  reminderEventId String?        @unique @map("reminder_event_id") @db.Uuid
+  reminderEvent   CalendarEvent? @relation(fields: [reminderEventId], references: [id], onDelete: SetNull)
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  @@index([userId, deadline])
+  @@map("opportunities")
 }
 
 model GoogleClassroomCredential {
@@ -458,6 +484,7 @@ model CalendarEvent {
   completedAt DateTime?         @map("completed_at")
   user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   subject     Subject?          @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  opportunityReminder Opportunity?
   createdAt   DateTime          @default(now()) @map("created_at")
   updatedAt   DateTime          @updatedAt @map("updated_at")
 

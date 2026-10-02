@@ -358,6 +358,7 @@ export async function getCurrentAccountExport(): Promise<Record<string, unknown>
       studySessions: { orderBy: [{ scheduledDate: "asc" }, { startTime: "asc" }] },
       videoRecommendations: { orderBy: { createdAt: "asc" } },
       noticeChecklistItems: { orderBy: { createdAt: "asc" } },
+      opportunities: { orderBy: { createdAt: "asc" } },
       subjects: {
         orderBy: { name: "asc" },
         include: {
@@ -392,7 +393,7 @@ export async function getCurrentAccountExport(): Promise<Record<string, unknown>
 
   return JSON.parse(JSON.stringify({
     format: "acadia-account-export",
-    formatVersion: 2,
+    formatVersion: 3,
     generatedAt: new Date().toISOString(),
     account: {
       ...account,
