@@ -159,7 +159,7 @@ export function StudyAiChat({
               <span className={styles.messageAvatar}><SparkIcon /></span>
             ) : null}
             <div className={styles.messageContent}>
-              <span>{message.role === "assistant" ? "AcadIA" : "Você"}</span>
+              <span>{message.role === "assistant" ? "Conecta Campus" : "Você"}</span>
               <p>{message.content}</p>
               {message.videos?.length ? (
                 <div className={styles.chatVideos}>
@@ -173,7 +173,7 @@ export function StudyAiChat({
         {pending ? (
           <article className={`${styles.chatMessage} ${styles.assistantMessage}`}>
             <span className={styles.messageAvatar}><SparkIcon /></span>
-            <div className={styles.typingIndicator} aria-label="A AcadIA está pensando">
+            <div className={styles.typingIndicator} aria-label="O Conecta Campus está pensando">
               <i /><i /><i />
             </div>
           </article>
@@ -190,7 +190,7 @@ export function StudyAiChat({
       </div>
 
       <form className={styles.chatComposer} onSubmit={handleSubmit}>
-        <label className="sr-only" htmlFor="study-chat-message">Mensagem para a AcadIA</label>
+        <label className="sr-only" htmlFor="study-chat-message">Mensagem para o Conecta Campus</label>
         <textarea
           disabled={!ready || pending}
           id="study-chat-message"

@@ -100,7 +100,7 @@ export async function registerBrowserPushSubscriptionAction(subscription: unknow
   revalidateAlertPages();
   return {
     status: "success" as const,
-    message: "Este navegador foi conectado aos alertas do AcadIA.",
+    message: "Este navegador foi conectado aos alertas do Conecta Campus.",
   };
 }
 

@@ -21,9 +21,11 @@ const themeInitializer = `
 `;
 
 export const metadata: Metadata = {
+  applicationName: "Conecta Campus",
+  appleWebApp: { title: "Conecta Campus" },
   title: {
-    default: "AcadIA",
-    template: "%s · AcadIA",
+    default: "Conecta Campus",
+    template: "%s · Conecta Campus",
   },
   description: "Plataforma acadêmica inteligente em desenvolvimento para estudantes do IFPB Campus João Pessoa.",
 };

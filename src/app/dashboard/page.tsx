@@ -425,7 +425,7 @@ export default async function DashboardPage({
           <div className="dashboard-contact-heading">
             <span>Contato do projeto</span>
             <h2 id="dashboard-contact-title">Fale com Gabriel</h2>
-            <p>Dúvidas, sugestões ou interesse em colaborar com o desenvolvimento do AcadIA.</p>
+            <p>Dúvidas, sugestões ou interesse em colaborar com o desenvolvimento do Conecta Campus.</p>
           </div>
 
           <address className="dashboard-contact-list">

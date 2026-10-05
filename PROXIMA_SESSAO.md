@@ -1,4 +1,4 @@
-# Ponto de retomada do AcadIA
+# Ponto de retomada do Conecta Campus
 
 Em 25/09/2026, lembrar ao usuário deste avanço quando ele retomar o projeto:
 

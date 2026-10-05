@@ -136,7 +136,7 @@ function DeleteAccountControl({ email }: { email: string }) {
         <h2 id="delete-account-title">Excluir conta e dados locais</h2>
         <p>
           Esta ação apaga permanentemente perfil, disciplinas, notas, agenda, alertas,
-          planejamentos, checklists, consentimentos e integrações armazenadas no AcadIA.
+          planejamentos, checklists, consentimentos e integrações armazenadas no Conecta Campus.
         </p>
       </div>
       <form
@@ -240,7 +240,7 @@ export function PrivacyControls({
             </div>
             <p>
               Quando autorizado, o bate-papo envia à Groq sua pergunta e histórico recente,
-              nomes das disciplinas, notas e textos selecionados do Classroom. O AcadIA não anexa
+              nomes das disciplinas, notas e textos selecionados do Classroom. O Conecta Campus não anexa
               automaticamente e-mail, matrícula, telefone nem tokens de acesso do perfil. A Groq
               informa que não usa esses dados para treinamento sem permissão e pode retê-los
               temporariamente para confiabilidade ou investigação de abuso. Esta autorização é

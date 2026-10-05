@@ -182,7 +182,7 @@ export default async function StudyPlanPage({ searchParams }: StudyPlanPageProps
             <div>
               <span>Antes de gerar</span>
               <h2 id="study-settings-title">Sua disponibilidade</h2>
-              <p>Escolha os períodos em que o AcadIA pode distribuir sessões.</p>
+              <p>Escolha os períodos em que o Conecta Campus pode distribuir sessões.</p>
             </div>
           </div>
           <div className={styles.configurationGrid}>
@@ -287,7 +287,7 @@ export default async function StudyPlanPage({ searchParams }: StudyPlanPageProps
         <footer className={styles.methodNote}>
           <strong>Como a recomendação funciona</strong>
           <p>
-            O AcadIA compara suas médias com a meta pessoal e considera atividades pendentes ou próximas. A pontuação serve apenas para organizar o estudo; ela não prevê aprovação e pode ser ajustada por você a qualquer momento.
+            O Conecta Campus compara suas médias com a meta pessoal e considera atividades pendentes ou próximas. A pontuação serve apenas para organizar o estudo; ela não prevê aprovação e pode ser ajustada por você a qualquer momento.
           </p>
         </footer>
 

@@ -502,7 +502,7 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
             <strong>Google Classroom sincronizado com o calendário</strong>
             <p>{classroomSyncMessage(classroomSync, classroomPending, classroomCompleted)}</p>
             <small>
-              Ao voltar da aba do Classroom, o AcadIA confere o status novamente. Use o botão para verificar imediatamente.
+              Ao voltar da aba do Classroom, o Conecta Campus confere o status novamente. Use o botão para verificar imediatamente.
             </small>
           </div>
           <SyncClassroomTasksForm />

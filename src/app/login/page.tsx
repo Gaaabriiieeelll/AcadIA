@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 const errorMessages: Record<string, string> = {
   AcademicEmailRequiresAuthorization:
-    "O uso do e-mail acadêmico permanece bloqueado até existir autorização institucional para o AcadIA.",
+    "O uso do e-mail acadêmico permanece bloqueado até existir autorização institucional para o Conecta Campus.",
   EmailNotAuthorized:
     "Esta conta não está na lista de acesso do ambiente de testes.",
   UnverifiedEmail:
@@ -26,7 +26,7 @@ const errorMessages: Record<string, string> = {
   OAuthSignin:
     "Não foi possível iniciar o acesso pelo Google.",
   OAuthCallback:
-    "O Google não conseguiu concluir o retorno para o AcadIA.",
+    "O Google não conseguiu concluir o retorno para o Conecta Campus.",
   Configuration:
     "A autenticação ainda não foi configurada corretamente no servidor.",
 };
@@ -49,13 +49,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <main className="login-page">
-      <section className="login-visual" aria-label="Apresentação do AcadIA">
+      <section className="login-visual" aria-label="Apresentação do Conecta Campus">
         <div className="visual-orbit visual-orbit-one" />
         <div className="visual-orbit visual-orbit-two" />
 
-        <a className="login-brand" href="/login" aria-label="AcadIA — Página de entrada">
+        <a className="login-brand" href="/login" aria-label="Conecta Campus — Página de entrada">
           <BrandLogo priority size={64} />
-          <span>Acad<strong>IA</strong></span>
+          <span>Conecta <strong>Campus</strong></span>
         </a>
 
         <div className="visual-copy">
@@ -85,17 +85,17 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <ThemeToggle className="login-theme-toggle" />
         <div className="mobile-login-brand" aria-hidden="true">
           <BrandLogo priority size={56} />
-          AcadIA
+          Conecta Campus
         </div>
 
         <div className="login-box">
           <span className="login-kicker">
             {allowAnyGoogleEmail ? "Acesso com Google" : "Ambiente de testes · Acesso restrito"}
           </span>
-          <h2 id="login-title">Boas-vindas ao AcadIA</h2>
+          <h2 id="login-title">Boas-vindas ao Conecta Campus</h2>
           <p className="login-intro">
             {allowAnyGoogleEmail
-              ? "Entre com sua conta Google para acessar o AcadIA."
+              ? "Entre com sua conta Google para acessar o Conecta Campus."
               : "Entre com a conta Google autorizada para acessar o ambiente inicial."}
           </p>
 
@@ -129,7 +129,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               <rect x="5" y="10" width="14" height="11" rx="2" />
               <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3" />
             </svg>
-            <p><strong>Sua senha permanece no Google.</strong> O AcadIA recebe somente nome, foto e e-mail nesta etapa.</p>
+            <p><strong>Sua senha permanece no Google.</strong> O Conecta Campus recebe somente nome, foto e e-mail nesta etapa.</p>
           </div>
 
           <div className="access-policy">

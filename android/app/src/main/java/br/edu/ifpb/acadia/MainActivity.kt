@@ -44,11 +44,11 @@ class MainActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             setPadding(padding, padding, padding, padding)
         }
-        content.addView(label("AcadIA", 28f, true))
+        content.addView(label("Conecta Campus", 28f, true))
         content.addView(label("Widget de compromissos em aberto", 18f, true).withTop(dp(8)))
         content.addView(
             label(
-                "No AcadIA, abra Calendário, gere um código para o Android e informe os dados abaixo. A conexão usa HTTPS e o token fica criptografado neste aparelho.",
+                "No Conecta Campus, abra Calendário, gere um código para o Android e informe os dados abaixo. A conexão usa HTTPS e o token fica criptografado neste aparelho.",
                 14f,
                 false,
             ).withTop(dp(10)),
@@ -59,7 +59,7 @@ class MainActivity : Activity() {
             setText(ConnectionStore.connection(this@MainActivity)?.serverUrl ?: BuildConfig.ACADIA_BASE_URL)
             inputType = android.text.InputType.TYPE_TEXT_VARIATION_URI
         }
-        content.addView(fieldLabel("Endereço do AcadIA").withTop(dp(22)))
+        content.addView(fieldLabel("Endereço do Conecta Campus").withTop(dp(22)))
         content.addView(serverInput, matchWrap())
 
         codeInput = EditText(this).apply {
@@ -79,7 +79,7 @@ class MainActivity : Activity() {
         content.addView(statusText, matchWrap().withTop(dp(12)))
 
         val openButton = Button(this).apply {
-            text = "Abrir AcadIA"
+            text = "Abrir Conecta Campus"
             setOnClickListener {
                 validatedServerUrl()?.let { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it))) }
             }
@@ -90,7 +90,7 @@ class MainActivity : Activity() {
             text = "Desconectar este celular"
             setOnClickListener {
                 ConnectionStore.clear(this@MainActivity)
-                statusText.text = "Conexão local removida. Revogue também o aparelho no AcadIA."
+                statusText.text = "Conexão local removida. Revogue também o aparelho no Conecta Campus."
                 WidgetSyncScheduler.refresh(this@MainActivity)
             }
         }
@@ -98,7 +98,7 @@ class MainActivity : Activity() {
 
         setContentView(ScrollView(this).apply { addView(content) })
         if (ConnectionStore.connection(this) != null) {
-            statusText.text = "Celular conectado. Adicione “AcadIA · Em aberto” à tela inicial."
+            statusText.text = "Celular conectado. Adicione “Conecta Campus · Em aberto” à tela inicial."
         }
     }
 
@@ -113,7 +113,7 @@ class MainActivity : Activity() {
         val serverUrl = validatedServerUrl() ?: return
         val code = codeInput.text.toString().trim().uppercase()
         if (!Regex("^[A-Z2-9]{4}-?[A-Z2-9]{4}$").matches(code)) {
-            statusText.text = "Informe o código de oito caracteres exibido pelo AcadIA."
+            statusText.text = "Informe o código de oito caracteres exibido pelo Conecta Campus."
             return
         }
         val tokenBytes = ByteArray(32).also(SecureRandom()::nextBytes)
@@ -131,7 +131,7 @@ class MainActivity : Activity() {
             }.onSuccess {
                 runOnUiThread {
                     connectButton.isEnabled = true
-                    statusText.text = "Conectado. Agora adicione o widget AcadIA à tela inicial."
+                    statusText.text = "Conectado. Agora adicione o widget Conecta Campus à tela inicial."
                 }
             }.onFailure { error ->
                 runOnUiThread {

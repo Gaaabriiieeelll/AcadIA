@@ -36,7 +36,7 @@ export async function GET() {
       status: 200,
       headers: {
         "cache-control": "private, no-store, max-age=0",
-        "content-disposition": `attachment; filename="acadia-dados-${date}.json"`,
+        "content-disposition": `attachment; filename="conecta-campus-dados-${date}.json"`,
         "content-type": "application/json; charset=utf-8",
         "x-content-type-options": "nosniff",
       },

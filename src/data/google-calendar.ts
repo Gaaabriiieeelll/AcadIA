@@ -31,7 +31,7 @@ import type {
 } from "@/types/google-calendar";
 
 const GOOGLE_CALENDAR_API = "https://www.googleapis.com/calendar/v3";
-const GOOGLE_CALENDAR_NAME = "AcadIA · Calendário acadêmico";
+const GOOGLE_CALENDAR_NAME = "Conecta Campus · Calendário acadêmico";
 const GOOGLE_CALENDAR_TIME_ZONE = "America/Sao_Paulo";
 const GOOGLE_CALENDAR_TIMEOUT_MS = 15_000;
 const MANAGED_PROPERTY = "acadiaManaged";
@@ -242,7 +242,7 @@ async function desiredGoogleEvents(userId: string) {
         academicCalendarCategories[event.category].label,
         `${academicCalendarMetadata.campus} · ${academicCalendarMetadata.audience}`,
         `Fonte: ${academicCalendarMetadata.title}`,
-        "Sincronizado pelo AcadIA.",
+        "Sincronizado pelo Conecta Campus.",
       ].join("\n"),
       colorId: googleCalendarColorForAcademicEvent(event.category),
       ...eventPeriod(
@@ -265,7 +265,7 @@ async function desiredGoogleEvents(userId: string) {
         "Prazo de edital do Campus João Pessoa.",
         "Confira requisitos, horários e possíveis retificações na publicação oficial.",
         deadline.officialUrl,
-        "Sincronizado pelo AcadIA.",
+        "Sincronizado pelo Conecta Campus.",
       ].join("\n"),
       colorId: GOOGLE_CALENDAR_EVENT_COLOR_IDS.YELLOW,
       ...eventPeriod(deadline.startDate, deadline.endDate, null, null),
@@ -285,7 +285,7 @@ async function desiredGoogleEvents(userId: string) {
       `Tipo: ${CALENDAR_EVENT_TYPE_DETAILS[event.eventType].label}`,
       openEnded ? `Status: ${completed ? "ConcluÃ­do" : "Em aberto"}` : null,
       event.description,
-      "Evento pessoal sincronizado pelo AcadIA.",
+      "Evento pessoal sincronizado pelo Conecta Campus.",
     ].filter((value): value is string => Boolean(value));
 
     return desiredEvent(`personal:${event.id}`, {
@@ -311,12 +311,12 @@ async function desiredGoogleEvents(userId: string) {
       : "Pendente";
     const details = [
       `Status: ${statusLabel}`,
-      `Origem: ${classroom ? "Google Classroom" : "Agenda do AcadIA"}`,
+      `Origem: ${classroom ? "Google Classroom" : "Agenda do Conecta Campus"}`,
       `Disciplina: ${task.subject.name}`,
       `Prioridade: ${TASK_PRIORITY_LABELS[task.priority]}`,
       task.description,
       task.sourceUrl ? `Abrir atividade: ${task.sourceUrl}` : null,
-      "Atividade sincronizada pelo AcadIA.",
+      "Atividade sincronizada pelo Conecta Campus.",
     ].filter((value): value is string => Boolean(value));
 
     return desiredEvent(`task:${task.id}`, {
@@ -387,7 +387,7 @@ async function createGoogleCalendar(userId: string, accessToken: string) {
       method: "POST",
       body: JSON.stringify({
         summary: GOOGLE_CALENDAR_NAME,
-        description: "Eventos institucionais, pessoais e atividades sincronizados pelo AcadIA.",
+        description: "Eventos institucionais, pessoais e atividades sincronizados pelo Conecta Campus.",
         timeZone: GOOGLE_CALENDAR_TIME_ZONE,
       }),
     },
@@ -418,10 +418,29 @@ async function ensureGoogleCalendar(userId: string, accessToken: string) {
 
   if (existing) {
     try {
-      await calendarApiRequest<GoogleCalendarResource>(
+      const calendar = await calendarApiRequest<GoogleCalendarResource>(
         calendarPath(existing.calendarId),
         accessToken,
       );
+      // Rename only the original app label; preserve names chosen by the user.
+      if (calendar.summary === "AcadIA · Calendário acadêmico") {
+        await calendarApiRequest<GoogleCalendarResource>(
+          calendarPath(existing.calendarId),
+          accessToken,
+          {
+            method: "PATCH",
+            body: JSON.stringify({ summary: GOOGLE_CALENDAR_NAME }),
+          },
+        );
+        calendar.summary = GOOGLE_CALENDAR_NAME;
+      }
+      if (calendar.summary && calendar.summary !== existing.calendarName) {
+        return db.googleCalendarIntegration.update({
+          where: { id: existing.id },
+          data: { calendarName: calendar.summary },
+          select: { id: true, calendarId: true, calendarName: true },
+        });
+      }
       return existing;
     } catch (error) {
       if (!(error instanceof GoogleCalendarError) || error.code !== "NOT_FOUND") {
@@ -567,7 +586,7 @@ function calendarErrorMessage(error: unknown) {
         || googleMessage.includes("it is disabled")
         || googleMessage.includes("access not configured")
       ) {
-        return "A Google Calendar API está desativada no projeto Google Cloud do AcadIA.";
+        return "A Google Calendar API está desativada no projeto Google Cloud do Conecta Campus.";
       }
       if (
         googleMessage.includes("administrator")

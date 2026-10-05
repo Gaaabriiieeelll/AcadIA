@@ -69,7 +69,7 @@ private fun WidgetContent(
             )
             Spacer(GlanceModifier.width(8.dp))
             Text(
-                text = "AcadIA · Em aberto",
+                text = "Conecta Campus · Em aberto",
                 style = TextStyle(
                     color = ColorProvider(R.color.acadia_green_dark),
                     fontSize = 14.sp,
@@ -89,7 +89,7 @@ private fun WidgetContent(
                 }
                 if (commitments.size > 3) {
                     Text(
-                        text = "+${commitments.size - 3} compromisso(s) no AcadIA",
+                        text = "+${commitments.size - 3} compromisso(s) no Conecta Campus",
                         style = TextStyle(
                             color = ColorProvider(R.color.acadia_muted),
                             fontSize = 10.sp,
@@ -120,7 +120,7 @@ private fun ConnectionMessage() {
             ),
         )
         Text(
-            text = "Toque aqui e use o código criado no calendário do AcadIA.",
+            text = "Toque aqui e use o código criado no calendário do Conecta Campus.",
             style = TextStyle(color = ColorProvider(R.color.acadia_muted), fontSize = 10.sp),
             maxLines = 2,
         )

@@ -1,4 +1,4 @@
-# AcadIA
+# Conecta Campus
 
 Plataforma acadêmica inteligente em desenvolvimento para estudantes do IFPB Campus João Pessoa.
 
@@ -73,7 +73,7 @@ Para ativar a Groq em produção:
 1. Crie uma chave em [Groq Console](https://console.groq.com/keys).
 2. Cadastre `GROQ_API_KEY` como variável de ambiente **Production** na Vercel e
    faça um novo deploy. A chave não deve ir para o GitHub nem para o navegador.
-3. Cada estudante deve abrir **Perfil** no AcadIA e autorizar o bate-papo pela
+3. Cada estudante deve abrir **Perfil** no Conecta Campus e autorizar o bate-papo pela
    Groq. A autorização anterior para a OpenAI não é reaproveitada.
 
 O plano gratuito da Groq tem limites compartilhados entre os usuários do app.
@@ -101,9 +101,9 @@ status de publicação. Se o app externo estiver em **Teste**, o Google expira a
 autorização e o token de renovação após sete dias quando o escopo do Agenda é
 solicitado. Para manter a conexão, publique o app como **Em produção** e conclua
 as verificações exigidas pelo Google para os escopos configurados. Depois,
-autorize o Google Agenda novamente no AcadIA com a conta institucional.
+autorize o Google Agenda novamente no Conecta Campus com a conta institucional.
 
-Quando a autorização expira, o AcadIA mostra **Autorizar novamente**. Falhas
+Quando a autorização expira, o Conecta Campus mostra **Autorizar novamente**. Falhas
 temporárias de acesso ao Google mostram uma opção para tentar a sincronização de
 novo.
 
@@ -112,12 +112,12 @@ novo.
 Ao criar um evento pessoal no Calendário, deixar **Data final** vazia cria um
 compromisso em aberto. Ele permanece ativo até o usuário pressionar **Concluir**
 e pode ser reaberto depois. Enquanto estiver aberto, aparece diariamente no
-calendário privado do AcadIA no Google Agenda; a conclusão limita a repetição ao
+calendário privado do Conecta Campus no Google Agenda; a conclusão limita a repetição ao
 dia em que o compromisso foi encerrado.
 
 ## Widget Android (módulo separado)
 
-O módulo em `android/` fornece o widget **AcadIA · Em aberto**. O pareamento usa
+O módulo em `android/` fornece o widget **Conecta Campus · Em aberto**. O pareamento usa
 um código temporário de uso único, válido por dez minutos. O Android gera um
 token aleatório, o servidor persiste somente o hash e o aparelho protege token e
 cache com o Android Keystore. Consulte `android/README.md` para gerar o APK,
@@ -131,7 +131,7 @@ Vercel, mantenha a variável ausente ou com o valor `false`.
 
 ## Alertas pelo WhatsApp
 
-O AcadIA envia mensagens de texto pela Evolution API v2. O usuário informa o próprio celular, aceita explicitamente os envios e pode enviar uma mensagem de teste na Central de alertas. O número é criptografado no banco com a chave derivada de `AUTH_SECRET`.
+O Conecta Campus envia mensagens de texto pela Evolution API v2. O usuário informa o próprio celular, aceita explicitamente os envios e pode enviar uma mensagem de teste na Central de alertas. O número é criptografado no banco com a chave derivada de `AUTH_SECRET`.
 
 Configure no servidor:
 
@@ -189,7 +189,7 @@ A rota `/atendimento` reúne contatos oficiais de setores do Campus João Pessoa
 
 ## Estágios e oportunidades
 
-A rota `/oportunidades` reúne os canais oficiais da Coordenação de Estágios do Campus João Pessoa, as páginas públicas de vagas e o SUAP. Ela mostra o curso do perfil e destaca editais de pesquisa e oportunidades já acompanhados pelo AcadIA. Cada estudante pode salvar até 100 anúncios com o link original, modalidade, cursos aceitos, requisitos, documentos, prazo, favoritos e anotações. Há filtros por texto, tipo, modalidade, local, curso citado, favoritos e prazo. Ao escolher um lembrete, o prazo vira evento no calendário acadêmico e pode ser sincronizado com o Google Agenda conectado. As listas públicas consultadas em 02/10/2026 não tinham vagas atuais verificadas pelo AcadIA; a página não afirma que uma vaga antiga continua aberta nem presume elegibilidade pelo curso. Os registros pessoais são armazenados na tabela `opportunities` e incluídos na exportação de dados da conta.
+A rota `/oportunidades` reúne os canais oficiais da Coordenação de Estágios do Campus João Pessoa, as páginas públicas de vagas e o SUAP. Ela mostra o curso do perfil e destaca editais de pesquisa e oportunidades já acompanhados pelo Conecta Campus. Cada estudante pode salvar até 100 anúncios com o link original, modalidade, cursos aceitos, requisitos, documentos, prazo, favoritos e anotações. Há filtros por texto, tipo, modalidade, local, curso citado, favoritos e prazo. Ao escolher um lembrete, o prazo vira evento no calendário acadêmico e pode ser sincronizado com o Google Agenda conectado. As listas públicas consultadas em 02/10/2026 não tinham vagas atuais verificadas pelo Conecta Campus; a página não afirma que uma vaga antiga continua aberta nem presume elegibilidade pelo curso. Os registros pessoais são armazenados na tabela `opportunities` e incluídos na exportação de dados da conta.
 
 ## Editais simplificados
 

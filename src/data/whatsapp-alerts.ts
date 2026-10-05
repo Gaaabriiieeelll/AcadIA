@@ -69,7 +69,7 @@ function alertMessage(alert: {
   const link = absoluteAlertUrl(alert.href);
 
   return [
-    `*AcadIA · ${severity}*`,
+    `*Conecta Campus · ${severity}*`,
     `${category}: *${alert.title}*`,
     alert.description,
     link ? `Acesse: ${link}` : null,

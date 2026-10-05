@@ -201,7 +201,7 @@ export function SuapReportImport({ subjects }: { subjects: SubjectFilterOption[]
                     Importar esta disciplina
                   </label>
                   <label className={styles.field}>
-                    <span>Vincular à disciplina do AcadIA</span>
+                    <span>Vincular à disciplina do Conecta Campus</span>
                     <select onChange={(event) => updateRow(index, { targetSubjectId: event.target.value || null })} value={row.targetSubjectId ?? ""}>
                       <option value="">Criar nova disciplina</option>
                       {subjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}

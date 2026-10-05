@@ -52,7 +52,7 @@ export function GoogleCalendarControl({
         <strong>
           {status.status === "connected" && !needsPermission
             ? `${status.calendarName} conectado`
-            : "Levar o AcadIA para o Google Agenda"}
+            : "Levar o Conecta Campus para o Google Agenda"}
         </strong>
         <p>
           {needsPermission
@@ -61,7 +61,7 @@ export function GoogleCalendarControl({
               ? status.lastError
               : status.status === "connected"
                 ? `${status.eventCount} evento(s) no calendário de ${accountEmail ?? "sua conta institucional"}${lastSync ? ` · atualizado em ${lastSync}` : ""}.`
-                : `Crie um calendário privado do AcadIA em ${accountEmail ?? "sua conta institucional"}.`}
+                : `Crie um calendário privado do Conecta Campus em ${accountEmail ?? "sua conta institucional"}.`}
         </p>
         <small>
           Inclui planejamento anual, eventos pessoais e atividades da Agenda e do Classroom.

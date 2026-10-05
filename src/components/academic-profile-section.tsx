@@ -15,7 +15,7 @@ export function AcademicProfileSection({ profile }: AcademicProfileSectionProps)
       <header className="academic-profile-section-heading">
         <span>Dados persistidos</span>
         <h2 id="academic-profile-title">Perfil acadêmico</h2>
-        <p>Revise os dados que serão usados nos próximos módulos do AcadIA.</p>
+        <p>Revise os dados que serão usados nos próximos módulos do Conecta Campus.</p>
       </header>
       <div className="profile-edit-card" aria-label="Editar perfil acadêmico">
         <AcademicProfileForm mode="edit" initialValues={profile} />

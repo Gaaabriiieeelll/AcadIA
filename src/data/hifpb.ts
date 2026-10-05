@@ -15,7 +15,7 @@ async function fetchHifpbPage(sourceUrl: string) {
       const response = await fetch(sourceUrl, {
         headers: {
           Accept: "text/html,application/xhtml+xml",
-          "User-Agent": "AcadIA/0.1 (consulta de horario academico publico)",
+          "User-Agent": "ConectaCampus/0.1 (consulta de horario academico publico)",
         },
         next: { revalidate: 60 * 60 },
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),

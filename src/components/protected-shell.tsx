@@ -108,9 +108,9 @@ export async function ProtectedShell({ active, children, user }: ProtectedShellP
     <main className="protected-page">
       <ClassroomBackgroundSync />
       <aside className="protected-sidebar">
-        <Link className="protected-brand" href="/dashboard" aria-label="AcadIA — Visão geral">
+        <Link className="protected-brand" href="/dashboard" aria-label="Conecta Campus — Visão geral">
           <BrandLogo size={48} />
-          AcadIA
+          <span>Conecta Campus</span>
         </Link>
         <ProtectedNavigation active={active} scheduleLabel={scheduleLabel} />
         <p>Ambiente privado de desenvolvimento.</p>

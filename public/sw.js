@@ -1,6 +1,6 @@
 self.addEventListener("push", (event) => {
   let payload = {
-    title: "Novo alerta no AcadIA",
+    title: "Novo alerta no Conecta Campus",
     body: "Abra a Central de alertas para conferir.",
     href: "/alertas",
     icon: "/acadia-logo.jpeg",
@@ -20,7 +20,7 @@ self.addEventListener("push", (event) => {
       href = `${candidate.pathname}${candidate.search}${candidate.hash}`;
     }
   } catch {
-    // Links inválidos nunca saem da origem do AcadIA.
+    // Links inválidos nunca saem da origem do Conecta Campus.
   }
 
   event.waitUntil(self.registration.showNotification(String(payload.title).slice(0, 200), {

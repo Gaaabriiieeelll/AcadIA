@@ -500,7 +500,7 @@ export async function sendCurrentWhatsAppTest() {
   const alertUrl = baseUrl ? `\n\nAcesse: ${baseUrl}/alertas` : "";
   const result = await sendEvolutionTextMessage({
     number: decryptServerSecret(preference.encryptedWhatsappPhone),
-    text: `✅ *AcadIA conectado*\n\nAs notificações acadêmicas via WhatsApp foram ativadas com sucesso.${alertUrl}`,
+    text: `✅ *Conecta Campus conectado*\n\nAs notificações acadêmicas via WhatsApp foram ativadas com sucesso.${alertUrl}`,
   });
 
   await db.academicAlertPreference.update({

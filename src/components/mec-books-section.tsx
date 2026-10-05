@@ -61,14 +61,14 @@ export function MecBooksSection() {
           <span>1</span>
           <div>
             <strong>Abra o portal oficial</strong>
-            <p>O AcadIA encaminha você diretamente ao ambiente oficial do MEC Livros.</p>
+            <p>O Conecta Campus encaminha você diretamente ao ambiente oficial do MEC Livros.</p>
           </div>
         </article>
         <article>
           <span>2</span>
           <div>
             <strong>Entre com sua conta gov.br</strong>
-            <p>A autenticação acontece fora do AcadIA, nos sistemas oficiais do Governo Federal.</p>
+            <p>A autenticação acontece fora do Conecta Campus, nos sistemas oficiais do Governo Federal.</p>
           </div>
         </article>
         <article>
@@ -86,7 +86,7 @@ export function MecBooksSection() {
           <path d="M8 10V7a4 4 0 0 1 8 0v3" />
         </svg>
         <p>
-          <strong>Seus dados continuam protegidos.</strong> O AcadIA nunca solicita, recebe ou armazena CPF e senha da conta gov.br.
+          <strong>Seus dados continuam protegidos.</strong> O Conecta Campus nunca solicita, recebe ou armazena CPF e senha da conta gov.br.
         </p>
       </div>
     </section>

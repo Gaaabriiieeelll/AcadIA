@@ -1,14 +1,14 @@
-# AcadIA para Android
+# Conecta Campus para Android
 
-Aplicativo mínimo que fornece o widget **AcadIA · Em aberto** para a tela inicial.
-Ele não replica toda a interface web: faz o pareamento seguro com o AcadIA, mantém
+Aplicativo mínimo que fornece o widget **Conecta Campus · Em aberto** para a tela inicial.
+Ele não replica toda a interface web: faz o pareamento seguro com o Conecta Campus, mantém
 um cache criptografado dos compromissos sem data final e abre o calendário web ao
 tocar em um item.
 
 ## Requisitos
 
 - Android Studio com JDK 17 e Android SDK 37;
-- servidor AcadIA publicado em HTTPS;
+- servidor Conecta Campus publicado em HTTPS;
 - `ANDROID_WIDGET_ENABLED=true` configurado no servidor;
 - migrações do Prisma aplicadas no servidor.
 
@@ -26,12 +26,12 @@ configure a variável de repositório `ACADIA_BASE_URL` com a URL HTTPS publicad
 
 ## Conectar o celular
 
-1. Instale o APK e abra o aplicativo AcadIA uma vez.
-2. No AcadIA web, abra **Calendário** e localize **Widget de compromissos em aberto**.
+1. Instale o APK e abra o aplicativo Conecta Campus uma vez.
+2. No Conecta Campus web, abra **Calendário** e localize **Widget de compromissos em aberto**.
 3. Informe um nome para o aparelho e gere o código temporário.
 4. No próprio Android, toque em **Abrir no app Android**. Também é possível copiar
    o endereço do servidor e o código manualmente para o aplicativo.
-5. Pressione a tela inicial, escolha **Widgets** e adicione **AcadIA · Em aberto**.
+5. Pressione a tela inicial, escolha **Widgets** e adicione **Conecta Campus · Em aberto**.
 
 O código expira em dez minutos e só pode ser usado uma vez. O aparelho gera o
 próprio token aleatório; o servidor guarda somente seu hash e o Android protege o

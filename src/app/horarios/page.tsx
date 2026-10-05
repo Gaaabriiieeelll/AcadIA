@@ -140,7 +140,7 @@ function HifpbGroupRequired({
           </span>
           <div>
             <h2>Selecione sua divisão</h2>
-            <p>Escolha A, B ou C no perfil acadêmico para o AcadIA exibir somente seus horários e professores.</p>
+            <p>Escolha A, B ou C no perfil acadêmico para o Conecta Campus exibir somente seus horários e professores.</p>
             <div className="hifpb-action-row">
               <Link className="primary-action" href="#perfil-academico">Escolher divisão</Link>
               <a className="secondary-action" href={selection.sourceUrl} rel="noreferrer" target="_blank">Abrir hIFPB</a>

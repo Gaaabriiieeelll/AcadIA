@@ -36,7 +36,7 @@ test("aceita somente endpoints de provedores Web Push conhecidos", () => {
   assert.equal(trustedBrowserPushEndpoint("https://user@fcm.googleapis.com/fcm/send/abc"), false);
 });
 
-test("respeita categorias e monta um payload limitado à navegação do AcadIA", () => {
+test("respeita categorias e monta um payload limitado à navegação do Conecta Campus", () => {
   const preference = {
     gradesEnabled: true,
     attendanceEnabled: false,

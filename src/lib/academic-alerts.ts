@@ -276,7 +276,7 @@ function officialEventAlert(
     category: "calendar",
     eyebrow: "Calendário IFPB",
     title: isToday ? `${event.title} acontece hoje` : event.title,
-    description: "Data institucional da proposta anual do calendário acadêmico adicionada ao AcadIA.",
+    description: "Data institucional da proposta anual do calendário acadêmico adicionada ao Conecta Campus.",
     actionLabel: "Ver calendário",
     href: `/calendario?mes=${event.startDate.slice(0, 7)}`,
     dateKey: event.startDate,

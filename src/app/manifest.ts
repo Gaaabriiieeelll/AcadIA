@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "AcadIA — Assistente acadêmico",
-    short_name: "AcadIA",
+    name: "Conecta Campus",
+    short_name: "Conecta Campus",
     description: "Acompanhamento acadêmico, agenda, alertas e planejamento de estudos.",
     start_url: "/dashboard",
     display: "standalone",

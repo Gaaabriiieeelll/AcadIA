@@ -95,7 +95,7 @@ export default async function OpportunitiesPage() {
             <p>
               Seu perfil informa <strong>{profile.course}</strong>. Antes de se candidatar,
               confira no anúncio oficial o curso aceito, o período, a modalidade, o local,
-              os documentos e a data limite. O AcadIA ainda não verifica esses requisitos automaticamente.
+              os documentos e a data limite. O Conecta Campus ainda não verifica esses requisitos automaticamente.
             </p>
           </div>
           <div className={styles.profileBadge}>
@@ -129,14 +129,14 @@ export default async function OpportunitiesPage() {
           <p className={styles.verificationNote}>
             Na conferência de 02/10/2026, o arquivo público de vagas de estágio do campus
             listava anos até 2023. Por isso, estas páginas são caminhos de consulta;
-            não representam vagas abertas confirmadas pelo AcadIA.
+            não representam vagas abertas confirmadas pelo Conecta Campus.
           </p>
         </section>
 
         <section className={styles.noticeSection} aria-labelledby="opportunities-notices-title">
           <div className={styles.sectionHeading}>
             <div>
-              <span className={styles.eyebrow}>Também no AcadIA</span>
+              <span className={styles.eyebrow}>Também no Conecta Campus</span>
               <h2 id="opportunities-notices-title">Oportunidades acadêmicas acompanhadas</h2>
             </div>
             <Link href="/editais">Ver todos os editais →</Link>

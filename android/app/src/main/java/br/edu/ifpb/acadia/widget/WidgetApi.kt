@@ -13,7 +13,7 @@ object WidgetApi {
         readTimeout = 12_000
         useCaches = false
         setRequestProperty("Accept", "application/json")
-        setRequestProperty("User-Agent", "AcadIA-Android-Widget/0.1")
+        setRequestProperty("User-Agent", "ConectaCampus-Android-Widget/0.1")
     }
 
     fun pair(serverUrl: String, code: String, token: String, deviceName: String) {
@@ -31,7 +31,7 @@ object WidgetApi {
         val status = request.responseCode
         request.disconnect()
         if (status == 409) throw IOException("Código inválido, expirado ou já utilizado.")
-        if (status !in 200..299) throw IOException("O AcadIA não aceitou a conexão ($status).")
+        if (status !in 200..299) throw IOException("O Conecta Campus não aceitou a conexão ($status).")
     }
 
     fun fetchCommitments(connection: WidgetConnection): String {

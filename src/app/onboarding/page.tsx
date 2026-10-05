@@ -23,9 +23,9 @@ export default async function OnboardingPage() {
   return (
     <main className="onboarding-page">
       <header className="onboarding-header">
-        <Link className="onboarding-brand" href="/dashboard" aria-label="AcadIA">
+        <Link className="onboarding-brand" href="/dashboard" aria-label="Conecta Campus">
           <BrandLogo priority />
-          AcadIA
+          Conecta Campus
         </Link>
         <div className="onboarding-header-actions">
           <ThemeToggle compact />

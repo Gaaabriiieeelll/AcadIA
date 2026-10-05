@@ -15,7 +15,7 @@ function databaseDate(value: string) {
 function reminderDetails(values: OpportunityValues) {
   return {
     title: `Prazo: ${values.title}`.slice(0, 140),
-    description: `Candidatura de oportunidade salva no AcadIA. Fonte: ${values.sourceUrl}`.slice(0, 500),
+    description: `Candidatura de oportunidade salva no Conecta Campus. Fonte: ${values.sourceUrl}`.slice(0, 500),
     eventType: "OTHER" as const,
     startDate: databaseDate(values.deadline!),
     endDate: databaseDate(values.deadline!),

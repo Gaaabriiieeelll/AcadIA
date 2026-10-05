@@ -353,7 +353,7 @@ export function BrowserNotificationControl({
         setDeviceCount((count) => Math.max(1, count + (existing ? 0 : 1)));
         setMessage(result.message);
         try {
-          await registration.showNotification("AcadIA conectado", {
+          await registration.showNotification("Conecta Campus conectado", {
             body: "Este navegador receberá novos alertas acadêmicos.",
             data: { href: "/alertas" },
             icon: "/acadia-logo.jpeg",
@@ -450,7 +450,7 @@ export function WhatsAppNotificationControl({
           {status}
         </span>
         <p>
-          O AcadIA enviará uma vez ao dia os novos alertas depois que o número passar pelo teste.
+          O Conecta Campus enviará uma vez ao dia os novos alertas depois que o número passar pelo teste.
         </p>
       </div>
 
@@ -487,7 +487,7 @@ export function WhatsAppNotificationControl({
 
         <label className="whatsapp-consent-field">
           <input defaultChecked={settings.enabled && Boolean(settings.consentAt)} name="consent" type="checkbox" />
-          <span>Autorizo o AcadIA a enviar alertas acadêmicos para este número pelo WhatsApp.</span>
+          <span>Autorizo o Conecta Campus a enviar alertas acadêmicos para este número pelo WhatsApp.</span>
         </label>
         {state.fieldErrors?.consent?.[0] ? (
           <span className="profile-field-error">{state.fieldErrors.consent[0]}</span>

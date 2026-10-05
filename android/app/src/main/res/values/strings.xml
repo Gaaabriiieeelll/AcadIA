@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AcadIA</string>
-    <string name="widget_name">AcadIA · Em aberto</string>
+    <string name="app_name">Conecta Campus</string>
+    <string name="widget_name">Conecta Campus · Em aberto</string>
     <string name="widget_description">Compromissos acadêmicos sem data final.</string>
 </resources>

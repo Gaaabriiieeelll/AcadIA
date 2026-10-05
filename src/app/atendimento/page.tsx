@@ -44,7 +44,7 @@ export default async function SupportPage() {
             <div>
               <span>Campus João Pessoa</span>
               <h2 id="support-overview-title">Ajuda sem precisar adivinhar o setor</h2>
-              <p>Escolha pelo assunto. Quando a fonte oficial não informa sala ou horário, o AcadIA deixa isso explícito para você confirmar antes de ir ao campus.</p>
+              <p>Escolha pelo assunto. Quando a fonte oficial não informa sala ou horário, o Conecta Campus deixa isso explícito para você confirmar antes de ir ao campus.</p>
             </div>
           </div>
           <div className={styles.overviewStats}>

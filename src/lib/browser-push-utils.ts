@@ -61,9 +61,9 @@ export function browserPushNotificationTitle(severity: string, title: string) {
   const prefix: Record<string, string> = {
     critical: "Urgente",
     warning: "Atenção",
-    info: "AcadIA",
+    info: "Conecta Campus",
   };
-  return `${prefix[severity] ?? "AcadIA"} · ${title}`;
+  return `${prefix[severity] ?? "Conecta Campus"} · ${title}`;
 }
 
 export type BrowserPushNotificationPayload = {

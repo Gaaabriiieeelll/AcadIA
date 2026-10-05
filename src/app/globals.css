@@ -677,6 +677,8 @@ html[data-theme="dark"] .theme-toggle-dark-label {
 
 .protected-brand {
   margin: 0 11px 34px;
+  font-size: 21px;
+  line-height: 1.15;
 }
 
 .protected-sidebar nav {

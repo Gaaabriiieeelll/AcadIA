@@ -58,7 +58,7 @@ function connectionIssueFrom(error: unknown): ConnectionIssue | null {
     if (error.code === "NOT_CONNECTED") {
       return {
         title: "Conecte sua conta do Google",
-        description: "Autorize o AcadIA uma única vez para consultar suas turmas, materiais, avisos e contatos dos professores no Google Sala de Aula.",
+        description: "Autorize o Conecta Campus uma única vez para consultar suas turmas, materiais, avisos e contatos dos professores no Google Sala de Aula.",
         reconnect: false,
       };
     }
@@ -66,7 +66,7 @@ function connectionIssueFrom(error: unknown): ConnectionIssue | null {
     if (error.code === "MISSING_PERMISSION") {
       return {
         title: "Autorize os contatos dos professores",
-        description: "Reconecte o Google Sala de Aula e aceite a nova permissão somente de leitura para o AcadIA exibir os e-mails dos docentes.",
+        description: "Reconecte o Google Sala de Aula e aceite a nova permissão somente de leitura para o Conecta Campus exibir os e-mails dos docentes.",
         reconnect: true,
       };
     }
@@ -205,7 +205,7 @@ export default async function MaterialsPage() {
                 </strong>
               </div>
               <p>
-                Atualizado em {formatDate(overview.synchronizedAt)}. O AcadIA não altera nenhum conteúdo no Google.
+                Atualizado em {formatDate(overview.synchronizedAt)}. O Conecta Campus não altera nenhum conteúdo no Google.
               </p>
             </section>
 
@@ -297,7 +297,7 @@ export default async function MaterialsPage() {
         ) : null}
 
         <p className="classroom-privacy-note">
-          A integração usa apenas permissões de leitura. Os contatos dos professores são consultados diretamente no Google e não são gravados no banco do AcadIA. Você pode revogar o acesso a qualquer momento na sua {" "}
+          A integração usa apenas permissões de leitura. Os contatos dos professores são consultados diretamente no Google e não são gravados no banco do Conecta Campus. Você pode revogar o acesso a qualquer momento na sua {" "}
           <Link href="https://myaccount.google.com/connections" target="_blank" rel="noreferrer">
             Conta Google
           </Link>.

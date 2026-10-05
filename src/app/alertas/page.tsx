@@ -192,7 +192,7 @@ export default async function AlertsPage() {
         <span className="protected-kicker">Acompanhamento preventivo</span>
         <h1>Central de alertas</h1>
         <p className="protected-lead">
-          Priorize o que precisa da sua atenção com base nas notas, frequência, atividades e eventos já registrados no AcadIA.
+          Priorize o que precisa da sua atenção com base nas notas, frequência, atividades e eventos já registrados no Conecta Campus.
         </p>
 
         <section className={styles.overview} aria-labelledby="alerts-overview-title">
@@ -364,7 +364,7 @@ export default async function AlertsPage() {
         <footer className={styles.ruleNote}>
           <strong>Como os alertas são calculados</strong>
           <p>
-            Suas referências atuais são média {preferences.targetAverage} e frequência mínima de {preferences.minimumAttendance}%. O AcadIA usa somente os dados cadastrados aqui; notas, médias e frequência oficiais continuam sendo as exibidas no SUAP.
+            Suas referências atuais são média {preferences.targetAverage} e frequência mínima de {preferences.minimumAttendance}%. O Conecta Campus usa somente os dados cadastrados aqui; notas, médias e frequência oficiais continuam sendo as exibidas no SUAP.
           </p>
         </footer>
       </div>

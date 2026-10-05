@@ -58,7 +58,7 @@ export default async function ProfilePage() {
         <section className="privacy-explanation" aria-labelledby="privacy-explanation-title">
           <div>
             <span>Resumo transparente</span>
-            <h2 id="privacy-explanation-title">Como o AcadIA trata seus dados</h2>
+            <h2 id="privacy-explanation-title">Como o Conecta Campus trata seus dados</h2>
           </div>
           <ul>
             <li><strong>Autenticação:</strong> nome e e-mail permanecem na sessão do Google.</li>

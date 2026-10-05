@@ -74,7 +74,7 @@ export default async function SubjectsPage({
 
         <section className="hifpb-subject-sync" aria-label="Origem dos dados acadêmicos">
           <div>
-            <span>Dados cadastrados no AcadIA · {profile.academicStage}</span>
+            <span>Dados cadastrados no Conecta Campus · {profile.academicStage}</span>
             <h2>Acompanhamento de {academicClassName}</h2>
             <p>Sincronize as disciplinas e os professores da grade pública. Notas, frequências e disciplinas adicionais são preservadas.</p>
           </div>

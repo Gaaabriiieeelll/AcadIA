@@ -633,7 +633,7 @@ const noticeDefinitions: NoticeDefinition[] = [
       { question: "Estar no resultado final dispensa o cadastro da conta bancária?", answer: "Não. Quem foi classificado deve inserir, confirmar ou atualizar no SUAP uma conta bancária de sua titularidade. A falta desse cadastro no prazo pode suspender o atendimento." },
       { question: "Este é o mesmo processo do PAPE IV?", answer: "Não. O Edital 28/2026 corresponde à seleção anterior, com cronograma próprio; o PAPE IV é o Edital 41/2026. Consulte o resultado ou a inscrição do edital correto." },
     ],
-    caution: "O AcadIA explica o processo, mas não calcula classificação nem confirma direito ao auxílio. A decisão válida é a publicada pelo IFPB.",
+    caution: "O Conecta Campus explica o processo, mas não calcula classificação nem confirma direito ao auxílio. A decisão válida é a publicada pelo IFPB.",
     officialUrl: "https://www.ifpb.edu.br/campus/joaopessoa/editais/direcao-geral/2026/edital-n-o-28-2026-direcao-geral",
     publishedAt: "2026-08-24",
     verifiedAt: "2026-10-02",

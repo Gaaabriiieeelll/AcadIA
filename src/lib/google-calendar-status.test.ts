@@ -14,7 +14,7 @@ const credential = {
   hasRefreshToken: false,
 };
 const integration = {
-  calendarName: "AcadIA · Calendário acadêmico",
+  calendarName: "Conecta Campus · Calendário acadêmico",
   lastSyncedAt: new Date("2026-09-17T22:36:00.000Z"),
   lastSyncedEventCount: 104,
   lastSyncError: null,

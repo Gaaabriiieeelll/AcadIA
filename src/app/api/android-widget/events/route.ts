@@ -14,7 +14,7 @@ function unauthorized() {
       status: 401,
       headers: {
         "Cache-Control": "no-store",
-        "WWW-Authenticate": "Bearer realm=\"AcadIA Android Widget\"",
+        "WWW-Authenticate": "Bearer realm=\"Conecta Campus Android Widget\"",
       },
     },
   );

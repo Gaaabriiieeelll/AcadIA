@@ -1,12 +1,12 @@
-# Proposta técnica preliminar — Integração do AcadIA com o SUAP/IFPB
+# Proposta técnica preliminar — Integração do Conecta Campus com o SUAP/IFPB
 
-- **Versão:** 0.5 — minuta para revisão
+- **Versão:** 0.6 — minuta para revisão
 - **Data:** 5 de outubro de 2026
 - **Situação:** documento preliminar, sem autorização institucional concedida
 
 ## 1. Identificação
 
-- **Nome do projeto:** AcadIA — Plataforma Acadêmica Inteligente
+- **Nome do projeto:** Conecta Campus — Plataforma Acadêmica Inteligente
 - **Responsável:** Gabriel de França Mendes
 - **Natureza:** projeto pessoal e independente
 - **Vínculo de apoio ou orientação:** apoio do professor Valdielio Joaquim Menezes Melo da Silva, docente de Física II
@@ -15,15 +15,15 @@
 - **Matrícula:** 20251730018
 - **Contato:** franca.mendes@academico.ifpb.edu.br
 
-O professor indicado autorizou sua identificação como apoiador da proposta. Esse apoio não transforma o AcadIA, nesta fase, em produto oficial do IFPB nem representa vinculação formal a um setor institucional.
+O professor indicado autorizou sua identificação como apoiador da proposta. Esse apoio não transforma o Conecta Campus, nesta fase, em produto oficial do IFPB nem representa vinculação formal a um setor institucional.
 
 ## 2. Resumo executivo
 
-O AcadIA é uma plataforma web independente de apoio à vida acadêmica do estudante. Sua finalidade é reunir, em uma experiência responsiva e instalável, o acompanhamento de desempenho, a organização de atividades, o planejamento de estudos, o acesso orientado a informações institucionais e o recebimento de alertas. O sistema não substitui o SUAP, o Google Sala de Aula nem os canais oficiais do IFPB; ele organiza informações do próprio usuário e mantém visível a origem dos dados externos.
+O Conecta Campus é uma plataforma web independente de apoio à vida acadêmica do estudante. Sua finalidade é reunir, em uma experiência responsiva e instalável, o acompanhamento de desempenho, a organização de atividades, o planejamento de estudos, o acesso orientado a informações institucionais e o recebimento de alertas. O sistema não substitui o SUAP, o Google Sala de Aula nem os canais oficiais do IFPB; ele organiza informações do próprio usuário e mantém visível a origem dos dados externos.
 
 O MVP atual já funciona sem conexão automática com o SUAP e combina registros locais do estudante, importação manual de boletim em PDF, integrações autorizadas de leitura e consultas a fontes públicas. A futura integração solicitada nesta proposta acrescentaria uma fonte institucional para sincronização autorizada de notas, médias e frequência, reduzindo a necessidade de preenchimento manual.
 
-Esta proposta solicita à Diretoria de Gestão de Tecnologia da Informação (DGTI) a análise de viabilidade de uma integração oficial, controlada e exclusivamente de leitura com o SUAP-Ensino. O objetivo inicial é realizar um piloto com até 40 estudantes voluntários, sujeito à aprovação do IFPB, permitindo que cada participante consulte e sincronize somente os próprios dados acadêmicos, sem fornecer sua senha do SUAP ao AcadIA e sem modificar qualquer informação no sistema institucional.
+Esta proposta solicita à Diretoria de Gestão de Tecnologia da Informação (DGTI) a análise de viabilidade de uma integração oficial, controlada e exclusivamente de leitura com o SUAP-Ensino. O objetivo inicial é realizar um piloto com até 40 estudantes voluntários, sujeito à aprovação do IFPB, permitindo que cada participante consulte e sincronize somente os próprios dados acadêmicos, sem fornecer sua senha do SUAP ao Conecta Campus e sem modificar qualquer informação no sistema institucional.
 
 A execução ficará condicionada à autorização institucional e aos requisitos técnicos, jurídicos, de segurança da informação e de proteção de dados que forem definidos pelo IFPB.
 
@@ -39,17 +39,17 @@ A execução ficará condicionada à autorização institucional e aos requisito
 - **editais, oportunidades e atendimento:** seleção manual de nove processos oficiais de 2026 relevantes ao Campus João Pessoa, apresentados em linguagem simplificada, com cronogramas, requisitos, documentos, 20 perguntas frequentes, fontes oficiais e checklists individuais; área de estágios com canais oficiais e anúncios cadastrados manualmente pelo estudante, com filtros, favoritos e prazos no calendário; central pesquisável de setores e canais de atendimento;
 - **conta e privacidade:** exportação dos dados em JSON, desconexão local do Google Sala de Aula, revogação do consentimento da IA, controle dos canais de notificação e exclusão permanente da conta.
 
-O AcadIA não possui cliente, credenciais, endpoints ou rota de sincronização automática do SUAP. O estudante pode importar manualmente o próprio boletim em PDF; as notas e faltas confirmadas passam a integrar seus registros no AcadIA. Esta proposta trata de uma futura conexão oficial com a API, sujeita à tramitação e à autorização institucional correspondentes.
+O Conecta Campus não possui cliente, credenciais, endpoints ou rota de sincronização automática do SUAP. O estudante pode importar manualmente o próprio boletim em PDF; as notas e faltas confirmadas passam a integrar seus registros no Conecta Campus. Esta proposta trata de uma futura conexão oficial com a API, sujeita à tramitação e à autorização institucional correspondentes.
 
 ### 2.2 Validação inicial do MVP
 
-Segundo relato do responsável, o AcadIA foi compartilhado com 39 colegas da turma para que possam experimentar a versão atual e reunir dúvidas e falhas. A coleta de relatos ainda está em andamento; não há, nesta minuta, números verificados de contas ativas, resultados de testes ou avaliação de usabilidade desse grupo. O compartilhamento do MVP não envolve acesso automático à API do SUAP e não constitui o piloto institucional solicitado neste documento.
+Segundo relato do responsável, o Conecta Campus foi compartilhado com 39 colegas da turma para que possam experimentar a versão atual e reunir dúvidas e falhas. A coleta de relatos ainda está em andamento; não há, nesta minuta, números verificados de contas ativas, resultados de testes ou avaliação de usabilidade desse grupo. O compartilhamento do MVP não envolve acesso automático à API do SUAP e não constitui o piloto institucional solicitado neste documento.
 
 ## 3. Problema e justificativa
 
 O acompanhamento acadêmico exige que o estudante consulte diferentes ambientes, como SUAP, Google Sala de Aula, hIFPB, calendários, páginas de editais e páginas de setores, para verificar notas, médias, frequência, atividades, horários, oportunidades e datas importantes. Essa fragmentação dificulta a visualização conjunta do desempenho, aumenta o risco de perda de prazos e torna mais trabalhosa a organização dos estudos.
 
-Atualmente, o AcadIA já reúne parte dessas informações por registro manual, conexão autorizada ao Google Sala de Aula e consulta de fontes públicas do IFPB. A integração oficial com o SUAP reduziria erros de digitação e desatualização nos dados acadêmicos, mantendo uma fonte institucional identificada para cada registro exibido. O projeto pretende transformar os dados em visualizações, alertas e orientações explicáveis, sem substituir o SUAP como fonte oficial nem produzir decisões acadêmicas automáticas.
+Atualmente, o Conecta Campus já reúne parte dessas informações por registro manual, conexão autorizada ao Google Sala de Aula e consulta de fontes públicas do IFPB. A integração oficial com o SUAP reduziria erros de digitação e desatualização nos dados acadêmicos, mantendo uma fonte institucional identificada para cada registro exibido. O projeto pretende transformar os dados em visualizações, alertas e orientações explicáveis, sem substituir o SUAP como fonte oficial nem produzir decisões acadêmicas automáticas.
 
 ## 4. Objetivos da integração
 
@@ -78,7 +78,7 @@ A integração proposta é **somente de leitura**. Não será solicitado acesso 
 
 ### 6.1 Dados solicitados e finalidades
 
-| Dado | Finalidade no AcadIA | Persistência proposta |
+| Dado | Finalidade no Conecta Campus | Persistência proposta |
 |---|---|---|
 | Identificador acadêmico ou matrícula | Relacionar a conta ao registro correto do próprio estudante | Durante a participação autorizada |
 | Campus, curso, turma e período letivo | Contextualizar o perfil e selecionar os dados do período correto | Durante a participação autorizada |
@@ -100,23 +100,23 @@ A integração proposta é **somente de leitura**. Não será solicitado acesso 
 - credenciais, senhas, cookies ou sessões do SUAP;
 - qualquer permissão de escrita no sistema institucional.
 
-Se a API retornar campos adicionais, o AcadIA deverá ignorá-los e não armazená-los, salvo nova necessidade formalmente avaliada.
+Se a API retornar campos adicionais, o Conecta Campus deverá ignorá-los e não armazená-los, salvo nova necessidade formalmente avaliada.
 
 ## 7. Funcionamento e autenticação
 
-O AcadIA utiliza atualmente Google OAuth para identidade básica, com os escopos `openid`, `email` e `profile`. Nome, foto e e-mail permanecem na sessão, cuja duração máxima configurada é de quatro horas. A política de acesso pode limitar contas específicas ou permitir qualquer conta Google autenticada, conforme a configuração da implantação. O acesso ao AcadIA não concede acesso à API do SUAP.
+O Conecta Campus utiliza atualmente Google OAuth para identidade básica, com os escopos `openid`, `email` e `profile`. Nome, foto e e-mail permanecem na sessão, cuja duração máxima configurada é de quatro horas. A política de acesso pode limitar contas específicas ou permitir qualquer conta Google autenticada, conforme a configuração da implantação. O acesso ao Conecta Campus não concede acesso à API do SUAP.
 
-A autenticação perante a API do SUAP será implementada exclusivamente pelo mecanismo oficial definido pela DGTI, preferencialmente com autorização delegada, escopos mínimos e tokens revogáveis. O AcadIA não solicitará nem armazenará a senha do estudante.
+A autenticação perante a API do SUAP será implementada exclusivamente pelo mecanismo oficial definido pela DGTI, preferencialmente com autorização delegada, escopos mínimos e tokens revogáveis. O Conecta Campus não solicitará nem armazenará a senha do estudante.
 
 Fluxo técnico proposto:
 
 ```text
 Estudante
     │
-    ├── Google OAuth: identidade básica do AcadIA
+    ├── Google OAuth: identidade básica do Conecta Campus
     │
     ▼
-Servidor do AcadIA
+Servidor do Conecta Campus
     ├── API oficial do SUAP: consulta de leitura autorizada
     └── PostgreSQL: armazenamento mínimo aprovado
              │
@@ -124,7 +124,7 @@ Servidor do AcadIA
      Painel, gráficos e alertas do próprio estudante
 ```
 
-O mecanismo de associação entre a identidade Google e o usuário institucional deverá ser validado pela DGTI. O AcadIA não presumirá que o Google OAuth atual substitui a autenticação exigida pelo SUAP.
+O mecanismo de associação entre a identidade Google e o usuário institucional deverá ser validado pela DGTI. O Conecta Campus não presumirá que o Google OAuth atual substitui a autenticação exigida pelo SUAP.
 
 ## 8. Arquitetura técnica preliminar
 
@@ -149,7 +149,7 @@ Todas as consultas existentes de dados privados são vinculadas ao identificador
 
 ## 9. Hospedagem e localização dos dados
 
-O AcadIA já está publicado na Vercel e utiliza PostgreSQL gerenciado fora da infraestrutura institucional. Essa implantação não define automaticamente a infraestrutura do piloto com dados provenientes da API do SUAP. A hospedagem desse piloto ainda dependerá da avaliação e das condições estabelecidas pelo IFPB.
+O Conecta Campus já está publicado na Vercel e utiliza PostgreSQL gerenciado fora da infraestrutura institucional. Essa implantação não define automaticamente a infraestrutura do piloto com dados provenientes da API do SUAP. A hospedagem desse piloto ainda dependerá da avaliação e das condições estabelecidas pelo IFPB.
 
 Para o piloto, propõem-se as seguintes opções, em ordem de preferência:
 
@@ -163,7 +163,7 @@ Nenhuma decisão de produção será tomada sem informar à DGTI onde os dados s
 
 Fluxo previsto:
 
-1. o estudante autentica-se no AcadIA;
+1. o estudante autentica-se no Conecta Campus;
 2. inicia ou autoriza a conexão pelo mecanismo oficial do SUAP;
 3. o servidor solicita somente os escopos aprovados;
 4. os dados são recebidos por conexão protegida;
@@ -215,7 +215,7 @@ Propõe-se que, ao fim do piloto ou após solicitação de exclusão, os dados p
 
 No piloto haverá os seguintes papéis:
 
-- **estudante participante:** visualiza e gerencia somente os próprios dados no AcadIA;
+- **estudante participante:** visualiza e gerencia somente os próprios dados no Conecta Campus;
 - **responsável técnico:** Gabriel de França Mendes, com acesso ao código e à manutenção do ambiente;
 - **apoio docente:** Valdielio Joaquim Menezes Melo da Silva, sem acesso aos dados acadêmicos dos participantes, salvo se houver necessidade, autorização e definição institucional expressas.
 
@@ -225,7 +225,7 @@ Não haverá painel administrativo para consultar notas de estudantes. Qualquer 
 
 O MVP utiliza ou prevê os serviços abaixo. A eventual utilização de dados provenientes do SUAP em qualquer um deles dependerá de avaliação e autorização específicas do IFPB.
 
-| Serviço ou fonte | Uso atual no AcadIA | Tratamento proposto para dados do SUAP |
+| Serviço ou fonte | Uso atual no Conecta Campus | Tratamento proposto para dados do SUAP |
 |---|---|---|
 | Google OAuth | Identidade básica: nome, foto e e-mail | O login, por si só, não envia dados acadêmicos ao Google |
 | Google Sala de Aula | Integração separada e somente de leitura para turmas, materiais, avisos e atividades | Permanece uma fonte independente; não receberá dados do SUAP |
@@ -241,7 +241,7 @@ A autorização de uma integração não será reutilizada para outra finalidade
 
 ## 14. Auditoria e revogação
 
-Antes do piloto, o AcadIA deverá registrar, sem incluir segredos:
+Antes do piloto, o Conecta Campus deverá registrar, sem incluir segredos:
 
 - identidade interna que realizou a ação;
 - tipo de ação;
@@ -351,7 +351,7 @@ Solicita-se à DGTI e às áreas competentes:
 
 ## 22. Anexos recomendados
 
-- planejamento geral do AcadIA;
+- planejamento geral do Conecta Campus;
 - diagrama de arquitetura atualizado;
 - inventário e fluxo dos dados;
 - modelo lógico do banco, limitado às entidades relevantes;

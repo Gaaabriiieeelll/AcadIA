@@ -188,7 +188,7 @@ export function StudyAiSection({ overview }: { overview: StudyRecommendationOver
             </svg>
             <p>
               <strong>Uso informado</strong> O bate-papo envia ao provedor ativo sua pergunta,
-              histórico recente, disciplinas, notas e textos selecionados do Classroom. O AcadIA
+              histórico recente, disciplinas, notas e textos selecionados do Classroom. O Conecta Campus
               não anexa automaticamente e-mail, matrícula, telefone nem tokens de acesso do perfil.
               {overview.chatProvider === "Groq"
                 ? " A Groq pode reter dados temporariamente para confiabilidade ou investigação de abuso."
@@ -236,7 +236,7 @@ export function StudyAiSection({ overview }: { overview: StudyRecommendationOver
             <h2>{readyForChat ? "Comece uma conversa" : "Conclua a conexão e a autorização"}</h2>
             <p>
               {readyForChat
-                ? "Peça à AcadIA para recomendar videoaulas ou identificar quais conteúdos merecem atenção."
+                ? "Peça ao Conecta Campus para recomendar videoaulas ou identificar quais conteúdos merecem atenção."
                 : "Quando o Classroom, o modelo de IA e sua autorização estiverem prontos, o bate-papo será liberado."}
             </p>
           </div>

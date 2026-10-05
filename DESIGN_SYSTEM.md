@@ -1,4 +1,4 @@
-# Design System — AcadIA
+# Design System — Conecta Campus
 
 **Versão:** 0.1  
 **Referência visual:** capturas disponíveis em `D:\Projetos DEV\Prints`  
@@ -6,7 +6,7 @@
 
 ## 1. Direção visual
 
-O AcadIA adotará uma identidade **acadêmica, tecnológica e acolhedora**, inspirada nos seguintes padrões observados nas referências:
+O Conecta Campus adotará uma identidade **acadêmica, tecnológica e acolhedora**, inspirada nos seguintes padrões observados nas referências:
 
 - verde vivo como elemento de identidade;
 - azul-petróleo em textos, botões e estados selecionados;
@@ -32,7 +32,7 @@ Notas baixas e problemas de frequência devem ser apresentados com contexto e um
 
 ### Explicar a IA
 
-Toda recomendação da AcadIA deve informar quais dados foram considerados e permitir que o estudante a ignore ou avalie.
+Toda recomendação do Conecta Campus deve informar quais dados foram considerados e permitir que o estudante a ignore ou avalie.
 
 ### Consistência
 
@@ -162,7 +162,7 @@ Cards comuns usam borda discreta e `shadow-sm`. Sombras maiores ficam reservadas
 
 A navegação lateral segue o padrão das referências:
 
-- marca AcadIA no topo;
+- marco Conecta Campus no topo;
 - fundo `brand-500`;
 - ícone e texto em cada item;
 - item selecionado com fundo `teal-800`;
@@ -270,7 +270,7 @@ Exemplos: `Em dia`, `Atenção`, `Atividade pendente`, `Inscrições abertas` e 
 
 - Barra ou ícone em `ai`;
 - fundo `#F0FDFA`;
-- título “Sugestão da AcadIA”;
+- título “Sugestão do Conecta Campus”;
 - justificativa curta;
 - ação principal;
 - ações “Agora não” e “Isso foi útil?”.
@@ -318,7 +318,7 @@ O padrão da tela de detalhes das referências será aplicado a:
 ┌──────────────┬──────────────────────────────────────────────┐
 │              │ Busca             Notificações       Perfil │
 │              ├──────────────────────────────────────────────┤
-│   AcadIA     │ Olá! Veja como está sua semana.             │
+│   Conecta Campus     │ Olá! Veja como está sua semana.             │
 │              │                                              │
 │   Início     │ [Média] [Frequência] [Pendências] [Evento]  │
 │   Desempenho │                                              │
@@ -326,7 +326,7 @@ O padrão da tela de detalhes das referências será aplicado a:
 │   Agenda     │                                              │
 │   Estágios   │ [Evolução das notas] [Agenda da semana]      │
 │   Editais    │                                              │
-│   Atendimento│ [Sugestão da AcadIA]                         │
+│   Atendimento│ [Sugestão do Conecta Campus]                         │
 └──────────────┴──────────────────────────────────────────────┘
 ```
 
@@ -451,7 +451,7 @@ O tema escuro será preparado depois da interface clara estar validada. Tokens p
 - A navegação lateral será o padrão principal no desktop.
 - Cards e seções expansíveis organizarão informações acadêmicas.
 - O verde vivo será usado como marca, mas não em situações que reduzam o contraste.
-- A AcadIA terá uma variação verde-azulada própria.
+- O Conecta Campus terá uma variação verde-azulada própria.
 - A interface clara será priorizada no MVP; o tema escuro virá depois da validação.
 - A identidade será original e não reproduzirá logotipo, textos ou imagens das referências.
 
