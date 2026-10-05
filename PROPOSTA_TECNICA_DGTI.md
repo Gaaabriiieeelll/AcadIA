@@ -1,7 +1,7 @@
 # Proposta técnica preliminar — Integração do AcadIA com o SUAP/IFPB
 
-- **Versão:** 0.4 — minuta para revisão
-- **Data:** 2 de outubro de 2026
+- **Versão:** 0.5 — minuta para revisão
+- **Data:** 5 de outubro de 2026
 - **Situação:** documento preliminar, sem autorização institucional concedida
 
 ## 1. Identificação
@@ -23,11 +23,11 @@ O AcadIA é uma plataforma web independente de apoio à vida acadêmica do estud
 
 O MVP atual já funciona sem conexão automática com o SUAP e combina registros locais do estudante, importação manual de boletim em PDF, integrações autorizadas de leitura e consultas a fontes públicas. A futura integração solicitada nesta proposta acrescentaria uma fonte institucional para sincronização autorizada de notas, médias e frequência, reduzindo a necessidade de preenchimento manual.
 
-Esta proposta solicita à Diretoria de Gestão de Tecnologia da Informação (DGTI) a análise de viabilidade de uma integração oficial, controlada e exclusivamente de leitura com o SUAP-Ensino. O objetivo inicial é realizar um piloto com aproximadamente 35 estudantes, permitindo que cada participante consulte e sincronize somente os próprios dados acadêmicos, sem fornecer sua senha do SUAP ao AcadIA e sem modificar qualquer informação no sistema institucional.
+Esta proposta solicita à Diretoria de Gestão de Tecnologia da Informação (DGTI) a análise de viabilidade de uma integração oficial, controlada e exclusivamente de leitura com o SUAP-Ensino. O objetivo inicial é realizar um piloto com até 40 estudantes voluntários, sujeito à aprovação do IFPB, permitindo que cada participante consulte e sincronize somente os próprios dados acadêmicos, sem fornecer sua senha do SUAP ao AcadIA e sem modificar qualquer informação no sistema institucional.
 
 A execução ficará condicionada à autorização institucional e aos requisitos técnicos, jurídicos, de segurança da informação e de proteção de dados que forem definidos pelo IFPB.
 
-### 2.1 Funcionalidades existentes no MVP
+### 2.1 Funcionalidades existentes no MVP em 5 de outubro de 2026
 
 - **visão geral acadêmica:** painel com médias, frequência, avaliações registradas, gráficos anuais e filtro por bimestre, disciplinas que exigem atenção e resumo da agenda;
 - **disciplinas e desempenho:** cadastro e sincronização de disciplinas pela grade pública da turma, registro de avaliações, notas, pesos, aulas e faltas, com cálculo de médias e situação acadêmica; importação manual do boletim individual em PDF gerado pelo SUAP, com conferência antes de salvar e sem armazenamento do arquivo original;
@@ -36,10 +36,14 @@ A execução ficará condicionada à autorização institucional e aos requisito
 - **central de alertas:** avisos explicáveis sobre notas, frequência, prazos e calendário, com preferências por categoria, leitura, adiamento, ocultação, histórico, notificações Web Push e envio opcional pelo WhatsApp;
 - **plano de estudos:** organização semanal conforme disponibilidade, meta de tempo, prioridades calculadas a partir de desempenho e atividades, sessões automáticas ou manuais e acompanhamento do progresso;
 - **orientação opcional por inteligência artificial:** bate-papo com a Groq para interpretar notas, priorizar estudos e relacionar conteúdos do Google Sala de Aula a videoaulas do YouTube, mediante consentimento próprio; recomendações automáticas de vídeo usam consentimento separado para a OpenAI;
-- **editais, oportunidades e atendimento:** editais relevantes ao Campus João Pessoa apresentados em linguagem simplificada, com cronogramas, requisitos, documentos, perguntas frequentes, fontes oficiais e checklists individuais; área de estágios com canais oficiais, anúncios salvos pelo estudante, filtros, favoritos e prazos no calendário; central pesquisável de setores e canais de atendimento;
+- **editais, oportunidades e atendimento:** seleção manual de nove processos oficiais de 2026 relevantes ao Campus João Pessoa, apresentados em linguagem simplificada, com cronogramas, requisitos, documentos, 20 perguntas frequentes, fontes oficiais e checklists individuais; área de estágios com canais oficiais e anúncios cadastrados manualmente pelo estudante, com filtros, favoritos e prazos no calendário; central pesquisável de setores e canais de atendimento;
 - **conta e privacidade:** exportação dos dados em JSON, desconexão local do Google Sala de Aula, revogação do consentimento da IA, controle dos canais de notificação e exclusão permanente da conta.
 
 O AcadIA não possui cliente, credenciais, endpoints ou rota de sincronização automática do SUAP. O estudante pode importar manualmente o próprio boletim em PDF; as notas e faltas confirmadas passam a integrar seus registros no AcadIA. Esta proposta trata de uma futura conexão oficial com a API, sujeita à tramitação e à autorização institucional correspondentes.
+
+### 2.2 Validação inicial do MVP
+
+Segundo relato do responsável, o AcadIA foi compartilhado com 39 colegas da turma para que possam experimentar a versão atual e reunir dúvidas e falhas. A coleta de relatos ainda está em andamento; não há, nesta minuta, números verificados de contas ativas, resultados de testes ou avaliação de usabilidade desse grupo. O compartilhamento do MVP não envolve acesso automático à API do SUAP e não constitui o piloto institucional solicitado neste documento.
 
 ## 3. Problema e justificativa
 
@@ -61,12 +65,12 @@ Atualmente, o AcadIA já reúne parte dessas informações por registro manual, 
 
 - **Público-alvo futuro:** estudantes regularmente matriculados no IFPB Campus João Pessoa.
 - **Piloto inicial:** grupo controlado de estudantes, com participação condicionada às regras e autorizações definidas pelo IFPB.
-- **Quantidade estimada:** aproximadamente 35 usuários.
+- **Quantidade proposta:** até 40 estudantes voluntários; o número efetivo dependerá da adesão e do limite aprovado pelo IFPB.
 - **Duração sugerida:** dois bimestres letivos após a autorização e a disponibilização de ambiente ou credenciais de teste.
 - **Caráter da integração:** piloto temporário, com eventual continuidade condicionada à avaliação e à autorização do IFPB.
 - **Expansão:** não ocorrerá automaticamente. Qualquer ampliação além do piloto dependerá de nova avaliação ou das condições definidas pelo IFPB.
 
-O prazo de dois bimestres é uma sugestão para permitir a observação de um período acadêmico significativo e poderá ser ajustado pela DGTI.
+O prazo de dois bimestres é uma sugestão para permitir a observação de um período acadêmico significativo e poderá ser ajustado pela DGTI. Os 39 colegas aos quais o MVP foi compartilhado não são automaticamente participantes deste piloto; sua seleção dependerá das condições institucionais aplicáveis.
 
 ## 6. Escopo solicitado
 
@@ -132,7 +136,7 @@ O mecanismo de associação entre a identidade Google e o usuário institucional
 | Autenticação atual | Google OAuth por NextAuth, com política de contas configurável |
 | Validação de entrada | Zod e validação no servidor |
 | Google Sala de Aula | Conexão separada e autorizada, somente de leitura, para turmas, materiais, avisos e atividades |
-| Fontes públicas do IFPB | Consulta da grade do hIFPB, calendário acadêmico, editais e páginas oficiais de atendimento |
+| Fontes públicas do IFPB | Consulta da grade do hIFPB e curadoria manual de calendário acadêmico, editais e páginas oficiais de atendimento |
 | Plano e alertas | Regras locais explicáveis, tarefas agendadas e preferências individuais |
 | Inteligência artificial opcional | Groq para bate-papo de estudos e OpenAI para geração de recomendações de vídeo, cada uma com consentimento próprio; o bate-papo não usa recursos de persistência da API da Groq |
 | Recomendações de vídeo | YouTube Data API para localizar videoaulas a partir de pesquisas acadêmicas |
@@ -295,7 +299,7 @@ Caso a proposta seja considerada viável, solicita-se orientação sobre:
 | 1 | Adequação dos controles existentes e implementação de privacidade, auditoria e revogação específicas para o SUAP | 4 semanas após requisitos |
 | 2 | Desenvolvimento e testes com ambiente de homologação | 4 semanas após acesso técnico |
 | 3 | Validação de segurança e correção de inconformidades | Conforme avaliação do IFPB |
-| 4 | Piloto controlado com aproximadamente 35 usuários | 2 bimestres letivos |
+| 4 | Piloto controlado com até 40 estudantes voluntários autorizados | 2 bimestres letivos |
 | 5 | Relatório de resultados, incidentes e recomendação de continuidade | 2 semanas após o piloto |
 
 Os prazos são estimativas e poderão mudar conforme os requisitos institucionais e a disponibilidade técnica.
@@ -308,9 +312,11 @@ Os prazos são estimativas e poderão mudar conforme os requisitos institucionai
 - a origem e a data de atualização são visíveis;
 - a revogação impede novas sincronizações;
 - a exportação e a exclusão funcionam conforme a política aprovada;
-- nenhum segredo aparece em interface, logs ou banco;
+- nenhum segredo aparece em interface ou logs; eventuais tokens persistidos são protegidos conforme os requisitos aprovados;
 - falhas e incidentes são documentados e comunicados pelo fluxo definido;
 - a experiência funciona em computador e celular.
+
+O relatório final deverá apresentar, de forma agregada, adesão efetiva, sucesso e falhas das sincronizações, divergências entre os dados exibidos e a fonte oficial, solicitações de revogação ou exclusão, incidentes e relatos de usabilidade. As métricas e os critérios de aceitação serão definidos com o IFPB antes do início do piloto.
 
 ## 19. Proteção de dados e governança
 
@@ -350,6 +356,7 @@ Solicita-se à DGTI e às áreas competentes:
 - inventário e fluxo dos dados;
 - modelo lógico do banco, limitado às entidades relevantes;
 - imagens das telas atuais;
+- síntese agregada das dúvidas e falhas relatadas na validação do MVP, quando disponível;
 - relatório dos controles implementados e pendentes;
 - plano de testes de autorização e segurança;
 - minuta de política de privacidade;
@@ -362,5 +369,6 @@ Solicita-se à DGTI e às áreas competentes:
 - decidir a hospedagem após orientação do IFPB;
 - definir domínio e URI definitiva de produção;
 - receber da DGTI os requisitos técnicos e de segurança aplicáveis;
+- consolidar os relatos de dúvidas e falhas da versão atual, sem tratá-los como resultados do piloto SUAP;
 - definir quais funcionalidades complementares poderão tratar dados provenientes do SUAP e quais deverão permanecer isoladas durante o piloto;
 - revisar linguagem e anexos antes do protocolo.
