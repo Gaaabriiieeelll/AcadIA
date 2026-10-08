@@ -128,6 +128,8 @@ mostrar os e-mails dos professores das turmas do usuário, é sensível. Até a
 aprovação do Google, a autorização de escopos sensíveis pode mostrar aviso e
 conta com o limite vitalício de 100 novos usuários do projeto. A revisão do escopo
 pode exigir um vídeo de demonstração do fluxo de autorização e do uso do dado.
+O roteiro, a justificativa do escopo e os passos da revisão estão em
+[`GOOGLE_OAUTH_VERIFICATION.md`](GOOGLE_OAUTH_VERIFICATION.md).
 
 ## Compromissos em aberto
 

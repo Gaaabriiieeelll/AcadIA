@@ -629,6 +629,23 @@ html[data-theme="dark"] .theme-toggle-dark-label {
   color: var(--text-primary);
 }
 
+.login-about {
+  margin-top: 18px;
+}
+
+.login-about h3 {
+  margin: 16px 0 4px;
+  color: var(--teal-900);
+  font-size: 13px;
+}
+
+.login-about p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .access-policy {
   padding: 17px;
   margin-top: 18px;

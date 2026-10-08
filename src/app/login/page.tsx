@@ -11,6 +11,8 @@ import { isAnyGoogleEmailAllowed } from "@/lib/google-account-policy";
 
 export const metadata: Metadata = {
   title: "Entrar",
+  description:
+    "Organize disciplinas, notas, frequência, calendário, atividades e oportunidades no Conecta Campus. Conexões com Google Sala de Aula e Agenda são opcionais.",
 };
 
 const errorMessages: Record<string, string> = {
@@ -132,6 +134,22 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             </svg>
             <p><strong>Sua senha permanece no Google.</strong> O Conecta Campus recebe somente nome, foto e e-mail nesta etapa.</p>
           </div>
+
+          <section className="login-about" aria-labelledby="login-about-title">
+            <h3 id="login-about-title">O que você encontra aqui</h3>
+            <p>
+              Organize disciplinas, notas e frequência com o boletim em PDF; acompanhe
+              calendário, tarefas, editais e oportunidades de estágio. As recomendações
+              de estudo e o bate-papo com IA são opcionais.
+            </p>
+            <h3>Conexões opcionais com o Google</h3>
+            <p>
+              Se você autorizar depois de entrar, o Sala de Aula fornece suas turmas,
+              professores, materiais e atividades para o planejamento. A Agenda recebe
+              um calendário acadêmico criado pelo aplicativo. Cada conexão pede uma
+              permissão própria e pode ser desconectada no perfil.
+            </p>
+          </section>
 
           <div className="access-policy">
             <h3>{allowAnyGoogleEmail ? "Quem pode acessar" : "Sobre o e-mail acadêmico"}</h3>
