@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { BrandLogo } from "@/components/brand-logo";
@@ -148,6 +149,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               ? "Ao continuar, você reconhece que esta é uma versão independente em desenvolvimento."
               : "Ao continuar, você reconhece que esta é uma versão privada de desenvolvimento."}
           </p>
+          <nav className="login-legal-links" aria-label="Informações legais">
+            <Link href="/privacidade">Política de privacidade</Link>
+            <Link href="/termos">Termos de uso</Link>
+          </nav>
         </div>
       </section>
     </main>
