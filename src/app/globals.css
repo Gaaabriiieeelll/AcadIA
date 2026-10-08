@@ -6251,3 +6251,47 @@ html[data-theme="dark"] .bimester-form .profile-field input.grade-input {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Academic projections and content discovery */
+.grade-projection {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+  color: var(--text-primary);
+}
+.grade-projection p { margin: 0; line-height: 1.5; }
+.grade-projection small { color: var(--text-secondary); line-height: 1.5; }
+.grade-projection a { font-size: .85rem; text-decoration: underline; }
+.reminder-days-field, .material-filters label { display: grid; gap: 8px; min-width: 0; }
+.reminder-days-field small { color: var(--text-secondary); line-height: 1.5; }
+.material-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.material-filters input, .material-filters select, .reminder-days-field input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-primary);
+  font: inherit;
+}
+.material-filters :is(input, select, button):focus-visible, .reminder-days-field input:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 3px;
+}
+.material-filters p { align-self: center; margin: 0; color: var(--text-secondary); }
+@media (max-width: 640px) { .material-filters { grid-template-columns: minmax(0, 1fr); padding: 16px; } }

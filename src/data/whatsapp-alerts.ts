@@ -29,6 +29,7 @@ const severityLabels: Record<AcademicAlertSeverity, string> = {
 type DispatchPreference = {
   userId: string;
   encryptedWhatsappPhone: string | null;
+  reminderDays: number;
   targetAverage: number;
   minimumAttendance: number;
   gradesEnabled: boolean;
@@ -93,6 +94,7 @@ async function refreshEligibleAlertRecords(preferences: DispatchPreference[]) {
       batch.map((preference) => refreshAcademicAlertRecordsForUser(
         preference.userId,
         {
+          reminderDays: preference.reminderDays,
           targetAverage: preference.targetAverage,
           minimumAttendance: preference.minimumAttendance,
         },
@@ -118,6 +120,7 @@ export async function dispatchPendingWhatsAppAlerts(requestedLimit = 25) {
       encryptedWhatsappPhone: true,
       targetAverage: true,
       minimumAttendance: true,
+      reminderDays: true,
       gradesEnabled: true,
       attendanceEnabled: true,
       tasksEnabled: true,

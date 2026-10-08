@@ -13,7 +13,7 @@ import {
 import { authOptions } from "@/lib/auth";
 import { ClassroomConnectionError } from "@/lib/google-classroom-credentials";
 import { resolveHifpbProfileSelection } from "@/lib/hifpb-courses";
-import type { ClassroomMaterialDTO } from "@/types/google-classroom";
+import { MaterialLibrary } from "@/components/material-library";
 
 export const metadata: Metadata = {
   title: "Materiais",
@@ -24,13 +24,6 @@ type ConnectionIssue = {
   description: string;
   reconnect: boolean;
 };
-
-const attachmentLabels = {
-  drive: "Arquivo",
-  youtube: "Vídeo",
-  link: "Link",
-  form: "Formulário",
-} as const;
 
 function formatDate(value: string | null) {
   if (!value) return "Data não informada";
@@ -95,51 +88,6 @@ function connectionIssueFrom(error: unknown): ConnectionIssue | null {
   }
 
   return null;
-}
-
-function MaterialCard({ material }: { material: ClassroomMaterialDTO }) {
-  const repeatedDescription = material.description === material.title;
-
-  return (
-    <article className="classroom-material-card">
-      <div className="classroom-material-meta">
-        <span>{material.source === "material" ? "Material" : "Aviso"}</span>
-        <time dateTime={material.updatedAt ?? material.publishedAt ?? undefined}>
-          {formatDate(material.updatedAt ?? material.publishedAt)}
-        </time>
-      </div>
-      <h3>{material.title}</h3>
-      {material.description && !repeatedDescription ? <p>{material.description}</p> : null}
-
-      {material.attachments.length > 0 ? (
-        <div className="classroom-attachments" aria-label="Anexos">
-          {material.attachments.map((attachment, index) => (
-            <a
-              href={attachment.url}
-              key={`${attachment.type}:${attachment.url}:${index}`}
-              rel="noreferrer"
-              target="_blank"
-            >
-              <span>{attachmentLabels[attachment.type]}</span>
-              <strong>{attachment.title}</strong>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <path d="M14 5h5v5M10 14 19 5M19 14v5H5V5h5" />
-              </svg>
-            </a>
-          ))}
-        </div>
-      ) : null}
-
-      {material.alternateLink ? (
-        <a className="classroom-open-link" href={material.alternateLink} rel="noreferrer" target="_blank">
-          Abrir no Google Sala de Aula
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-            <path d="M5 12h14M14 7l5 5-5 5" />
-          </svg>
-        </a>
-      ) : null}
-    </article>
-  );
 }
 
 export default async function MaterialsPage() {
@@ -233,65 +181,7 @@ export default async function MaterialsPage() {
                 <ClassroomConnectButton reconnect />
               </section>
             ) : (
-              <div className="classroom-course-list">
-                {overview.courses.map((course) => {
-                  const materials = overview.materials.filter(
-                    (material) => material.courseId === course.id,
-                  );
-
-                  return (
-                    <section className="classroom-course" key={course.id} aria-labelledby={`course-${course.id}`}>
-                      <header>
-                        <div>
-                          <span>{course.section ?? "Turma ativa"}</span>
-                          <h2 id={`course-${course.id}`}>{course.name}</h2>
-                        </div>
-                        {course.alternateLink ? (
-                          <a href={course.alternateLink} rel="noreferrer" target="_blank">Abrir turma</a>
-                        ) : null}
-                      </header>
-
-                      {course.teachers.length > 0 ? (
-                        <div className="classroom-teacher-list" aria-label={`Professores de ${course.name}`}>
-                          {course.teachers.map((teacher) => (
-                            <article className="classroom-teacher-contact" key={teacher.id}>
-                              <span className="classroom-teacher-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                                  <circle cx="12" cy="8" r="3.5" />
-                                  <path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6" />
-                                </svg>
-                              </span>
-                              <div>
-                                <span>Professor(a)</span>
-                                <strong>{teacher.name}</strong>
-                                {teacher.email ? (
-                                  <a href={`mailto:${teacher.email}`}>{teacher.email}</a>
-                                ) : (
-                                  <small>E-mail não disponibilizado pelo Google</small>
-                                )}
-                              </div>
-                            </article>
-                          ))}
-                        </div>
-                      ) : course.teacherContactsRestricted ? (
-                        <p className="classroom-teacher-empty">Contato do professor protegido pela política institucional do IFPB.</p>
-                      ) : (
-                        <p className="classroom-teacher-empty">Professor não informado pelo Google Sala de Aula.</p>
-                      )}
-
-                      {materials.length === 0 ? (
-                        <p className="classroom-course-empty">Nenhum material ou aviso publicado nesta turma.</p>
-                      ) : (
-                        <div className="classroom-material-grid">
-                          {materials.map((material) => (
-                            <MaterialCard key={material.id} material={material} />
-                          ))}
-                        </div>
-                      )}
-                    </section>
-                  );
-                })}
-              </div>
+              <MaterialLibrary overview={overview} />
             )}
           </>
         ) : null}

@@ -30,6 +30,13 @@ export const snoozeDaysSchema = z.preprocess(
 );
 
 export const alertPreferenceSchema = z.object({
+  reminderDays: z.preprocess(
+    (value) => typeof value === "string" && value.trim() !== "" ? Number(value) : value,
+    z.number({ error: "Informe a antecedência em dias." })
+      .int("Informe um número inteiro de dias.")
+      .min(0, "A antecedência mínima é 0 dias.")
+      .max(30, "A antecedência máxima é 30 dias."),
+  ),
   targetAverage: percentageInput("Meta de média"),
   minimumAttendance: percentageInput("Frequência mínima"),
   gradesEnabled: z.boolean(),

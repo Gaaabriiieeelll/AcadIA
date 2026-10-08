@@ -12,6 +12,12 @@ Na página de disciplinas, a sincronização do hIFPB adiciona as matérias ause
 
 Na Visão geral, **Importar boletim em PDF** lê o boletim de notas individual do SUAP/IFPB. O estudante confere as disciplinas, notas por etapa, faltas e vínculos antes de confirmar. Valores vazios no PDF não apagam notas já cadastradas, e o arquivo original não é armazenado.
 
+Em **Disciplinas**, a projeção mostra a média necessária nos bimestres sem nota para atingir a meta definida na Central de alertas. O cálculo usa pesos iguais e arredonda a necessidade para cima em uma casa decimal; é separado das médias oficiais e não inclui recuperação ou prova final.
+
+Em **Alertas → Preferências**, a antecedência de provas, tarefas e eventos pode variar de 0 a 30 dias (padrão: 7). Atrasos e eventos sem encerramento continuam visíveis até serem concluídos. O job de notificações do navegador recalcula os alertas antes do envio; a entrega externa depende dos canais e jobs configurados. A migração `20261009000000_alert_reminder_days` deve ser aplicada antes de executar esta versão.
+
+Em **Materiais**, a busca considera título, descrição, turma e nomes dos anexos, sem diferenciar acentos ou maiúsculas. Há filtros por turma, materiais/avisos e tipo de anexo, além de ordenação dentro de cada turma. Esses controles consultam os dados já carregados do Classroom.
+
 Por padrão, o acesso permanece restrito aos endereços definidos em `ALLOWED_EMAILS`, e o domínio acadêmico continua bloqueado. Uma publicação aberta pode definir `ALLOW_ANY_GOOGLE_EMAIL=true` para aceitar qualquer conta Google autenticada; essa opção substitui tanto a lista individual quanto o bloqueio acadêmico.
 
 ## Preparação

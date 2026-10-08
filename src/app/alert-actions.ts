@@ -38,6 +38,7 @@ import type {
 function revalidateAlertPages() {
   revalidatePath("/alertas");
   revalidatePath("/dashboard");
+  revalidatePath("/disciplinas");
 }
 
 function alertActionError(error: unknown) {
@@ -59,6 +60,7 @@ export async function updateAlertPreferencesAction(
   formData: FormData,
 ): Promise<AcademicAlertPreferenceFormState> {
   const parsed = alertPreferenceSchema.safeParse({
+    reminderDays: formData.get("reminderDays"),
     targetAverage: formData.get("targetAverage"),
     minimumAttendance: formData.get("minimumAttendance"),
     gradesEnabled: formData.get("gradesEnabled") === "on",

@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 
 import { ProtectedShell } from "@/components/protected-shell";
 import { GradeValue } from "@/components/grade-value";
+import { GradeProjection } from "@/components/grade-projection";
+import { getCurrentAlertPreferences } from "@/data/academic-alerts";
 import { SubjectFilter } from "@/components/subject-filter";
 import { SubjectSortControl } from "@/components/subject-sort-control";
 import {
@@ -56,7 +58,9 @@ export default async function SubjectsPage({
   const parameters = await searchParams;
   const sortOption = parseSubjectSort(parameters.sort);
   const requestedSubjectIds = parseSubjectFilter(parameters.materias);
-  const availableSubjects = await getCurrentSubjects();
+  const [availableSubjects, preferences] = await Promise.all([
+    getCurrentSubjects(), getCurrentAlertPreferences(),
+  ]);
   const { selectedIds, subjects: filteredSubjects } = resolveSubjectFilter(
     availableSubjects,
     requestedSubjectIds,
@@ -206,6 +210,8 @@ export default async function SubjectsPage({
                       grades={subject.bimesterGrades}
                       subjectId={subject.id}
                     />
+
+                    <GradeProjection subject={subject} target={preferences.targetAverage} />
 
                     <div className="bimester-summary" aria-label="Resumo das médias">
                       <div>

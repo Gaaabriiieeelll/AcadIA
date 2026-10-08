@@ -9,7 +9,7 @@
     "build:vercel": "node scripts/vercel-build.mjs",
     "postinstall": "prisma generate",
     "start": "next start",
-    "test": "node --conditions=react-server --import tsx --test src/lib/android-widget-secrets.test.ts src/lib/auth.test.ts src/lib/browser-push-utils.test.ts src/lib/google-calendar-event-colors.test.ts src/lib/google-calendar-status.test.ts src/lib/hifpb.test.ts src/lib/job-authorization.test.ts src/lib/opportunity-utils.test.ts src/lib/privacy.test.ts src/lib/study-chat-api.test.ts src/lib/study-chat-provider.test.ts src/lib/suap-report.test.ts src/lib/youtube-ranking.test.ts src/proxy.test.ts",
+    "test": "node --conditions=react-server --import tsx --test src/lib/grade-projection.test.ts src/lib/material-search.test.ts src/lib/academic-alerts.test.ts src/lib/android-widget-secrets.test.ts src/lib/auth.test.ts src/lib/browser-push-utils.test.ts src/lib/google-calendar-event-colors.test.ts src/lib/google-calendar-status.test.ts src/lib/hifpb.test.ts src/lib/job-authorization.test.ts src/lib/opportunity-utils.test.ts src/lib/privacy.test.ts src/lib/study-chat-api.test.ts src/lib/study-chat-provider.test.ts src/lib/suap-report.test.ts src/lib/youtube-ranking.test.ts src/proxy.test.ts",
     "smoke": "node scripts/smoke-test.mjs",
     "jobs:browser-push": "node scripts/run-browser-push-job.mjs",
     "jobs:whatsapp": "node scripts/run-whatsapp-job.mjs",

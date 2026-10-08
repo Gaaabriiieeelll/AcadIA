@@ -298,6 +298,7 @@ export async function getCurrentAccountExport(): Promise<Record<string, unknown>
         select: {
           targetAverage: true,
           minimumAttendance: true,
+          reminderDays: true,
           gradesEnabled: true,
           attendanceEnabled: true,
           tasksEnabled: true,

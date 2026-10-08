@@ -34,6 +34,7 @@ export type AcademicAlertSummaryDTO = {
 };
 
 export type AcademicAlertPreferencesDTO = {
+  reminderDays: number;
   targetAverage: number;
   minimumAttendance: number;
   gradesEnabled: boolean;
@@ -91,6 +92,7 @@ export type AcademicAlertCenterDTO = {
 };
 
 export type AcademicAlertPreferenceFormField =
+  | "reminderDays"
   | "targetAverage"
   | "minimumAttendance";
 

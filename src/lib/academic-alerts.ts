@@ -10,11 +10,13 @@ import {
   CALENDAR_EVENT_TYPE_DETAILS,
   type CalendarEventDTO,
 } from "@/types/calendar-events";
+import { projectGrades } from "@/lib/grade-projection";
 import type { SubjectDTO } from "@/types/subjects";
 
 export const ALERT_LOOKAHEAD_DAYS = 7;
 
 export const DEFAULT_ALERT_PREFERENCES: AcademicAlertPreferencesDTO = {
+  reminderDays: ALERT_LOOKAHEAD_DAYS,
   targetAverage: 70,
   minimumAttendance: 75,
   gradesEnabled: true,
@@ -30,6 +32,7 @@ type BuildAcademicAlertsInput = {
   personalEvents: CalendarEventDTO[];
   officialEvents: AcademicCalendarEvent[];
   todayDateKey: string;
+  reminderDays?: number;
   targetAverage?: number;
   minimumAttendance?: number;
 };
@@ -103,7 +106,8 @@ function subjectAlerts(
   const scores = subject.bimesterGrades
     .map((grade) => grade.score)
     .filter((score): score is number => score !== null);
-  const remainingGrades = subject.bimesterCount - scores.length;
+  const gradeProjection = projectGrades(subject.bimesterGrades, subject.bimesterCount, targetAverage);
+  const remainingGrades = gradeProjection.remaining;
   const subjectHref = `/disciplinas#disciplina-${subject.id}`;
 
   if (scores.length === 0) {
@@ -122,10 +126,7 @@ function subjectAlerts(
       read: false,
     });
   } else if (subject.averageScore !== null && subject.averageScore < targetAverage) {
-    const scoreTotal = scores.reduce((total, score) => total + score, 0);
-    const neededAverage = remainingGrades > 0
-      ? (targetAverage * subject.bimesterCount - scoreTotal) / remainingGrades
-      : null;
+    const neededAverage = gradeProjection.neededAverage;
     let projection: string;
     let severity: AcademicAlertSeverity = "warning";
 
@@ -147,7 +148,7 @@ function subjectAlerts(
       category: "grades",
       eyebrow: "Média parcial",
       title: `${subject.name} está com média ${formatScore(subject.averageScore)}`,
-      description: projection,
+      description: `${projection} Estimativa por média simples, sem recuperação ou prova final.`,
       actionLabel: "Revisar notas",
       href: subjectHref,
       dateKey: null,
@@ -198,10 +199,10 @@ function subjectAlerts(
   return alerts;
 }
 
-function taskAlert(task: AcademicTaskDTO, todayDateKey: string): AcademicAlertDTO | null {
+function taskAlert(task: AcademicTaskDTO, todayDateKey: string, reminderDays: number): AcademicAlertDTO | null {
   if (task.completed || task.status === "completed") return null;
   const daysUntilDue = dateDistance(todayDateKey, task.dueDate);
-  if (task.status === "upcoming" && daysUntilDue > ALERT_LOOKAHEAD_DAYS) return null;
+  if (daysUntilDue > reminderDays) return null;
 
   const severity: AcademicAlertSeverity = task.status === "overdue" || task.status === "today"
     ? "critical"
@@ -292,20 +293,28 @@ export function buildAcademicAlertCenter({
   personalEvents,
   officialEvents,
   todayDateKey,
+  reminderDays = DEFAULT_ALERT_PREFERENCES.reminderDays,
   targetAverage = DEFAULT_ALERT_PREFERENCES.targetAverage,
   minimumAttendance = DEFAULT_ALERT_PREFERENCES.minimumAttendance,
 }: BuildAcademicAlertsInput): AcademicAlertCenterDTO {
+  const rangeEnd = addDaysToDateKey(todayDateKey, reminderDays);
   const alerts = [
     ...subjects.flatMap((subject) => subjectAlerts(
       subject,
       targetAverage,
       minimumAttendance,
     )),
-    ...tasks.map((task) => taskAlert(task, todayDateKey)).filter((alert): alert is AcademicAlertDTO => alert !== null),
+    ...tasks.map((task) => taskAlert(task, todayDateKey, reminderDays)).filter((alert): alert is AcademicAlertDTO => alert !== null),
     ...personalEvents
+      .filter((event) => !event.completedAt
+        && event.startDate <= rangeEnd
+        && (event.endDate === null || event.endDate >= todayDateKey))
       .map((event) => personalEventAlert(event, todayDateKey))
       .filter((alert): alert is AcademicAlertDTO => alert !== null),
-    ...officialEvents.map((event) => officialEventAlert(event, todayDateKey)),
+    ...officialEvents
+      .filter((event) => event.startDate <= rangeEnd
+        && (event.endDate ?? event.startDate) >= todayDateKey)
+      .map((event) => officialEventAlert(event, todayDateKey)),
   ].sort((left, right) =>
     severityOrder[left.severity] - severityOrder[right.severity]
     || (left.dateKey ?? "9999-12-31").localeCompare(right.dateKey ?? "9999-12-31")
@@ -328,6 +337,7 @@ export function buildAcademicAlertCenter({
     todayDateKey,
     preferences: {
       ...DEFAULT_ALERT_PREFERENCES,
+      reminderDays,
       targetAverage,
       minimumAttendance,
     },

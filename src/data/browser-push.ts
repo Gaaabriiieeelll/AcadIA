@@ -1,5 +1,7 @@
 import "server-only";
 
+import { refreshAcademicAlertRecordsForUser } from "@/data/academic-alerts";
+
 import { getAcademicCalendarTodayKey } from "@/data/academic-calendar";
 import { requireCurrentIdentity } from "@/data/current-user";
 import {
@@ -206,6 +208,9 @@ export async function dispatchPendingBrowserPushAlerts(requestedLimit = 50) {
         select: {
           alertPreference: {
             select: {
+              targetAverage: true,
+              minimumAttendance: true,
+              reminderDays: true,
               attendanceEnabled: true,
               calendarEnabled: true,
               gradesEnabled: true,
@@ -227,11 +232,28 @@ export async function dispatchPendingBrowserPushAlerts(requestedLimit = 50) {
     subscriptionsByUser.set(subscription.userId, current);
   }
 
+  const eligibleUserIds: string[] = [];
+  let refreshFailed = 0;
+  const users = [...subscriptionsByUser.entries()];
+  for (let index = 0; index < users.length; index += 4) {
+    await Promise.all(users.slice(index, index + 4).map(async ([userId, devices]) => {
+      const preference = devices[0].user.alertPreference;
+      if (!preference) return;
+      try {
+        await refreshAcademicAlertRecordsForUser(userId, preference);
+        eligibleUserIds.push(userId);
+      } catch {
+        // Avoid sending stale reminders when the current state could not be read.
+        refreshFailed += 1;
+      }
+    }));
+  }
+
   const todayDateKey = getAcademicCalendarTodayKey();
   const today = new Date(`${todayDateKey}T12:00:00.000Z`);
   const records = await db.academicAlertRecord.findMany({
     where: {
-      userId: { in: [...subscriptionsByUser.keys()] },
+      userId: { in: eligibleUserIds },
       resolvedAt: null,
       dismissedAt: null,
       OR: [{ snoozedUntil: null }, { snoozedUntil: { lte: today } }],
@@ -276,7 +298,7 @@ export async function dispatchPendingBrowserPushAlerts(requestedLimit = 50) {
 
   let scanned = 0;
   let sent = 0;
-  let failed = 0;
+  let failed = refreshFailed;
   let stale = 0;
   let skipped = 0;
   const disabledSubscriptionIds = new Set<string>();

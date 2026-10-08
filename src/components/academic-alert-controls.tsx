@@ -122,7 +122,7 @@ function PreferenceFieldError({
   field,
   state,
 }: {
-  field: "targetAverage" | "minimumAttendance";
+  field: "targetAverage" | "minimumAttendance" | "reminderDays";
   state: AcademicAlertPreferenceFormState;
 }) {
   const error = state.fieldErrors?.[field]?.[0];
@@ -174,6 +174,15 @@ export function AlertPreferencesForm({
           <PreferenceFieldError field="minimumAttendance" state={state} />
         </label>
       </div>
+
+      <label className="reminder-days-field">
+        <span>Antecedência dos lembretes (dias)</span>
+        <input name="reminderDays" type="number" min="0" max="30" step="1" required
+          defaultValue={preferences.reminderDays} aria-describedby="reminder-days-help"
+          aria-invalid={Boolean(state.fieldErrors?.reminderDays)} />
+        <small id="reminder-days-help">De 0 (somente no dia) a 30 dias antes de provas, tarefas e eventos. Pendências vencidas continuam visíveis. Os envios usam os canais que você já ativou.</small>
+        <PreferenceFieldError field="reminderDays" state={state} />
+      </label>
 
       <fieldset className="alert-category-preferences">
         <legend>Categorias exibidas</legend>

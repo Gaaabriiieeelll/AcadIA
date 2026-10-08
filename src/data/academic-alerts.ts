@@ -15,7 +15,6 @@ import {
   sendEvolutionTextMessage,
 } from "@/lib/evolution-api";
 import {
-  ALERT_LOOKAHEAD_DAYS,
   DEFAULT_ALERT_PREFERENCES,
   addDaysToDateKey,
   buildAcademicAlertCenter,
@@ -35,7 +34,7 @@ type AlertPreferenceValues = Omit<AcademicAlertPreferencesDTO, "browserNotificat
 
 type AlertCalculationPreferences = Pick<
   AcademicAlertPreferencesDTO,
-  "targetAverage" | "minimumAttendance"
+  "targetAverage" | "minimumAttendance" | "reminderDays"
 >;
 
 type WhatsAppPreferenceValues = {
@@ -58,6 +57,7 @@ function toDateKey(date: Date | null) {
 
 function preferenceDTO(
   preference: {
+    reminderDays: number;
     targetAverage: number;
     minimumAttendance: number;
     gradesEnabled: boolean;
@@ -180,7 +180,7 @@ async function calculateAcademicAlertsForUser(
   preferences: AlertCalculationPreferences,
 ) {
   const todayDateKey = getAcademicCalendarTodayKey();
-  const rangeEnd = addDaysToDateKey(todayDateKey, ALERT_LOOKAHEAD_DAYS);
+  const rangeEnd = addDaysToDateKey(todayDateKey, preferences.reminderDays);
   const [subjects, tasks, personalEvents] = await Promise.all([
     getSubjectsForUser(userId),
     getAcademicTasksForUser(userId),
@@ -197,6 +197,7 @@ async function calculateAcademicAlertsForUser(
     personalEvents,
     officialEvents,
     todayDateKey,
+    reminderDays: preferences.reminderDays,
     targetAverage: preferences.targetAverage,
     minimumAttendance: preferences.minimumAttendance,
   });
@@ -242,6 +243,7 @@ export async function getCurrentAcademicAlertCenter(): Promise<AcademicAlertCent
     select: {
       targetAverage: true,
       minimumAttendance: true,
+      reminderDays: true,
       gradesEnabled: true,
       attendanceEnabled: true,
       tasksEnabled: true,
@@ -343,6 +345,7 @@ export async function getCurrentAlertPreferences(): Promise<AcademicAlertPrefere
     select: {
       targetAverage: true,
       minimumAttendance: true,
+      reminderDays: true,
       gradesEnabled: true,
       attendanceEnabled: true,
       tasksEnabled: true,
