@@ -20,7 +20,6 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
-import androidx.glance.layout.defaultWeight
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
@@ -168,7 +167,7 @@ private fun CommitmentRow(
             .clickable(actionStartActivity(intent)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(modifier = GlanceModifier.defaultWeight()) {
+        Column(modifier = GlanceModifier.fillMaxWidth()) {
             Text(
                 text = commitment.title,
                 style = TextStyle(
