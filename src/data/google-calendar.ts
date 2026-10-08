@@ -707,6 +707,13 @@ export async function syncGoogleCalendarForGoogleSubject(
       ...counts,
     };
   } catch (error) {
+    if (error instanceof GoogleCalendarError) {
+      console.error("Google Calendar sync failed", {
+        code: error.code,
+        message: error.message,
+        stage: integration ? "events" : "calendar",
+      });
+    }
     const message = calendarErrorMessage(error);
     await db.googleCalendarIntegration.updateMany({
       where: { userId: user.id },
