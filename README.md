@@ -107,6 +107,28 @@ Quando a autorização expira, o Conecta Campus mostra **Autorizar novamente**. 
 temporárias de acesso ao Google mostram uma opção para tentar a sincronização de
 novo.
 
+### Publicação do acesso Google
+
+Em 07/10/2026, o projeto OAuth de produção `projeto-do-acadia-proprio` passou para
+**Em produção**. O acesso do aplicativo na Vercel já usa
+`ALLOW_ANY_GOOGLE_EMAIL=true`, e a página de entrada está aberta a contas Google
+com e-mail confirmado. A página inicial `/login`, a política `/privacidade` e os
+termos `/termos` estão públicos e cadastrados no Google Auth Platform. Os domínios
+`conecta-campus-sandy.vercel.app` e `acad-ia-sandy.vercel.app` foram verificados no
+Google Search Console; o arquivo de comprovação está em `public/` e não deve ser
+removido.
+
+A revisão automática da marca ainda não foi concluída. O Google informou que a
+propriedade da página inicial ainda não apareceu no sistema de verificação e pediu
+aguardar 24 horas antes de tentar novamente. Depois, abrir **Google Auth Platform →
+Branding → Informações e resumo → Ver problemas** e solicitar nova verificação.
+Quando a marca estiver aprovada, publicá-la e iniciar a revisão do acesso a dados
+na Central de verificação. O escopo `classroom.profile.emails`, necessário para
+mostrar os e-mails dos professores das turmas do usuário, é sensível. Até a
+aprovação do Google, a autorização de escopos sensíveis pode mostrar aviso e
+conta com o limite vitalício de 100 novos usuários do projeto. A revisão do escopo
+pode exigir um vídeo de demonstração do fluxo de autorização e do uso do dado.
+
 ## Compromissos em aberto
 
 Ao criar um evento pessoal no Calendário, deixar **Data final** vazia cria um
