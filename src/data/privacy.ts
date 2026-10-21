@@ -369,6 +369,7 @@ export async function getCurrentAccountExport(): Promise<Record<string, unknown>
         },
       },
       calendarEvents: { orderBy: [{ startDate: "asc" }, { createdAt: "asc" }] },
+      competitionSubscriptions: { orderBy: { createdAt: "asc" } },
     },
   });
 

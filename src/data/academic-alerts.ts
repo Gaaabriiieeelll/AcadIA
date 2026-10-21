@@ -8,6 +8,9 @@ import { getAcademicTasksForUser } from "@/data/academic-tasks";
 import { getCalendarEventsForUser } from "@/data/calendar-events";
 import { requireCurrentIdentity } from "@/data/current-user";
 import { getSubjectsForUser } from "@/data/subjects";
+import { competitions } from "@/data/competitions";
+import { getCompetitionSubscriptionsForUser } from "@/data/competition-subscriptions";
+import { buildCompetitionAlerts } from "@/lib/competitions";
 import { db } from "@/lib/db";
 import {
   EvolutionApiError,
@@ -181,10 +184,11 @@ async function calculateAcademicAlertsForUser(
 ) {
   const todayDateKey = getAcademicCalendarTodayKey();
   const rangeEnd = addDaysToDateKey(todayDateKey, preferences.reminderDays);
-  const [subjects, tasks, personalEvents] = await Promise.all([
+  const [subjects, tasks, personalEvents, competitionSubscriptions] = await Promise.all([
     getSubjectsForUser(userId),
     getAcademicTasksForUser(userId),
     getCalendarEventsForUser(userId, todayDateKey, rangeEnd),
+    getCompetitionSubscriptionsForUser(userId),
   ]);
   const officialEvents = academicCalendarEvents.filter(
     (event) => event.startDate <= rangeEnd
@@ -192,6 +196,7 @@ async function calculateAcademicAlertsForUser(
   );
 
   return buildAcademicAlertCenter({
+    competitionAlerts: buildCompetitionAlerts(competitions, competitionSubscriptions, new Date(), preferences.reminderDays),
     subjects,
     tasks,
     personalEvents,

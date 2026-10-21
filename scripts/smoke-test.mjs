@@ -53,6 +53,7 @@ async function checkProtectedRoute(pathname) {
 
 async function run() {
   await waitForServer();
+  await checkProtectedRoute("/olimpiadas");
 
   const health = await fetch(`${origin}/api/health`, { cache: "no-store" });
   assert.equal(health.status, 200);

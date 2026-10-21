@@ -27,10 +27,25 @@ model User {
   opportunities             Opportunity[]
   subjects                  Subject[]
   calendarEvents            CalendarEvent[]
+  competitionSubscriptions CompetitionSubscription[]
   createdAt                 DateTime                   @default(now()) @map("created_at")
   updatedAt                 DateTime                   @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+model CompetitionSubscription {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  competitionId    String   @map("competition_id") @db.VarChar(100)
+  remindersEnabled Boolean  @default(false) @map("reminders_enabled")
+  includeQualified Boolean  @default(false) @map("include_qualified")
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, competitionId])
+  @@map("competition_subscriptions")
 }
 
 model PrivacyConsent {

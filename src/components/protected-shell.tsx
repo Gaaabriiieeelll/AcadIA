@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { protectedNavigation as navigation } from "@/lib/protected-navigation";
 import type { ReactNode } from "react";
 
 import { BrandLogo } from "@/components/brand-logo";
@@ -14,6 +15,7 @@ type ProtectedShellProps = {
     | "subjects"
     | "materials"
     | "schedule"
+    | "competitions"
     | "agenda"
     | "alerts"
     | "study"
@@ -36,19 +38,6 @@ function getInitials(name?: string | null) {
     .map((part) => part[0]?.toLocaleUpperCase("pt-BR"))
     .join("");
 }
-
-const navigation = [
-  { href: "/dashboard", id: "dashboard" as const, label: "Visão geral", mobileLabel: "Início" },
-  { href: "/agenda", id: "agenda" as const, label: "Agenda", mobileLabel: "Agenda" },
-  { href: "/alertas", id: "alerts" as const, label: "Central de alertas", mobileLabel: "Alertas" },
-  { href: "/disciplinas", id: "subjects" as const, label: "Disciplinas", mobileLabel: "Matérias" },
-  { href: "/materiais", id: "materials" as const, label: "Materiais", mobileLabel: "Materiais" },
-  { href: "/horarios", id: "schedule" as const, label: "Horários", mobileLabel: "Horários" },
-  { href: "/plano-de-estudos", id: "study" as const, label: "Plano de estudos", mobileLabel: "Plano" },
-  { href: "/editais", id: "notices" as const, label: "Editais", mobileLabel: "Editais" },
-  { href: "/oportunidades", id: "opportunities" as const, label: "Estágios e oportunidades", mobileLabel: "Vagas" },
-  { href: "/atendimento", id: "support" as const, label: "Atendimento", mobileLabel: "Ajuda" },
-];
 
 function ProtectedNavigation({
   active,
@@ -76,6 +65,8 @@ function ProtectedNavigation({
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M6 3.5h8l4 4v13H6z" /><path d="M14 3.5v4h4M9 12h6M9 16h6" /></svg>
           ) : item.id === "schedule" ? (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2M5.5 4.5l-2 2M18.5 4.5l2 2" /></svg>
+          ) : item.id === "competitions" ? (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M8 3h8v6a4 4 0 0 1-8 0zM8 5H4v2a4 4 0 0 0 4 4M16 5h4v2a4 4 0 0 1-4 4M12 13v5M8 21h8M9 18h6v3" /></svg>
           ) : item.id === "agenda" ? (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="15" rx="2" /><path d="M7.5 3v5M16.5 3v5M3.5 10h17M8 14h3M8 17h6" /></svg>
           ) : item.id === "alerts" ? (

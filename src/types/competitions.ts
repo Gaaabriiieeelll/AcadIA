@@ -1,0 +1,46 @@
+export type CompetitionStatus = "future" | "open" | "closed" | "ongoing" | "completed" | "pending";
+export type CompetitionSource = { id: string; label: string; url: string; checkedAt: string };
+export type CompetitionFact = { text: string; sourceIds: string[] };
+export type CompetitionStage = {
+  id: string;
+  title: string;
+  kind: "registration" | "exam" | "phase" | "result" | "award";
+  startDate: string;
+  endDate?: string;
+  startTime?: string;
+  endTime?: string;
+  deadline?: boolean;
+  access: "eligible" | "registered" | "qualified";
+  location: string;
+  sourceId: string;
+  closesEdition?: boolean;
+};
+export type Competition = {
+  id: string;
+  name: string;
+  acronym: string;
+  area: string;
+  edition: string;
+  year: number | null;
+  description: string;
+  campuses: string[];
+  levels: string[];
+  eligibility: CompetitionFact;
+  participation: CompetitionFact;
+  registration: CompetitionFact;
+  support: CompetitionFact;
+  cost?: CompetitionFact;
+  registrationUrl?: string;
+  regulationUrl?: string;
+  sources: CompetitionSource[];
+  checkedAt: string;
+  calendarReady: boolean;
+  completion?: { confirmedOn: string; sourceId: string };
+  pending: string[];
+  stages: CompetitionStage[];
+};
+export type CompetitionSubscription = {
+  competitionId: string;
+  remindersEnabled: boolean;
+  includeQualified: boolean;
+};

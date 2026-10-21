@@ -27,6 +27,7 @@ export const DEFAULT_ALERT_PREFERENCES: AcademicAlertPreferencesDTO = {
 };
 
 type BuildAcademicAlertsInput = {
+  competitionAlerts?: AcademicAlertDTO[];
   subjects: SubjectDTO[];
   tasks: AcademicTaskDTO[];
   personalEvents: CalendarEventDTO[];
@@ -288,6 +289,7 @@ function officialEventAlert(
 }
 
 export function buildAcademicAlertCenter({
+  competitionAlerts = [],
   subjects,
   tasks,
   personalEvents,
@@ -299,6 +301,7 @@ export function buildAcademicAlertCenter({
 }: BuildAcademicAlertsInput): AcademicAlertCenterDTO {
   const rangeEnd = addDaysToDateKey(todayDateKey, reminderDays);
   const alerts = [
+    ...competitionAlerts,
     ...subjects.flatMap((subject) => subjectAlerts(
       subject,
       targetAverage,

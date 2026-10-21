@@ -37,6 +37,8 @@ import {
 import type { ClassroomTaskSyncDTO } from "@/types/google-classroom";
 import type { GoogleCalendarConnectionStatus } from "@/types/google-calendar";
 
+import { competitions } from "@/data/competitions";
+import { COMPETITION_COLOR, getCompetitionCalendarEvents } from "@/lib/competitions";
 import styles from "./calendar.module.css";
 
 export const metadata: Metadata = {
@@ -49,12 +51,13 @@ type CalendarPageProps = {
     visao?: string | string[];
     data?: string | string[];
     googleCalendar?: string | string[];
+    competicoes?: string | string[];
   }>;
 };
 
 type CalendarDisplayEvent = {
   id: string;
-  source: "official" | "personal" | "classroom" | "notice";
+  source: "official" | "personal" | "classroom" | "notice" | "competition";
   title: string;
   description: string | null;
   startDate: string;
@@ -360,6 +363,10 @@ function EventPill({ event }: { event: CalendarDisplayEvent }) {
     </>
   );
 
+  if (event.source === "competition" && event.href) {
+    return <Link className={className} href={event.href} style={{ "--calendar-event-color": event.color } as CSSProperties} title={event.description ?? event.title}>{content}</Link>;
+  }
+
   if ((event.source === "classroom" || event.source === "notice") && event.href) {
     return (
       <a
@@ -396,6 +403,8 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
 
   const todayKey = getAcademicCalendarTodayKey();
   const parameters = await searchParams;
+  const showCompetitions = (Array.isArray(parameters.competicoes) ? parameters.competicoes[0] : parameters.competicoes) !== "ocultar";
+  const calendarHref = (href: string) => showCompetitions ? href : `${href}&competicoes=ocultar`;
   const requestedMonth = Array.isArray(parameters.mes) ? parameters.mes[0] : parameters.mes;
   const requestedView = Array.isArray(parameters.visao) ? parameters.visao[0] : parameters.visao;
   const requestedDate = Array.isArray(parameters.data) ? parameters.data[0] : parameters.data;
@@ -445,6 +454,7 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
     monthGrid.gridEnd,
   );
   const allEvents = [
+    ...(showCompetitions ? getCompetitionCalendarEvents(competitions, monthGrid.gridStart, monthGrid.gridEnd) : []),
     ...officialEvents,
     ...noticeEvents,
     ...toPersonalDisplayEvents(personalEvents, monthGrid.gridEnd),
@@ -537,7 +547,7 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
 
         <nav className={styles.periodNavigation} aria-label="Atalhos do ano letivo">
           {academicCalendarPeriods.map((period) => (
-            <Link href={`/calendario?mes=${period.months[0]}`} key={period.id}>
+            <Link href={calendarHref(`/calendario?mes=${period.months[0]}`)} key={period.id}>
               <span>{period.title}</span>
               <small>{period.subtitle}</small>
             </Link>
@@ -549,10 +559,20 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
           subjects={subjects.map((subject) => ({ id: subject.id, name: subject.name }))}
         />
 
+        <aside className={styles.proposalNotice} aria-label="Categoria de competições">
+          <div>
+            <strong>Olimpíadas e Competições</strong>
+            <p>Etapas confirmadas, com indicação de inscritos e classificados. Horários de Brasília; sem horário divulgado, o evento ocupa o dia inteiro. Esta opção altera apenas a visualização.</p>
+            <Link href={`/calendario?mes=${monthKey}&visao=${view}&data=${selectedDate}&competicoes=${showCompetitions ? "ocultar" : "exibir"}`}>
+              {showCompetitions ? "Ocultar Olimpíadas e Competições" : "Exibir Olimpíadas e Competições"}
+            </Link> · <Link href="/olimpiadas">Catálogo e lembretes</Link>
+          </div>
+        </aside>
+
         <nav className={styles.viewNavigation} aria-label="Visão do calendário">
-          <Link aria-current={view === "mes" ? "page" : undefined} href={`/calendario?mes=${monthKey}`}>Mês</Link>
-          <Link aria-current={view === "semana" ? "page" : undefined} href={`/calendario?visao=semana&data=${selectedDate}`}>Semana</Link>
-          <Link aria-current={view === "dia" ? "page" : undefined} href={`/calendario?visao=dia&data=${selectedDate}`}>Dia</Link>
+          <Link aria-current={view === "mes" ? "page" : undefined} href={calendarHref(`/calendario?mes=${monthKey}`)}>Mês</Link>
+          <Link aria-current={view === "semana" ? "page" : undefined} href={calendarHref(`/calendario?visao=semana&data=${selectedDate}`)}>Semana</Link>
+          <Link aria-current={view === "dia" ? "page" : undefined} href={calendarHref(`/calendario?visao=dia&data=${selectedDate}`)}>Dia</Link>
         </nav>
 
         <section className={styles.calendarPanel} aria-labelledby="calendar-month-title">
@@ -560,7 +580,7 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
             <Link
               aria-label={`Ver período anterior`}
               className={styles.monthArrow}
-              href={previousHref}
+              href={calendarHref(previousHref)}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="m15 18-6-6 6-6" />
@@ -573,11 +593,11 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
             </div>
 
             <div className={styles.toolbarActions}>
-              <Link className={styles.todayLink} href={todayHref}>Hoje</Link>
+              <Link className={styles.todayLink} href={calendarHref(todayHref)}>Hoje</Link>
               <Link
                 aria-label="Ver próximo período"
                 className={styles.monthArrow}
-                href={nextHref}
+                href={calendarHref(nextHref)}
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="m9 6 6 6-6 6" />
@@ -611,7 +631,7 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
                         role="gridcell"
                       >
                         <div className={styles.dayHeading}>
-                          <Link aria-label={`Ver eventos de ${formatFullDate(dateKey)}`} href={`/calendario?visao=dia&data=${dateKey}`}><time dateTime={dateKey}>{day.getUTCDate()}</time></Link>
+                          <Link aria-label={`Ver eventos de ${formatFullDate(dateKey)}`} href={calendarHref(`/calendario?visao=dia&data=${dateKey}`)}><time dateTime={dateKey}>{day.getUTCDate()}</time></Link>
                           {weekIndex === 0 && isOutsideMonth ? <small>{formatMonth(dateKey.slice(0, 7)).split(" ")[0].slice(0, 3)}</small> : null}
                         </div>
                         <div className={styles.dayEvents}>
@@ -635,7 +655,7 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
                 const dayEvents = allEvents.filter((event) => eventOccursOn(event, dateKey));
                 return (
                   <section className={`${styles.focusDay} ${dateKey === todayKey ? styles.focusToday : ""}`} key={dateKey} aria-label={formatFullDate(dateKey)}>
-                    <h3><Link href={`/calendario?visao=dia&data=${dateKey}`}><time dateTime={dateKey}>{WEEKDAYS[day.getUTCDay()]}, {formatFullDate(dateKey)}</time></Link></h3>
+                    <h3><Link href={calendarHref(`/calendario?visao=dia&data=${dateKey}`)}><time dateTime={dateKey}>{WEEKDAYS[day.getUTCDay()]}, {formatFullDate(dateKey)}</time></Link></h3>
                     {dayEvents.length === 0 ? <p>Sem eventos</p> : (
                       <div className={styles.focusEvents}>{dayEvents.map((event) => <EventPill event={event} key={`${dateKey}-${event.id}`} />)}</div>
                     )}
@@ -649,6 +669,7 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
         <div className={styles.legend} aria-label="Legenda do calendário">
           <span><i className={styles.personalLegend} />Evento pessoal</span>
           <span><i className={styles.classroomLegend} />Atividade do Google Classroom</span>
+          <span><i style={{ background: COMPETITION_COLOR }} />Olimpíadas e Competições{showCompetitions ? "" : " (ocultas)"}</span>
           <span><i className={styles.noticeLegend} />Prazo de edital</span>
           <span><i className={styles.completedLegend} />Atividade enviada/concluída</span>
           {Object.entries(academicCalendarCategories).map(([category, details]) => (
@@ -699,7 +720,7 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
                             ? "Google Classroom"
                             : event.source === "notice"
                               ? "Edital IFPB"
-                              : "Documento IFPB"}
+                              : event.source === "competition" ? "Competição" : "Documento IFPB"}
                       </span>
                       <span>{event.categoryLabel}</span>
                       {event.openEnded ? (
@@ -721,6 +742,8 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
                       ) : null}
                       <DeleteCalendarEventForm eventId={event.id} eventTitle={event.title} />
                     </div>
+                  ) : event.source === "competition" && event.href ? (
+                    <Link className={styles.classroomEventLink} href={event.href}>Ver competição e fontes</Link>
                   ) : (event.source === "classroom" || event.source === "notice") && event.href ? (
                     <a
                       className={styles.classroomEventLink}
