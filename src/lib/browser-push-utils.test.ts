@@ -56,5 +56,5 @@ test("respeita categorias e monta um payload limitado à navegação do Conecta 
   });
   assert.equal(payload.title, "Atenção · Matemática");
   assert.equal(payload.href, "/alertas");
-  assert.equal(payload.icon, "/acadia-logo.jpeg");
+  assert.equal(payload.icon, "/conecta-campus-logo.png");
 });

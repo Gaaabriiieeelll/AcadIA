@@ -12,16 +12,10 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "pt-BR",
     icons: [
       {
-        src: "/acadia-logo.jpeg",
+        src: "/conecta-campus-logo.png",
         sizes: "1254x1254",
-        type: "image/jpeg",
+        type: "image/png",
         purpose: "any",
-      },
-      {
-        src: "/acadia-logo.jpeg",
-        sizes: "1254x1254",
-        type: "image/jpeg",
-        purpose: "maskable",
       },
     ],
   };

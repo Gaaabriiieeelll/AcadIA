@@ -85,7 +85,7 @@ export function buildBrowserPushPayload(alert: {
     title: browserPushNotificationTitle(alert.severity, alert.title),
     body: alert.description,
     href: safeBrowserPushHref(alert.href),
-    icon: "/acadia-logo.jpeg",
+    icon: "/conecta-campus-logo.png",
     tag: browserPushTopic(alert.alertKey),
   };
 }

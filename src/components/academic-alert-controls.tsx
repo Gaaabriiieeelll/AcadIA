@@ -365,7 +365,7 @@ export function BrowserNotificationControl({
           await registration.showNotification("Conecta Campus conectado", {
             body: "Este navegador receberá novos alertas acadêmicos.",
             data: { href: "/alertas" },
-            icon: "/acadia-logo.jpeg",
+            icon: "/conecta-campus-logo.png",
             tag: "acadia-push-enabled",
           });
         } catch {

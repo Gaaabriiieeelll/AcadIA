@@ -292,12 +292,24 @@ html[data-theme="dark"] .theme-toggle-dark-label {
 }
 
 .brand-logo-image {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
   flex: none;
-  object-fit: cover;
   border: 1px solid rgb(255 255 255 / 42%);
   border-radius: 14px;
   background: #fff;
   box-shadow: 0 8px 24px rgb(3 27 35 / 18%);
+}
+
+/* Frame the symbol beside the existing brand text; retain the original PNG intact. */
+.brand-logo-art {
+  position: absolute;
+  width: 255.9184%;
+  max-width: none;
+  height: auto;
+  left: -11.2245%;
+  top: -76.1224%;
 }
 
 .login-brand .brand-logo-image {

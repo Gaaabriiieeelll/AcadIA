@@ -3,7 +3,7 @@ self.addEventListener("push", (event) => {
     title: "Novo alerta no Conecta Campus",
     body: "Abra a Central de alertas para conferir.",
     href: "/alertas",
-    icon: "/acadia-logo.jpeg",
+    icon: "/conecta-campus-logo.png",
     tag: "acadia-alert",
   };
 
@@ -26,7 +26,7 @@ self.addEventListener("push", (event) => {
   event.waitUntil(self.registration.showNotification(String(payload.title).slice(0, 200), {
     body: String(payload.body).slice(0, 800),
     data: { href },
-    icon: payload.icon === "/acadia-logo.jpeg" ? payload.icon : "/acadia-logo.jpeg",
+    icon: payload.icon === "/conecta-campus-logo.png" ? payload.icon : "/conecta-campus-logo.png",
     tag: String(payload.tag).slice(0, 64),
   }));
 });
