@@ -560,6 +560,7 @@ export async function syncGoogleCalendarForGoogleSubject(
       console.error("Google Calendar sync failed", {
         code: error.code,
         message: error.message,
+        operation: error.operation,
         stage: integration ? "events" : "calendar",
       });
     }

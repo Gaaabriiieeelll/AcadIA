@@ -18,6 +18,7 @@ export class GoogleCalendarError extends Error {
   constructor(
     public readonly code: GoogleCalendarErrorCode,
     message?: string,
+    public readonly operation?: string,
   ) {
     super(message ?? code);
     this.name = "GoogleCalendarError";
@@ -105,6 +106,7 @@ export async function calendarApiRequest<T>(
     throw new GoogleCalendarError(
       calendarErrorCode(response.status),
       payload?.error?.message?.slice(0, 500),
+      `${init.method ?? "GET"} ${path.split("?")[0].replace(/(\/calendars\/|\/calendarList\/)[^/]+/g, "$1:id").replace(/(\/events\/)[^/]+/g, "$1:id")}`,
     );
   }
 
