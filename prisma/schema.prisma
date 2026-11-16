@@ -13,6 +13,8 @@ model User {
   classroomCredential       GoogleClassroomCredential?
   googleCalendarCredential  GoogleCalendarCredential?
   googleCalendarIntegration GoogleCalendarIntegration?
+  calendarSyncLeaseToken     String?                    @map("calendar_sync_lease_token") @db.Uuid
+  calendarSyncLeaseUntil     DateTime?                  @map("calendar_sync_lease_until")
   privacyConsents           PrivacyConsent[]
   profile                   AcademicProfile?
   alertPreference           AcademicAlertPreference?
@@ -123,6 +125,7 @@ model GoogleCalendarIntegration {
   id                   String    @id @default(uuid()) @db.Uuid
   userId               String    @unique @map("user_id") @db.Uuid
   calendarId           String    @unique @map("calendar_id") @db.VarChar(1024)
+  categoryCalendars    Json      @default("{}") @map("category_calendars")
   calendarName         String    @default("AcadIA · Calendário acadêmico") @map("calendar_name") @db.VarChar(160)
   lastSyncedAt         DateTime? @map("last_synced_at")
   lastSyncedEventCount Int       @default(0) @map("last_synced_event_count")

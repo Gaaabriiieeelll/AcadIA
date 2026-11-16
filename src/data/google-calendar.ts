@@ -1,7 +1,15 @@
 import "server-only";
 
+import { calendarApiRequest, calendarPath, GoogleCalendarError, syncCategorizedGoogleEvents, type GoogleCalendarResource, type DesiredGoogleEvent, type GoogleEventBody } from "@/lib/google-calendar-sync";
+
 import { inclusiveCalendarDays, taskCalendarPeriod } from "@/lib/google-calendar-period";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
+import {
+  GOOGLE_CALENDAR_CATEGORIES,
+  personalCalendarCategory,
+  readCategoryCalendarIds,
+  type GoogleCalendarCategory,
+} from "@/lib/google-calendar-categories";
 
 import {
   academicCalendarCategories,
@@ -17,11 +25,6 @@ import {
   grantedScopesIncludeGoogleCalendar,
 } from "@/lib/google-calendar-credentials";
 import {
-  GOOGLE_CALENDAR_EVENT_COLOR_IDS,
-  googleCalendarColorForAcademicEvent,
-  googleCalendarColorForPersonalEvent,
-} from "@/lib/google-calendar-event-colors";
-import {
   GOOGLE_CALENDAR_REAUTH_MESSAGE,
   googleCalendarStatusFromStoredState,
 } from "@/lib/google-calendar-status";
@@ -31,10 +34,8 @@ import type {
   GoogleCalendarSyncResult,
 } from "@/types/google-calendar";
 
-const GOOGLE_CALENDAR_API = "https://www.googleapis.com/calendar/v3";
-const GOOGLE_CALENDAR_NAME = "Conecta Campus · Calendário acadêmico";
+const GOOGLE_CALENDAR_NAME = GOOGLE_CALENDAR_CATEGORIES.institutional.name;
 const GOOGLE_CALENDAR_TIME_ZONE = "America/Sao_Paulo";
-const GOOGLE_CALENDAR_TIMEOUT_MS = 15_000;
 const MANAGED_PROPERTY = "acadiaManaged";
 const SOURCE_KEY_PROPERTY = "acadiaSourceKey";
 const SIGNATURE_PROPERTY = "acadiaSignature";
@@ -43,66 +44,6 @@ const TASK_PRIORITY_LABELS = {
   MEDIUM: "Média",
   HIGH: "Alta",
 } as const;
-
-type GoogleCalendarErrorCode =
-  | "AUTH_EXPIRED"
-  | "FORBIDDEN"
-  | "NOT_FOUND"
-  | "UPSTREAM_FAILURE";
-
-class GoogleCalendarError extends Error {
-  constructor(
-    public readonly code: GoogleCalendarErrorCode,
-    message?: string,
-  ) {
-    super(message ?? code);
-    this.name = "GoogleCalendarError";
-  }
-}
-
-type GoogleCalendarResource = {
-  id?: string;
-  summary?: string;
-};
-
-type GoogleCalendarEvent = {
-  id?: string;
-  extendedProperties?: {
-    private?: Record<string, string>;
-  };
-};
-
-type GoogleCalendarEventList = {
-  items?: GoogleCalendarEvent[];
-  nextPageToken?: string;
-};
-
-type EventDateTime = {
-  date?: string;
-  dateTime?: string;
-  timeZone?: string;
-};
-
-type GoogleEventBody = {
-  summary: string;
-  description: string;
-  colorId: string;
-  start: EventDateTime;
-  end: EventDateTime;
-  transparency: "opaque" | "transparent";
-  visibility: "private";
-  reminders: { useDefault: boolean };
-  recurrence?: string[];
-  extendedProperties: {
-    private: Record<string, string>;
-  };
-};
-
-type DesiredGoogleEvent = {
-  sourceKey: string;
-  signature: string;
-  body: GoogleEventBody;
-};
 
 function saoPauloDateKey(value: Date) {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -167,18 +108,21 @@ function eventPeriod(
 
 function desiredEvent(
   sourceKey: string,
-  values: Omit<GoogleEventBody, "extendedProperties">,
+  values: Omit<GoogleEventBody, "extendedProperties" | "colorId">,
+  category: GoogleCalendarCategory,
 ): DesiredGoogleEvent {
+  const coloredValues = { ...values, colorId: GOOGLE_CALENDAR_CATEGORIES[category].eventColorId };
   const signature = createHash("sha256")
-    .update(JSON.stringify(values), "utf8")
+    .update(JSON.stringify(coloredValues), "utf8")
     .digest("hex")
     .slice(0, 32);
 
   return {
+    category,
     sourceKey,
     signature,
     body: {
-      ...values,
+      ...coloredValues,
       extendedProperties: {
         private: {
           [MANAGED_PROPERTY]: "v1",
@@ -238,7 +182,6 @@ async function desiredGoogleEvents(userId: string) {
         `Fonte: ${academicCalendarMetadata.title}`,
         "Sincronizado pelo Conecta Campus.",
       ].join("\n"),
-      colorId: googleCalendarColorForAcademicEvent(event.category),
       ...eventPeriod(
         event.startDate,
         event.endDate ?? event.startDate,
@@ -249,6 +192,7 @@ async function desiredGoogleEvents(userId: string) {
       visibility: "private" as const,
       reminders: { useDefault: true },
     },
+    "institutional",
   ));
 
   const noticeDeadlines = getNoticeCalendarDeadlines().map((deadline) => desiredEvent(
@@ -261,12 +205,12 @@ async function desiredGoogleEvents(userId: string) {
         deadline.officialUrl,
         "Sincronizado pelo Conecta Campus.",
       ].join("\n"),
-      colorId: GOOGLE_CALENDAR_EVENT_COLOR_IDS.YELLOW,
       ...eventPeriod(deadline.startDate, deadline.endDate, null, null),
       transparency: "transparent" as const,
       visibility: "private" as const,
       reminders: { useDefault: true },
     },
+    "notices",
   ));
 
   const personal = personalEvents.map((event) => {
@@ -285,7 +229,6 @@ async function desiredGoogleEvents(userId: string) {
     return desiredEvent(`personal:${event.id}`, {
       summary: `${completed ? "âœ“ " : ""}${event.title}`,
       description: details.join("\n"),
-      colorId: googleCalendarColorForPersonalEvent(event.eventType),
       ...eventPeriod(startDate, endDate, event.startTime, event.endTime),
       recurrence: openEnded
         ? openCommitmentRecurrence(startDate, event.startTime, event.completedAt)
@@ -293,7 +236,7 @@ async function desiredGoogleEvents(userId: string) {
       transparency: "opaque" as const,
       visibility: "private" as const,
       reminders: { useDefault: true },
-    });
+    }, personalCalendarCategory(event.eventType));
   });
 
   const tasks = academicTasks.map((task) => {
@@ -318,61 +261,14 @@ async function desiredGoogleEvents(userId: string) {
     return desiredEvent(`task:${task.id}`, {
       summary: `${completed ? "✓ " : ""}[${classroom ? "Classroom" : "Atividade"}] ${task.title}`,
       description: details.join("\n"),
-      colorId: GOOGLE_CALENDAR_EVENT_COLOR_IDS.RED,
       ...taskCalendarPeriod(task.startDate?.toISOString().slice(0, 10) ?? null, dueDate, task.dueTime),
       transparency: "transparent" as const,
       visibility: "private" as const,
       reminders: { useDefault: !completed },
-    });
+    }, "activities");
   });
 
   return [...official, ...noticeDeadlines, ...personal, ...tasks];
-}
-
-function calendarErrorCode(status: number): GoogleCalendarErrorCode {
-  if (status === 401) return "AUTH_EXPIRED";
-  if (status === 403) return "FORBIDDEN";
-  if (status === 404 || status === 410) return "NOT_FOUND";
-  return "UPSTREAM_FAILURE";
-}
-
-async function calendarApiRequest<T>(
-  path: string,
-  accessToken: string,
-  init: RequestInit = {},
-): Promise<T> {
-  let response: Response;
-  try {
-    response = await fetch(`${GOOGLE_CALENDAR_API}${path}`, {
-      ...init,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        ...(init.body ? { "Content-Type": "application/json" } : {}),
-        ...init.headers,
-      },
-      cache: "no-store",
-      signal: AbortSignal.timeout(GOOGLE_CALENDAR_TIMEOUT_MS),
-    });
-  } catch {
-    throw new GoogleCalendarError("UPSTREAM_FAILURE");
-  }
-
-  if (!response.ok) {
-    const payload = await response.json().catch(() => null) as {
-      error?: { message?: string };
-    } | null;
-    throw new GoogleCalendarError(
-      calendarErrorCode(response.status),
-      payload?.error?.message?.slice(0, 500),
-    );
-  }
-
-  if (response.status === 204) return undefined as T;
-  return response.json() as Promise<T>;
-}
-
-function calendarPath(calendarId: string, suffix = "") {
-  return `/calendars/${encodeURIComponent(calendarId)}${suffix}`;
 }
 
 async function createGoogleCalendar(userId: string, accessToken: string) {
@@ -383,7 +279,7 @@ async function createGoogleCalendar(userId: string, accessToken: string) {
       method: "POST",
       body: JSON.stringify({
         summary: GOOGLE_CALENDAR_NAME,
-        description: "Eventos institucionais, pessoais e atividades sincronizados pelo Conecta Campus.",
+        description: "Calendário institucional sincronizado pelo Conecta Campus.",
         timeZone: GOOGLE_CALENDAR_TIME_ZONE,
       }),
     },
@@ -419,7 +315,7 @@ async function ensureGoogleCalendar(userId: string, accessToken: string) {
         accessToken,
       );
       // Rename only the original app label; preserve names chosen by the user.
-      if (calendar.summary === "AcadIA · Calendário acadêmico") {
+      if (calendar.summary === "AcadIA · Calendário acadêmico" || calendar.summary === "Conecta Campus · Calendário acadêmico") {
         await calendarApiRequest<GoogleCalendarResource>(
           calendarPath(existing.calendarId),
           accessToken,
@@ -442,127 +338,65 @@ async function ensureGoogleCalendar(userId: string, accessToken: string) {
       if (!(error instanceof GoogleCalendarError) || error.code !== "NOT_FOUND") {
         throw error;
       }
-      await db.googleCalendarIntegration.delete({ where: { id: existing.id } });
+      // Keep the other category IDs when only the institutional calendar was removed.
     }
   }
 
   return createGoogleCalendar(userId, accessToken);
 }
 
-async function listManagedGoogleEvents(calendarId: string, accessToken: string) {
-  const events: GoogleCalendarEvent[] = [];
-  let pageToken: string | undefined;
-
-  do {
-    const parameters = new URLSearchParams({
-      maxResults: "2500",
-      privateExtendedProperty: `${MANAGED_PROPERTY}=v1`,
-      showDeleted: "false",
-    });
-    if (pageToken) parameters.set("pageToken", pageToken);
-    const page = await calendarApiRequest<GoogleCalendarEventList>(
-      `${calendarPath(calendarId, "/events")}?${parameters}`,
-      accessToken,
-    );
-    events.push(...(page.items ?? []));
-    pageToken = page.nextPageToken;
-  } while (pageToken);
-
-  return events;
-}
-
-async function runWithConcurrency(tasks: Array<() => Promise<void>>, concurrency = 6) {
-  let nextIndex = 0;
-  await Promise.all(Array.from({ length: Math.min(concurrency, tasks.length) }, async () => {
-    while (nextIndex < tasks.length) {
-      const task = tasks[nextIndex];
-      nextIndex += 1;
-      await task();
-    }
-  }));
-}
-
-async function reconcileGoogleEvents(
-  calendarId: string,
+async function ensureCategoryCalendars(
+  integration: { id: string; calendarId: string },
   accessToken: string,
-  desired: DesiredGoogleEvent[],
 ) {
-  const existing = await listManagedGoogleEvents(calendarId, accessToken);
-  const existingBySource = new Map<string, GoogleCalendarEvent>();
-  const staleEvents: GoogleCalendarEvent[] = [];
-
-  for (const event of existing) {
-    const sourceKey = event.extendedProperties?.private?.[SOURCE_KEY_PROPERTY];
-    if (!sourceKey || existingBySource.has(sourceKey)) {
-      staleEvents.push(event);
-    } else {
-      existingBySource.set(sourceKey, event);
-    }
+  const stored = await db.googleCalendarIntegration.findUniqueOrThrow({
+    where: { id: integration.id }, select: { categoryCalendars: true },
+  });
+  const ids = readCategoryCalendarIds(stored.categoryCalendars);
+  const metadata = stored.categoryCalendars as Record<string, unknown>;
+  const pendingColors = new Set<GoogleCalendarCategory>(
+    Array.isArray(metadata._pendingColors)
+      ? metadata._pendingColors.filter((key): key is GoogleCalendarCategory => typeof key === "string" && key in GOOGLE_CALENDAR_CATEGORIES)
+      : [],
+  );
+  const persistIds = () => db.googleCalendarIntegration.update({
+    where: { id: integration.id }, data: { categoryCalendars: { ...ids, _pendingColors: [...pendingColors] } },
+  });
+  if (ids.institutional !== integration.calendarId) {
+    pendingColors.add("institutional");
   }
-
-  const desiredKeys = new Set(desired.map((event) => event.sourceKey));
-  staleEvents.push(...[...existingBySource.entries()]
-    .filter(([sourceKey]) => !desiredKeys.has(sourceKey))
-    .map(([, event]) => event));
-
-  let createdCount = 0;
-  let updatedCount = 0;
-  let deletedCount = 0;
-  let unchangedCount = 0;
-  const tasks: Array<() => Promise<void>> = [];
-
-  for (const event of desired) {
-    const stored = existingBySource.get(event.sourceKey);
-    if (!stored?.id) {
-      tasks.push(async () => {
-        await calendarApiRequest(
-          calendarPath(calendarId, "/events"),
-          accessToken,
-          { method: "POST", body: JSON.stringify(event.body) },
-        );
-        createdCount += 1;
-      });
-      continue;
+  ids.institutional = integration.calendarId;
+  for (const category of Object.keys(GOOGLE_CALENDAR_CATEGORIES) as GoogleCalendarCategory[]) {
+    if (category === "institutional") continue;
+    if (ids[category]) {
+      try {
+        await calendarApiRequest(calendarPath(ids[category]!), accessToken);
+        continue;
+      } catch (error) {
+        if (!(error instanceof GoogleCalendarError) || error.code !== "NOT_FOUND") throw error;
+      }
     }
-
-    const storedSignature = stored.extendedProperties?.private?.[SIGNATURE_PROPERTY];
-    if (storedSignature === event.signature) {
-      unchangedCount += 1;
-      continue;
-    }
-
-    tasks.push(async () => {
-      await calendarApiRequest(
-        calendarPath(calendarId, `/events/${encodeURIComponent(stored.id!)}`),
-        accessToken,
-        {
-          method: "PATCH",
-          body: JSON.stringify({
-            ...event.body,
-            // Explicitly clear the old representation when switching to/from all-day.
-            start: { date: null, dateTime: null, timeZone: null, ...event.body.start },
-            end: { date: null, dateTime: null, timeZone: null, ...event.body.end },
-          }),
-        },
-      );
-      updatedCount += 1;
+    const settings = GOOGLE_CALENDAR_CATEGORIES[category];
+    const calendar = await calendarApiRequest<GoogleCalendarResource>("/calendars", accessToken, {
+      method: "POST",
+      body: JSON.stringify({ summary: settings.name, description: "Sincronizado pelo Conecta Campus.", timeZone: GOOGLE_CALENDAR_TIME_ZONE }),
     });
+    if (!calendar.id) throw new GoogleCalendarError("UPSTREAM_FAILURE");
+    ids[category] = calendar.id;
+    pendingColors.add(category);
+    // Persist each ID immediately so a later failed request can be resumed.
+    await persistIds();
   }
-
-  for (const event of staleEvents) {
-    if (!event.id) continue;
-    tasks.push(async () => {
-      await calendarApiRequest(
-        calendarPath(calendarId, `/events/${encodeURIComponent(event.id!)}`),
-        accessToken,
-        { method: "DELETE" },
-      );
-      deletedCount += 1;
+  await persistIds();
+  for (const category of pendingColors) {
+    await calendarApiRequest(`/users/me/calendarList/${encodeURIComponent(ids[category]!)}?colorRgbFormat=true`, accessToken, {
+      method: "PATCH",
+      body: JSON.stringify({ backgroundColor: GOOGLE_CALENDAR_CATEGORIES[category].color, foregroundColor: "#ffffff" }),
     });
+    pendingColors.delete(category);
+    await persistIds();
   }
-
-  await runWithConcurrency(tasks);
-  return { createdCount, updatedCount, deletedCount, unchangedCount };
+  return ids as Record<GoogleCalendarCategory, string>;
 }
 
 function permissionRequiredResult(
@@ -684,11 +518,22 @@ export async function syncGoogleCalendarForGoogleSubject(
   }
 
   let integration: { id: string; calendarId: string; calendarName: string } | null = null;
+  const leaseToken = randomUUID();
+  let leaseAcquired = false;
   try {
+    const lease = await db.user.updateMany({
+      where: { id: user.id, OR: [{ calendarSyncLeaseUntil: null }, { calendarSyncLeaseUntil: { lt: new Date() } }] },
+      data: { calendarSyncLeaseToken: leaseToken, calendarSyncLeaseUntil: new Date(Date.now() + 15 * 60_000) },
+    });
+    if (!lease.count) {
+      return { ...permissionRequiredResult(), status: "error", message: "Já existe uma sincronização em andamento. Aguarde e atualize a página." };
+    }
+    leaseAcquired = true;
     integration = await ensureGoogleCalendar(user.id, accessToken);
+    const calendarIds = await ensureCategoryCalendars(integration, accessToken);
     const desired = await desiredGoogleEvents(user.id);
-    const counts = await reconcileGoogleEvents(
-      integration.calendarId,
+    const counts = await syncCategorizedGoogleEvents(
+      calendarIds,
       accessToken,
       desired,
     );
@@ -705,7 +550,7 @@ export async function syncGoogleCalendarForGoogleSubject(
 
     return {
       status: "success",
-      message: `${desired.length} evento(s) sincronizado(s) com o Google Agenda.`,
+      message: `${desired.length} evento(s) sincronizado(s) em 5 agendas. No Google Agenda, marque ou desmarque as agendas do Conecta Campus para filtrar.`,
       calendarName: integration.calendarName,
       eventCount: desired.length,
       ...counts,
@@ -733,6 +578,13 @@ export async function syncGoogleCalendarForGoogleSubject(
       deletedCount: 0,
       unchangedCount: 0,
     };
+  } finally {
+    if (leaseAcquired) {
+      await db.user.updateMany({
+        where: { id: user.id, calendarSyncLeaseToken: leaseToken },
+        data: { calendarSyncLeaseToken: null, calendarSyncLeaseUntil: null },
+      });
+    }
   }
 }
 

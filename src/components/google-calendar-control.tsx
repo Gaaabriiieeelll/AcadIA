@@ -51,7 +51,7 @@ export function GoogleCalendarControl({
       <div className={styles.googleCalendarCopy}>
         <strong>
           {status.status === "connected" && !needsPermission
-            ? `${status.calendarName} conectado`
+            ? "Agendas do Conecta Campus conectadas"
             : "Levar o Conecta Campus para o Google Agenda"}
         </strong>
         <p>
@@ -61,10 +61,12 @@ export function GoogleCalendarControl({
               ? status.lastError
               : status.status === "connected"
                 ? `${status.eventCount} evento(s) no calendário de ${accountEmail ?? "sua conta institucional"}${lastSync ? ` · atualizado em ${lastSync}` : ""}.`
-                : `Crie um calendário privado do Conecta Campus em ${accountEmail ?? "sua conta institucional"}.`}
+                : `Crie agendas privadas do Conecta Campus em ${accountEmail ?? "sua conta institucional"}.`}
         </p>
         <small>
-          Inclui planejamento anual, eventos pessoais e atividades da Agenda e do Classroom.
+          Ao sincronizar, os eventos são separados em Provas, Atividades, Editais, Calendário institucional e Compromissos pessoais.
+          No Google Agenda, marque ou desmarque cada agenda para escolher o que aparece.
+          Itens do Classroom ficam em Atividades; compromissos cadastrados como Prova ficam em Provas.
         </small>
         {state.status === "idle" && connectionMessage ? (
           <p className={styles.googleCalendarFeedback}>{connectionMessage}</p>
@@ -90,7 +92,7 @@ export function GoogleCalendarControl({
               {pending
                 ? "Sincronizando…"
                 : status.status === "not-connected"
-                  ? "Criar calendário"
+                  ? "Criar agendas"
                   : "Sincronizar agora"}
             </button>
           </form>
