@@ -1,6 +1,6 @@
 import "server-only";
 
-import { calendarApiRequest, calendarPath, GoogleCalendarError, syncCategorizedGoogleEvents, type GoogleCalendarResource, type DesiredGoogleEvent, type GoogleEventBody } from "@/lib/google-calendar-sync";
+import { calendarApiRequest, calendarPath, GoogleCalendarError, initializeCalendarColor, syncCategorizedGoogleEvents, type GoogleCalendarResource, type DesiredGoogleEvent, type GoogleEventBody } from "@/lib/google-calendar-sync";
 
 import { inclusiveCalendarDays, taskCalendarPeriod } from "@/lib/google-calendar-period";
 import { createHash, randomUUID } from "node:crypto";
@@ -389,10 +389,7 @@ async function ensureCategoryCalendars(
   }
   await persistIds();
   for (const category of pendingColors) {
-    await calendarApiRequest(`/users/me/calendarList/${encodeURIComponent(ids[category]!)}?colorRgbFormat=true`, accessToken, {
-      method: "PATCH",
-      body: JSON.stringify({ backgroundColor: GOOGLE_CALENDAR_CATEGORIES[category].color, foregroundColor: "#ffffff" }),
-    });
+    if (!await initializeCalendarColor(ids[category]!, GOOGLE_CALENDAR_CATEGORIES[category].color, accessToken)) continue;
     pendingColors.delete(category);
     await persistIds();
   }

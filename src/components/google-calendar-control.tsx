@@ -86,17 +86,20 @@ export function GoogleCalendarControl({
           <a className={styles.googleCalendarButton} href="/api/classroom/connect?target=calendar">
             {status.accountEmail ? "Autorizar novamente" : "Conectar Google Agenda"}
           </a>
-        ) : (
+        ) : null}
+        {!needsPermission || status.accountEmail ? (
           <form action={action}>
             <button className={styles.googleCalendarButton} disabled={pending} type="submit">
               {pending
                 ? "Sincronizando…"
-                : status.status === "not-connected"
+                : needsPermission
+                  ? "Tentar sincronizar"
+                  : status.status === "not-connected"
                   ? "Criar agendas"
                   : "Sincronizar agora"}
             </button>
           </form>
-        )}
+        ) : null}
       </div>
     </aside>
   );

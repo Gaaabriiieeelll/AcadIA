@@ -1,9 +1,22 @@
 import assert from "node:assert/strict";
 import test, { type TestContext } from "node:test";
 import { GOOGLE_CALENDAR_CATEGORIES, personalCalendarCategory, readCategoryCalendarIds } from "./google-calendar-categories";
-import { syncCategorizedGoogleEvents, type DesiredGoogleEvent } from "./google-calendar-sync";
+import { initializeCalendarColor, syncCategorizedGoogleEvents, type DesiredGoogleEvent } from "./google-calendar-sync";
 
 const ids = { institutional: "legacy", exams: "exams", activities: "activities", notices: "notices", personal: "personal" };
+
+test("calendar list color failures never block event synchronization or change visibility", async (t) => {
+  let status = 401;
+  t.mock.method(globalThis, "fetch", async (_url: string, init: RequestInit) => {
+    assert.deepEqual(JSON.parse(init.body as string), { backgroundColor: "#3f51b5", foregroundColor: "#ffffff" });
+    return Response.json({ error: { message: "Invalid Credentials" } }, { status });
+  });
+  assert.equal(await initializeCalendarColor("exams", "#3f51b5", "test"), true);
+  status = 403;
+  assert.equal(await initializeCalendarColor("exams", "#3f51b5", "test"), true);
+  status = 503;
+  assert.equal(await initializeCalendarColor("exams", "#3f51b5", "test"), false);
+});
 function desired(category: DesiredGoogleEvent["category"] = "activities"): DesiredGoogleEvent {
   return { category, sourceKey: "task:1", signature: "new", body: {
     summary: "Atividade", description: "Prazo final", colorId: GOOGLE_CALENDAR_CATEGORIES[category].eventColorId,

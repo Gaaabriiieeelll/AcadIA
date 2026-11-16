@@ -102,6 +102,8 @@ ao endpoint OAuth expiram após 12 segundos para não prender a navegação.
 
 ## Google Agenda em produção
 
+As cores dos eventos são aplicadas por categoria. A cor da agenda na lista lateral é opcional: algumas contas recusam `calendarList.patch` com `calendar.app.created`. Essa recusa não interrompe a sincronização nem solicita permissões adicionais; o usuário pode ajustar a cor da agenda no próprio Google.
+
 A sincronização distribui os eventos em cinco agendas privadas: Provas (azul), Atividades (verde), Editais (laranja), Calendário institucional (roxo) e Compromissos pessoais (cinza). O estudante pode mostrar ou ocultar cada agenda no Google Agenda. Eventos pessoais do tipo EXAM vão para Provas; ASSIGNMENT e PRESENTATION vão para Atividades; os demais vão para Compromissos pessoais. Tarefas manuais e do Classroom ficam em Atividades, sem inferir provas pelo título. As datas institucionais, inclusive períodos de avaliação, permanecem no calendário institucional.
 
 A migração `20261116170000_calendar_categories` adiciona os IDs das agendas e uma trava temporária por usuário para impedir sincronizações simultâneas. A agenda antiga é reutilizada para eventos institucionais, preservando nomes personalizados. A primeira sincronização confirma as cópias nas agendas de destino antes de limpar os eventos gerenciados antigos. Eventos criados manualmente pelo usuário no Google não são removidos. Os IDs de eventos são estáveis nas novas agendas e as tentativas após falha podem ser retomadas. As cores das agendas são inicializadas uma vez, sem reativar agendas ocultas pelo usuário. O escopo continua `calendar.app.created`.

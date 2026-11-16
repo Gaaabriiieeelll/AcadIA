@@ -118,6 +118,20 @@ export function calendarPath(calendarId: string, suffix = "") {
   return `/calendars/${encodeURIComponent(calendarId)}${suffix}`;
 }
 
+export async function initializeCalendarColor(calendarId: string, color: string, accessToken: string) {
+  try {
+    await calendarApiRequest(`/users/me/calendarList/${encodeURIComponent(calendarId)}?colorRgbFormat=true`, accessToken, {
+      method: "PATCH", body: JSON.stringify({ backgroundColor: color, foregroundColor: "#ffffff" }),
+    });
+    return true;
+  } catch (error) {
+    // Google may reject calendarList styling under app.created even when event
+    // writes work. Do not block sync or demand broader authorization for colors.
+    // Stop retrying denied styling; retry transient failures on a later sync.
+    return error instanceof GoogleCalendarError && (error.code === "AUTH_EXPIRED" || error.code === "FORBIDDEN");
+  }
+}
+
 async function listManagedGoogleEvents(calendarId: string, accessToken: string) {
   const events: GoogleCalendarEvent[] = [];
   let pageToken: string | undefined;
