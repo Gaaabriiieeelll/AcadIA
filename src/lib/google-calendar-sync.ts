@@ -12,6 +12,7 @@ type GoogleCalendarErrorCode =
   | "FORBIDDEN"
   | "NOT_FOUND"
   | "CONFLICT"
+  | "RATE_LIMITED"
   | "UPSTREAM_FAILURE";
 
 export class GoogleCalendarError extends Error {
@@ -83,35 +84,47 @@ export async function calendarApiRequest<T>(
   accessToken: string,
   init: RequestInit = {},
 ): Promise<T> {
-  let response: Response;
-  try {
-    response = await fetch(`${GOOGLE_CALENDAR_API}${path}`, {
-      ...init,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        ...(init.body ? { "Content-Type": "application/json" } : {}),
-        ...init.headers,
-      },
-      cache: "no-store",
-      signal: AbortSignal.timeout(GOOGLE_CALENDAR_TIMEOUT_MS),
-    });
-  } catch {
-    throw new GoogleCalendarError("UPSTREAM_FAILURE");
-  }
+  for (let attempt = 0; ; attempt += 1) {
+    let response: Response;
+    try {
+      response = await fetch(`${GOOGLE_CALENDAR_API}${path}`, {
+        ...init,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          ...(init.body ? { "Content-Type": "application/json" } : {}),
+          ...init.headers,
+        },
+        cache: "no-store",
+        signal: AbortSignal.timeout(GOOGLE_CALENDAR_TIMEOUT_MS),
+      });
+    } catch {
+      throw new GoogleCalendarError("UPSTREAM_FAILURE");
+    }
 
-  if (!response.ok) {
-    const payload = await response.json().catch(() => null) as {
-      error?: { message?: string };
-    } | null;
-    throw new GoogleCalendarError(
-      calendarErrorCode(response.status),
-      payload?.error?.message?.slice(0, 500),
-      `${init.method ?? "GET"} ${path.split("?")[0].replace(/(\/calendars\/|\/calendarList\/)[^/]+/g, "$1:id").replace(/(\/events\/)[^/]+/g, "$1:id")}`,
-    );
-  }
+    if (!response.ok) {
+      const payload = await response.json().catch(() => null) as {
+        error?: { message?: string; errors?: Array<{ reason?: string }> };
+      } | null;
+      const rateLimited = response.status === 429 || (response.status === 403 && (
+        /rate limit/i.test(payload?.error?.message ?? "")
+        || payload?.error?.errors?.some(({ reason }) => reason === "rateLimitExceeded" || reason === "userRateLimitExceeded")
+      ));
+      if (rateLimited && attempt < 5) {
+        const retryAfter = Number(response.headers.get("retry-after") ?? 0) * 1000;
+        const delay = Math.min(30_000, Math.max(retryAfter, 1000 * 2 ** attempt + Math.random() * 250));
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        continue;
+      }
+      throw new GoogleCalendarError(
+        rateLimited ? "RATE_LIMITED" : calendarErrorCode(response.status),
+        payload?.error?.message?.slice(0, 500),
+        `${init.method ?? "GET"} ${path.split("?")[0].replace(/(\/calendars\/|\/calendarList\/)[^/]+/g, "$1:id").replace(/(\/events\/)[^/]+/g, "$1:id")}`,
+      );
+    }
 
-  if (response.status === 204) return undefined as T;
-  return response.json() as Promise<T>;
+    if (response.status === 204) return undefined as T;
+    return response.json() as Promise<T>;
+  }
 }
 
 export function calendarPath(calendarId: string, suffix = "") {
@@ -154,7 +167,7 @@ async function listManagedGoogleEvents(calendarId: string, accessToken: string) 
   return events;
 }
 
-async function runWithConcurrency(tasks: Array<() => Promise<void>>, concurrency = 6) {
+async function runWithConcurrency(tasks: Array<() => Promise<void>>, concurrency = 2) {
   let nextIndex = 0;
   const results = await Promise.allSettled(Array.from({ length: Math.min(concurrency, tasks.length) }, async () => {
     while (nextIndex < tasks.length) {

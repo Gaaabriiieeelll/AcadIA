@@ -413,6 +413,7 @@ function permissionRequiredResult(
 
 function calendarErrorMessage(error: unknown) {
   if (error instanceof GoogleCalendarError) {
+    if (error.code === "RATE_LIMITED") return "O Google limitou temporariamente as gravações. Aguarde alguns minutos e sincronize novamente; o progresso foi preservado.";
     if (error.code === "AUTH_EXPIRED") return GOOGLE_CALENDAR_REAUTH_MESSAGE;
     if (error.code === "FORBIDDEN") {
       const googleMessage = error.message.toLocaleLowerCase("en-US");

@@ -1,9 +1,21 @@
 import assert from "node:assert/strict";
 import test, { type TestContext } from "node:test";
 import { GOOGLE_CALENDAR_CATEGORIES, personalCalendarCategory, readCategoryCalendarIds } from "./google-calendar-categories";
-import { initializeCalendarColor, syncCategorizedGoogleEvents, type DesiredGoogleEvent } from "./google-calendar-sync";
+import { calendarApiRequest, initializeCalendarColor, syncCategorizedGoogleEvents, type DesiredGoogleEvent } from "./google-calendar-sync";
 
 const ids = { institutional: "legacy", exams: "exams", activities: "activities", notices: "notices", personal: "personal" };
+
+test("retries Google rate limits on 403 and 429 without changing the event request", async (t) => {
+  let calls = 0;
+  t.mock.method(globalThis, "fetch", async (_url: string, init: RequestInit) => {
+    assert.equal(init.body, '{"id":"stable"}');
+    calls += 1;
+    if (calls < 3) return Response.json({ error: { errors: [{ reason: "rateLimitExceeded" }] } }, { status: calls === 1 ? 403 : 429 });
+    return Response.json({ id: "stable" });
+  });
+  assert.deepEqual(await calendarApiRequest("/calendars/test/events", "test", { method: "POST", body: '{"id":"stable"}' }), { id: "stable" });
+  assert.equal(calls, 3);
+});
 
 test("calendar list color failures never block event synchronization or change visibility", async (t) => {
   let status = 401;
