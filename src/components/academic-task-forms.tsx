@@ -90,7 +90,14 @@ export function AcademicTaskCreateForm({
         </label>
 
         <label className="profile-field">
-          <span>Data</span>
+          <span>Início <small>(opcional)</small></span>
+          <input name="startDate" type="date" aria-invalid={Boolean(state.fieldErrors?.startDate)} />
+          <small>Informe quando a atividade fica disponível para aparecer durante todo o período no Google Agenda.</small>
+          <FieldError field="startDate" state={state} />
+        </label>
+
+        <label className="profile-field">
+          <span>Prazo final</span>
           <input
             aria-invalid={Boolean(state.fieldErrors?.dueDate)}
             name="dueDate"
@@ -101,7 +108,7 @@ export function AcademicTaskCreateForm({
         </label>
 
         <label className="profile-field">
-          <span>Horário <small>(opcional)</small></span>
+          <span>Horário de encerramento <small>(opcional)</small></span>
           <input
             aria-invalid={Boolean(state.fieldErrors?.dueTime)}
             name="dueTime"

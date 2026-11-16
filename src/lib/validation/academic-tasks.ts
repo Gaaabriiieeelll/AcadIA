@@ -21,6 +21,10 @@ export const academicTaskSchema = z.object({
     .trim()
     .max(500, "Descrição deve ter no máximo 500 caracteres.")
     .transform((value) => value || null),
+  startDate: z.string().trim().optional().default("").refine(
+    (value) => value === "" || (/^\d{4}-\d{2}-\d{2}$/.test(value) && isValidDateKey(value)),
+    "Informe uma data de início válida.",
+  ).transform((value) => value || null),
   dueDate: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Informe uma data válida.")
@@ -34,6 +38,8 @@ export const academicTaskSchema = z.object({
     )
     .transform((value) => value || null),
   priority: z.enum(TASK_PRIORITIES, { error: "Selecione uma prioridade válida." }),
+}).refine((value) => !value.startDate || value.startDate <= value.dueDate, {
+  path: ["startDate"], message: "O início deve ser anterior ou igual ao prazo final.",
 });
 
 export const taskIdSchema = z.string().uuid();

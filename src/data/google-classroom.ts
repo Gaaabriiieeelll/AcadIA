@@ -6,6 +6,7 @@ import {
   getGoogleClassroomAccessToken,
   grantedScopesIncludeClassroom,
 } from "@/lib/google-classroom-credentials";
+import { classroomTaskStart } from "@/lib/google-calendar-period";
 import { db } from "@/lib/db";
 import { GOOGLE_CLASSROOM_SCOPES } from "@/lib/google-classroom-scopes";
 import type {
@@ -55,6 +56,8 @@ type CurrentSubject = {
 };
 
 type GoogleCourseWork = {
+  creationTime?: string;
+  scheduledTime?: string;
   id: string;
   title: string;
   description?: string;
@@ -589,6 +592,7 @@ export async function syncCurrentClassroomTasks(
             courseWorkId: item.id,
             title: item.title.trim().slice(0, 140),
             description: item.description?.trim().slice(0, 500) || null,
+            ...classroomTaskStart(item, deadline.dateKey),
             dueDate: new Date(`${deadline.dateKey}T12:00:00.000Z`),
             dueDateKey: deadline.dateKey,
             dueTime: deadline.time,
@@ -619,6 +623,8 @@ export async function syncCurrentClassroomTasks(
             subjectId: item.subjectId,
             title: item.title,
             description: item.description,
+            startDate: item.startDate,
+            startDateSource: item.startDateSource,
             dueDate: item.dueDate,
             dueTime: item.dueTime,
             priority: item.priority,
@@ -632,6 +638,8 @@ export async function syncCurrentClassroomTasks(
           update: {
             title: item.title,
             description: item.description,
+            startDate: item.startDate,
+            startDateSource: item.startDateSource,
             dueDate: item.dueDate,
             dueTime: item.dueTime,
             priority: item.priority,

@@ -6,6 +6,7 @@ export type AcademicTaskFormValues = {
   subjectId: string;
   title: string;
   description: string | null;
+  startDate?: string | null;
   dueDate: string;
   dueTime: string | null;
   priority: TaskPriorityValue;
@@ -15,6 +16,7 @@ export type AcademicTaskFormField =
   | "subjectId"
   | "title"
   | "description"
+  | "startDate"
   | "dueDate"
   | "dueTime"
   | "priority";
@@ -33,6 +35,7 @@ export type AcademicTaskDTO = {
   id: string;
   title: string;
   description: string | null;
+  startDate?: string | null;
   dueDate: string;
   dueTime: string | null;
   priority: TaskPriorityValue;

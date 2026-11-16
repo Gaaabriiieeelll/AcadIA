@@ -467,6 +467,8 @@ model AcademicTask {
   subjectId             String             @map("subject_id") @db.Uuid
   title                 String             @db.VarChar(140)
   description           String?            @db.VarChar(500)
+  startDate             DateTime?          @map("start_date") @db.Date
+  startDateSource       String?            @map("start_date_source") @db.VarChar(24)
   dueDate               DateTime           @map("due_date") @db.Date
   dueTime               String?            @map("due_time") @db.VarChar(5)
   priority              TaskPriority       @default(MEDIUM)

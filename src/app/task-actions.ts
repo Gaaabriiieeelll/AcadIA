@@ -56,6 +56,7 @@ export async function createAcademicTaskAction(
     subjectId: formData.get("subjectId"),
     title: formData.get("title"),
     description: formData.get("description"),
+    startDate: formData.get("startDate") ?? "",
     dueDate: formData.get("dueDate"),
     dueTime: formData.get("dueTime"),
     priority: formData.get("priority"),

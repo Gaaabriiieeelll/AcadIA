@@ -4,6 +4,8 @@ Plataforma acadêmica inteligente em desenvolvimento para estudantes do IFPB Cam
 
 ## Estado atual
 
+As atividades podem ter uma data de início opcional, além do prazo final. Com início informado, a sincronização com Google Agenda exibe todo o período como um evento de dia inteiro, incluindo a data final; o horário de entrega continua na descrição. Sem início, permanece apenas o prazo pontual. No Classroom, a importação prioriza a publicação agendada e usa a criação como referência identificada quando não há agendamento (a criação pode anteceder a publicação). Editais e eventos pessoais mantêm os intervalos cadastrados. Aplicar a migração `20261116150000_task_start_date` antes de executar esta versão; atualizar o Classroom e sincronizar a Agenda para atualizar os eventos já importados.
+
 O acesso com Google OAuth solicita apenas identidade básica: nome, foto e e-mail. Permissões do Google Classroom não fazem parte desta etapa.
 
 Depois do primeiro acesso, o estudante completa o perfil acadêmico com matrícula, campus, curso, período/ano e divisão da turma (A, B ou C). Esses dados são persistidos no Prisma Postgres e a divisão filtra a grade e os professores públicos do hIFPB. Nome, foto e e-mail permanecem somente na sessão, que expira em até 4 horas.

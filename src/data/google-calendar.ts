@@ -1,5 +1,6 @@
 import "server-only";
 
+import { inclusiveCalendarDays, taskCalendarPeriod } from "@/lib/google-calendar-period";
 import { createHash } from "node:crypto";
 
 import {
@@ -103,12 +104,6 @@ type DesiredGoogleEvent = {
   body: GoogleEventBody;
 };
 
-function addDaysToDateKey(dateKey: string, amount: number) {
-  const date = new Date(`${dateKey}T12:00:00.000Z`);
-  date.setUTCDate(date.getUTCDate() + amount);
-  return date.toISOString().slice(0, 10);
-}
-
 function saoPauloDateKey(value: Date) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     day: "2-digit",
@@ -149,10 +144,7 @@ function eventPeriod(
   endTime: string | null,
 ) {
   if (!startTime) {
-    return {
-      start: { date: startDate },
-      end: { date: addDaysToDateKey(endDate, 1) },
-    };
+    return inclusiveCalendarDays(startDate, endDate);
   }
 
   const calculatedEnd = endTime
@@ -223,6 +215,8 @@ async function desiredGoogleEvents(userId: string) {
         id: true,
         title: true,
         description: true,
+        startDate: true,
+        startDateSource: true,
         dueDate: true,
         dueTime: true,
         priority: true,
@@ -311,6 +305,8 @@ async function desiredGoogleEvents(userId: string) {
       : "Pendente";
     const details = [
       `Status: ${statusLabel}`,
+      task.startDate ? `Início: ${task.startDate.toISOString().slice(0, 10)}${task.startDateSource === "CREATED" ? " (referência: criação no Classroom; pode anteceder a publicação)" : ""}` : null,
+      `Prazo final: ${dueDate}${task.dueTime ? ` às ${task.dueTime} (America/Sao_Paulo)` : ""}`,
       `Origem: ${classroom ? "Google Classroom" : "Agenda do Conecta Campus"}`,
       `Disciplina: ${task.subject.name}`,
       `Prioridade: ${TASK_PRIORITY_LABELS[task.priority]}`,
@@ -323,7 +319,7 @@ async function desiredGoogleEvents(userId: string) {
       summary: `${completed ? "✓ " : ""}[${classroom ? "Classroom" : "Atividade"}] ${task.title}`,
       description: details.join("\n"),
       colorId: GOOGLE_CALENDAR_EVENT_COLOR_IDS.RED,
-      ...eventPeriod(dueDate, dueDate, task.dueTime, null),
+      ...taskCalendarPeriod(task.startDate?.toISOString().slice(0, 10) ?? null, dueDate, task.dueTime),
       transparency: "transparent" as const,
       visibility: "private" as const,
       reminders: { useDefault: !completed },
@@ -539,7 +535,15 @@ async function reconcileGoogleEvents(
       await calendarApiRequest(
         calendarPath(calendarId, `/events/${encodeURIComponent(stored.id!)}`),
         accessToken,
-        { method: "PATCH", body: JSON.stringify(event.body) },
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            ...event.body,
+            // Explicitly clear the old representation when switching to/from all-day.
+            start: { date: null, dateTime: null, timeZone: null, ...event.body.start },
+            end: { date: null, dateTime: null, timeZone: null, ...event.body.end },
+          }),
+        },
       );
       updatedCount += 1;
     });

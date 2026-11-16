@@ -148,7 +148,7 @@ function TaskList({ tasks, title }: { tasks: AcademicTaskDTO[]; title: string })
                   <rect x="3.5" y="5.5" width="17" height="15" rx="2" />
                   <path d="M7.5 3v5M16.5 3v5M3.5 10h17" />
                 </svg>
-                <span>{formatDate(task.dueDate)}{task.dueTime ? ` às ${task.dueTime}` : ""}</span>
+                <span>{task.startDate && task.startDate !== task.dueDate ? `${formatDate(task.startDate)} a ` : ""}{formatDate(task.dueDate)}{task.dueTime ? ` às ${task.dueTime}` : ""}</span>
               </div>
             </div>
             <div className="task-card-actions">
