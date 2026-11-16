@@ -256,14 +256,14 @@ function toClassroomDisplayEvents(
     .filter((task) => (
       task.source === "GOOGLE_CLASSROOM"
       && task.dueDate >= rangeStart
-      && task.dueDate <= rangeEnd
+      && (task.startDate ?? task.dueDate) <= rangeEnd
     ))
     .map((task) => ({
       id: `classroom-${task.id}`,
       source: "classroom" as const,
       title: task.title,
       description: task.description,
-      startDate: task.dueDate,
+      startDate: task.startDate ?? task.dueDate,
       endDate: task.dueDate,
       startTime: task.dueTime,
       endTime: null,
@@ -336,6 +336,7 @@ function formatEventPeriod(event: CalendarDisplayEvent) {
     : `${formatFullDate(event.startDate)} a ${formatFullDate(event.endDate)}`;
 
   if (!event.startTime) return date;
+  if (event.source === "classroom") return `${date}, prazo final às ${event.startTime}`;
   const time = event.endTime ? `${event.startTime} - ${event.endTime}` : event.startTime;
   return `${date}, ${time}`;
 }
@@ -345,7 +346,8 @@ function eventOccursOn(event: CalendarDisplayEvent, dateKey: string) {
 }
 
 function EventPill({ event }: { event: CalendarDisplayEvent }) {
-  const timeLabel = event.startTime ? `${event.startTime} ` : "";
+  const timeLabel = event.startTime && !(event.source === "classroom" && event.startDate !== event.endDate)
+    ? `${event.startTime} ` : "";
   const completedLabel = event.source === "classroom" ? "enviada/concluída" : "concluída";
   const className = [
     styles.eventPill,
