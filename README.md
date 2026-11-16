@@ -102,6 +102,12 @@ ao endpoint OAuth expiram após 12 segundos para não prender a navegação.
 
 ## Google Agenda em produção
 
+### Filtros compartilhados
+
+O calendário do site oferece filtros para as cinco agendas. As escolhas são salvas por usuário, sem excluir eventos nem limitar sua sincronização. A integração bidirecional é opcional e solicita `calendar.calendarlist` somente pelo botão **Ativar integração dos filtros**; a conexão comum continua usando `calendar.app.created`. O escopo do Google permite gerenciar a lista de agendas, mas o código consulta e altera apenas `selected` nos cinco IDs conhecidos do aplicativo, sem listar outras agendas nem mudar suas cores, nomes ou compartilhamento.
+
+Ao abrir o calendário, voltar à aba (com intervalo mínimo de 30 segundos) ou usar **Atualizar filtros do Google**, o site busca a seleção do Google. **Aplicar filtros** envia somente as categorias alteradas desde a abertura do formulário. Escolhas locais ainda pendentes têm prioridade nessa categoria; as demais vêm do Google. Em caso de erro, os filtros locais e o envio pendente são preservados. A trava de sincronização também protege esse processo. Competições mantêm o filtro local existente. A migração `20261116190000_calendar_visibility` adiciona as preferências e a fila por usuário.
+
 As cores dos eventos são aplicadas por categoria. A cor da agenda na lista lateral é opcional: algumas contas recusam `calendarList.patch` com `calendar.app.created`. Essa recusa não interrompe a sincronização nem solicita permissões adicionais; o usuário pode ajustar a cor da agenda no próprio Google.
 
 A sincronização distribui os eventos em cinco agendas privadas: Provas (azul), Atividades (verde), Editais (laranja), Calendário institucional (roxo) e Compromissos pessoais (cinza). O estudante pode mostrar ou ocultar cada agenda no Google Agenda. Eventos pessoais do tipo EXAM vão para Provas; ASSIGNMENT e PRESENTATION vão para Atividades; os demais vão para Compromissos pessoais. Tarefas manuais e do Classroom ficam em Atividades, sem inferir provas pelo título. As datas institucionais, inclusive períodos de avaliação, permanecem no calendário institucional.

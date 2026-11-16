@@ -5,6 +5,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { authOptions } from "@/lib/auth";
+import { GOOGLE_CALENDAR_LIST_SCOPE } from "@/lib/google-calendar-filters";
 import {
   GOOGLE_AUTH_SCOPE,
   GOOGLE_CALENDAR_AUTH_SCOPE,
@@ -24,7 +25,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  const googleCalendarTarget = request.nextUrl.searchParams.get("target") === "calendar";
+  const calendarFiltersTarget = request.nextUrl.searchParams.get("target") === "calendar-filters";
+  const googleCalendarTarget = calendarFiltersTarget || request.nextUrl.searchParams.get("target") === "calendar";
   const clientId = process.env.AUTH_GOOGLE_ID;
   if (!clientId) {
     const path = googleCalendarTarget
@@ -42,7 +44,8 @@ export async function GET(request: NextRequest) {
     prompt: "consent select_account",
     redirect_uri: classroomCallbackUrl(request),
     response_type: "code",
-    scope: googleCalendarTarget ? GOOGLE_CALENDAR_AUTH_SCOPE : GOOGLE_AUTH_SCOPE,
+    scope: calendarFiltersTarget ? `${GOOGLE_CALENDAR_AUTH_SCOPE} ${GOOGLE_CALENDAR_LIST_SCOPE}`
+      : googleCalendarTarget ? GOOGLE_CALENDAR_AUTH_SCOPE : GOOGLE_AUTH_SCOPE,
     state,
     hd: "academico.ifpb.edu.br",
   }).toString();
@@ -55,7 +58,7 @@ export async function GET(request: NextRequest) {
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
   });
-  response.cookies.set(OAUTH_TARGET_COOKIE, googleCalendarTarget ? "calendar" : "classroom", {
+  response.cookies.set(OAUTH_TARGET_COOKIE, calendarFiltersTarget ? "calendar-filters" : googleCalendarTarget ? "calendar" : "classroom", {
     httpOnly: true,
     maxAge: 10 * 60,
     path: "/api/classroom/callback",

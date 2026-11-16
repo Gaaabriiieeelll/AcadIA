@@ -10,6 +10,9 @@ import {
   ToggleOpenCalendarEventForm,
 } from "@/components/calendar-event-forms";
 import { GoogleCalendarControl } from "@/components/google-calendar-control";
+import { CalendarCategoryFilters } from "@/components/calendar-category-filters";
+import { getCurrentCalendarFilters } from "@/data/calendar-filters";
+import { personalCalendarCategory } from "@/lib/google-calendar-categories";
 import { AndroidWidgetSection } from "@/components/android-widget-section";
 import { SyncClassroomTasksForm } from "@/components/academic-task-forms";
 import { ProtectedShell } from "@/components/protected-shell";
@@ -441,12 +444,14 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
     subjects,
     personalEvents,
     academicTasks,
+    filters,
   ] = await Promise.all([
     getCurrentClassroomTaskSyncStatus(),
     getCurrentGoogleCalendarStatus(),
     getCurrentSubjects(),
     getCurrentCalendarEvents(monthGrid.gridStart, monthGrid.gridEnd),
     getCurrentAcademicTasks(),
+    getCurrentCalendarFilters(),
   ]);
   const officialEvents = toOfficialDisplayEvents(monthGrid.gridStart, monthGrid.gridEnd);
   const noticeEvents = toNoticeDisplayEvents(monthGrid.gridStart, monthGrid.gridEnd);
@@ -457,10 +462,10 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
   );
   const allEvents = [
     ...(showCompetitions ? getCompetitionCalendarEvents(competitions, monthGrid.gridStart, monthGrid.gridEnd) : []),
-    ...officialEvents,
-    ...noticeEvents,
-    ...toPersonalDisplayEvents(personalEvents, monthGrid.gridEnd),
-    ...classroomEvents,
+    ...(filters.visibility.institutional ? officialEvents : []),
+    ...(filters.visibility.notices ? noticeEvents : []),
+    ...toPersonalDisplayEvents(personalEvents.filter((event) => filters.visibility[personalCalendarCategory(event.eventType)]), monthGrid.gridEnd),
+    ...(filters.visibility.activities ? classroomEvents : []),
   ].sort(sortEvents);
   const monthEvents = allEvents.filter(
     (event) => event.startDate <= monthGrid.lastDate && event.endDate >= monthGrid.firstDate,
@@ -530,6 +535,8 @@ export default async function AcademicCalendarPage({ searchParams }: CalendarPag
         />
 
         <AndroidWidgetSection />
+
+        <CalendarCategoryFilters {...filters} />
 
         <aside className={styles.proposalNotice} aria-label="Situação do documento acadêmico">
           <span className={styles.noticeIcon}>

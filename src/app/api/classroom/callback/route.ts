@@ -30,7 +30,7 @@ function calendarRedirect(request: NextRequest, status: string) {
 }
 
 function oauthRedirect(request: NextRequest, target: string, status: string) {
-  return target === "calendar"
+  return target === "calendar" || target === "calendar-filters"
     ? calendarRedirect(request, status)
     : materialsRedirect(request, status);
 }
@@ -154,7 +154,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  if (target === "calendar") {
+  if (target === "calendar" || target === "calendar-filters") {
     if (!isAuthorizedAcademicEmail(authorizedEmail)) {
       return clearStateCookie(
         NextResponse.redirect(calendarRedirect(request, "account-mismatch")),
